@@ -1,0 +1,6 @@
+{
+  "extends": ["taro/react"],
+  "rule": {
+    "no-unused-vars": ["error", { "varsIgnorePattern": "Taro" }] // 禁止出现未使用过的变量
+  }
+}
