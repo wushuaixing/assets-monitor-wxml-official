@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+// @ts-ignore
 import { View, Text } from '@tarojs/components'
 import './index.scss'
 

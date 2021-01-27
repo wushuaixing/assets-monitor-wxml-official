@@ -1,5 +1,5 @@
-import user from './user'
-import home from "./home";
+import user from './user/index'
+import home from "./home/index";
 
 export default [
   user,

@@ -1,19 +1,24 @@
 import React, { Component } from 'react'
+// @ts-ignore
 import { View } from '@tarojs/components'
 import { connect } from 'react-redux';
 import './index.scss'
 
-type PageStateProps = {
-  count:number
-}
-
-type IProps = PageStateProps;
+type IProps = {
+  count: number,
+  dispatch: ({type: string, payload: object}) => {},
+};
 
 @connect(({ home }) => ({ ...home }))
 class Index extends Component <IProps>{
   componentWillMount () { }
 
-  componentDidMount () { }
+  componentDidMount () {
+    // const { dispatch } = this.props;
+    // dispatch({type: 'home/getJsSession', payload: {
+    //   jsCode: '001exAFa12PDoA03K2Ga1hUlK72exAFX',
+    //   }})
+  }
 
   componentWillUnmount () { }
 
