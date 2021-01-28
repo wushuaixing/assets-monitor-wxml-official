@@ -12,10 +12,7 @@ export default {
     navigationBarTextStyle: 'black'
   },
   tabBar: {
-    color: "#7D8699",
-    selectedColor: "#1C80E1",
-    backgroundColor: "#FFFFFF",
-    // custom: true,
+    custom: true,
     list: [
       {
         iconPath         : "./assets/img/tab-bar/home.png",
@@ -41,7 +38,10 @@ export default {
         pagePath: "pages/user/index",
         text: "我的"
       }
-    ]
+    ],
+    color: "#7D8699",
+    selectedColor: "#1C80E1",
+    backgroundColor: "#FFFFFF",
   },
   "usingComponents": {},
 }

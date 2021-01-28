@@ -4,6 +4,13 @@ module.exports = {
   },
   defineConstants: {
   },
-  mini: {},
+  // 小程序端专用配置
+  mini: {
+    module: {
+      autoprefixer: {
+        enable: true,
+      }
+    }
+  },
   h5: {}
-}
+};
