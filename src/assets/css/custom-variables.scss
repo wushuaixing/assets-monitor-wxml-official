@@ -1,0 +1,266 @@
+/* 修改 Taro UI 默认样式变量 */
+$at-input-font-size: 28px;
+$at-input-text-color: "#20242E";
+
+/* 引入 Taro UI 默认样式 */
+//@import "~taro-ui/dist/style/index.scss";
+@import "~taro-ui/dist/style/components/tabs.scss";
+@import "~taro-ui/dist/style/components/input.scss";
+@import "~taro-ui/dist/style/components/button.scss";
+@import "~taro-ui/dist/style/components/loading.scss";
+@import "~taro-ui/dist/style/components/calendar.scss";
+@import "~taro-ui/dist/style/components/message.scss";
+@import "~taro-ui/dist/style/components/float-layout.scss";
+@import "~taro-ui/dist/style/components/textarea.scss";
+@import "~taro-ui/dist/style/components/checkbox.scss";
+@import "~taro-ui/dist/style/components/icon.scss";
+@import "~taro-ui/dist/style/components/modal.scss";
+@import "~taro-ui/dist/style/components/flex.scss";
+@import "~taro-ui/dist/style/components/segmented-control.scss";
+
+/* 强行覆盖 Taro UI 默认样式 */
+
+.init-modal-wrapper{
+  &__header{
+    background-color:#F0F1F5 ;
+  }
+  .at-modal__container{
+    width: 650px;
+  }
+
+}
+.init-at-input-login{
+  padding-left: 106px;
+  margin-left: 0;
+  input{
+    font-size: 30px;
+    line-height: 55px;
+    height: 55px;
+  }
+}
+.init-at-input-mark{
+  .at-input__children::after {
+    border-left-width: 0!important;;
+  }
+}
+.init-at-input {
+  padding: 18px 0 16px 0;
+  margin-left: 30px;
+
+  .at-input__children::after {
+    border-left: none;
+  }
+  .at-input::after {
+      //background: red;
+      color: #DADDE6;
+      border: 10px solid #DADDE6;
+  }
+
+  .at-input__title {
+    height: 42px;
+    //display: inline-block;
+    width: 112px;
+    line-height: 42px;
+    text-align: justify;
+    text-align-last: justify;
+    //text-justify: distribute-all-lines;
+    margin-right: 40px;
+    color: #4E5566;
+    &:after {
+      width: 100%;
+      display: inline-block;
+      content: ''
+    }
+  }
+}
+.init-at-input-title-130{
+  .at-input__title{
+    width: 132px;
+  }
+}
+.init-at-input-title-140{
+  .at-input__title{
+    width: 140px;
+  }
+}
+.init-at-input-title-180{
+  .at-input__title{
+    width: 180px;
+  }
+}
+.false {
+  margin-right: 40px;
+  color: #4E5566;
+}
+// at-textarea样式
+.at-textarea {
+  padding: 20px;
+}
+.at-textarea__counter {
+  font-size: 28px;
+  color: #7D8699;
+}
+// 按钮边框
+.at-button {
+  border: 1PX solid #DADDE6;
+}
+
+.at-button--primary {
+  background: $text-link;
+}
+.controller__arrow{
+  border: 1px solid $border-base;
+}
+.init-at-input-btn {
+  padding: 8px 0 8px 30px;
+  background: $background-base;
+  margin-left: 0;
+  line-height: 1;
+  text-align: center;
+
+  input {
+    font-size: 24px;
+    height: 36px;
+  }
+}
+
+.init-at-btn-list-item {
+  border: none;
+}
+
+.init-at-list-item {
+  padding: 22px 30px 18px 30px;
+  font-size: 28px;
+
+  .item-content__info-title {
+    line-height: 1.5rem;
+  }
+
+  .item-extra__info {
+    font-size: 28px;
+    line-height: 1.5rem;
+  }
+
+  .item-extra__icon-arrow {
+    font-size: 36px;
+  }
+}
+
+.init-at-btn {
+  border-radius: 4px;
+  font-size: 24px;
+  padding: 13px 26px;
+  line-height: 1;
+  height: auto;
+  border-color: $background-base;
+  background: $background-base;
+  color: #5B6272;
+}
+
+.init-at-btn-normal {
+  @extend .init-at-btn;
+  padding-top: 18px;
+  padding-bottom: 18px;
+}
+
+.init-at-btn-large {
+  @extend .init-at-btn;
+  border-radius: 6px;
+  font-size: 30px;
+  padding-top: 22px;
+  padding-bottom: 22px;
+}
+
+.init-at-btn-alone {
+  @extend .init-at-btn;
+  border-color: $text-link;
+  background: #FFFFFF;
+  border-radius: 6px;
+  font-size: 26px;
+  color: $text-link;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.btn-isDefault {
+  border-color: $border-base;
+  background: #FFFFFF;
+  color: $text-title;
+}
+
+.btn-isActive {
+  border-color: $text-link;
+  background: $text-link;
+  color: #FFFFFF;
+}
+
+.init-at-float-layout {
+  .layout-header__title {
+    font-size: 30px;
+    color: $text-title;
+  }
+
+  .layout-header__btn-close {
+    display: none;
+  }
+}
+
+//// 日历调整
+//.controller__arrow--left,.controller__arrow--right{
+//  display: none;
+//}
+
+// 分段器ui调整 =========
+.at-segmented-control__item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.at-segmented-control__item + .at-segmented-control__item {
+  border-left: 0;
+}
+
+.at-segmented-control__item--active {
+  background-color: $text-link !important;
+}
+
+// ======================
+
+
+// Tabs 标签页 ===========
+.at-tabs__item {
+  font-size: 30px;
+  padding: 24px 0;
+  min-width: 25%;
+  margin-right: 20px;
+  &:last-child {
+    margin-right: 0;
+  }
+}
+
+.at-tabs__item--active {
+  color: $text-link;
+  font-weight: 500;
+}
+
+.at-tabs__item-underline {
+  background-color: $text-link;
+  height: 5px;
+}
+
+.at-tabs--scroll .at-tabs__header {
+  padding: 0 30px;
+}
+
+// modal
+.at-modal{
+  z-index: 999999;
+}
+.at-modal__content {
+  text-align: center;
+  min-height: 120px;
+  display: flex;
+  align-items: center;
+}
+//=======================

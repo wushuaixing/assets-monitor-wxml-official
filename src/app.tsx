@@ -2,7 +2,9 @@ import React, { Component } from 'react'
 import { Provider } from 'react-redux';
 import dva from './dva'
 import models from './models/index'
-// import './app.scss'
+import './assets/css/custom-variables.scss';
+import './assets/css/font/iconfont.css';
+import './app.scss'
 
 const dvaApp = dva.createApp({
   initialState: {},

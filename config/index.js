@@ -24,6 +24,8 @@ const config = {
   framework: 'react',
   alias : {
     '@' : path.resolve(__dirname, '..', 'src'),
+    '@components' : path.resolve(__dirname, '..', 'src/components'),
+    '@utils'    : path.resolve(__dirname, '..', 'src/utils'),
   },
   sass:{
     resource: path.resolve(__dirname, '..', 'src/assets/css/configuration.scss')
