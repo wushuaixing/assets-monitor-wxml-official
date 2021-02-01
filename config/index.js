@@ -7,7 +7,8 @@ const config = {
   deviceRatio: {
     640: 2.34 / 2,
     750: 1,
-    828: 1.81 / 2
+    828: 1.81 / 2,
+    375: 2
   },
   sourceRoot: 'src',
   outputRoot: 'dist',
@@ -24,12 +25,14 @@ const config = {
   alias : {
     '@' : path.resolve(__dirname, '..', 'src'),
   },
+  sass:{
+    resource: path.resolve(__dirname, '..', 'src/assets/css/configuration.scss')
+  },
   mini: {
     postcss: {
       pxtransform: {
         enable: true,
         config: {
-
         }
       },
       url: {
@@ -65,11 +68,13 @@ const config = {
       }
     }
   }
-}
+};
 
 module.exports = function (merge) {
   if (process.env.NODE_ENV === 'development') {
+    // dev.js 是项目预览时的配置
     return merge({}, config, require('./dev'))
   }
+  // prod.js 是项目打包时的配置
   return merge({}, config, require('./prod'))
-}
+};

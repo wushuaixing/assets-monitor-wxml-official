@@ -1,0 +1,31 @@
+.navigation-wrapper{
+  height: 45PX;
+  position: relative;
+  background: #FFFFFF;
+  //border-bottom: 1px solid #DADDE6;
+
+  .navigator-chevron{
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    z-index: 1;
+    width: 80px;
+    text-align: center;
+    font-size: 40px;
+    line-height: 50PX;
+  }
+  .navigator-content{
+    line-height: 45PX;
+    text-align: center;
+    color: $text-title;
+    font-weight: bold;
+    font-size: 32px;
+    padding: 0 230px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow:ellipsis;
+  }
+}
+.navigation-wrapper-border{
+  border-bottom: 1px solid $border-base;
+}
