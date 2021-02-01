@@ -3,7 +3,8 @@ export default {
     "pages/index/index",
     "pages/monitor/index",
     "pages/search/index",
-    "pages/user/index"
+    "pages/user/index",
+    "pages/demo/index"
   ],
   window: {
     backgroundTextStyle: 'light',
@@ -12,31 +13,26 @@ export default {
     navigationBarTextStyle: 'black'
   },
   tabBar: {
-    custom: true,
     list: [
       {
         iconPath         : "./assets/img/tab-bar/home.png",
         selectedIconPath : "./assets/img/tab-bar/home-active.png",
-        pagePath: "pages/index/index",
-        text: "首页"
+        pagePath: "pages/index/index"
       },
       {
         iconPath         : "./assets/img/tab-bar/monitor.png",
         selectedIconPath : "./assets/img/tab-bar/monitor-active.png",
-        pagePath: "pages/monitor/index",
-        text: "监控"
+        pagePath: "pages/monitor/index"
       },
       {
         iconPath         : "./assets/img/tab-bar/search.png",
         selectedIconPath : "./assets/img/tab-bar/search-active.png",
-        pagePath: "pages/search/index",
-        text: "搜索"
+        pagePath: "pages/search/index"
       },
       {
         iconPath         : "./assets/img/tab-bar/user.png",
         selectedIconPath : "./assets/img/tab-bar/user-active.png",
-        pagePath: "pages/user/index",
-        text: "我的"
+        pagePath: "pages/user/index"
       }
     ],
     color: "#7D8699",
