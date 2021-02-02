@@ -17,22 +17,26 @@ export default {
       {
         iconPath         : "./assets/img/tab-bar/home.png",
         selectedIconPath : "./assets/img/tab-bar/home-active.png",
-        pagePath: "pages/index/index"
+        pagePath: "pages/index/index",
+        text: "首页"
       },
       {
         iconPath         : "./assets/img/tab-bar/monitor.png",
         selectedIconPath : "./assets/img/tab-bar/monitor-active.png",
-        pagePath: "pages/monitor/index"
+        pagePath: "pages/monitor/index",
+        text: "监控"
       },
       {
         iconPath         : "./assets/img/tab-bar/search.png",
         selectedIconPath : "./assets/img/tab-bar/search-active.png",
-        pagePath: "pages/search/index"
+        pagePath: "pages/search/index",
+        text: "搜索"
       },
       {
         iconPath         : "./assets/img/tab-bar/user.png",
         selectedIconPath : "./assets/img/tab-bar/user-active.png",
-        pagePath: "pages/user/index"
+        pagePath: "pages/user/index",
+        text: "我的"
       }
     ],
     color: "#7D8699",

@@ -36,57 +36,6 @@ class Demo extends Component <IProps, IState>{
     this.state = {
       // @ts-ignore
       data: buildData(0),
-      config: {
-        "first" : {
-          "title" : "拍卖日期",
-          "type"  : "time",
-          "field" : ["startStart", "startEnd"]
-        },
-        "second" : {
-          "title" : "更新日期",
-          "type"  : "time",
-          "field" : ["updateTimeStart", "updateTimeEnd"]
-        },
-        "inquiry" : [
-          {
-            "title"       : "债务人",
-            "placeholder" : "请输入债务人姓名/公司名",
-            "type"        : "input",
-            "field"       : "obligorName"
-          },
-          {
-            "title"       : "信息标题",
-            "placeholder" : "请输入信息标题",
-            "type"        : "input",
-            "field"       : "title"
-          },
-          {
-            "title"       : "处置单位",
-            "placeholder" : "请输入处置单位名称",
-            "type"        : "input",
-            "field"       : "court"
-          },
-          {
-            "title"  : "拍卖状态",
-            "type"   : "choose",
-            "field"  : "status",
-            "option" : [
-              { "id" : 1, "label" : "不限", "value" : "" },
-              { "id" : 2, "label" : "即将开始", "value" : 1 },
-              { "id" : 3, "label" : "正在进行", "value" : 3 },
-              { "id" : 4, "label" : "已成交", "value" : 5 },
-              { "id" : 5, "label" : "已流拍", "value" : 7 },
-              { "id" : 6, "label" : "中止", "value" : 9 },
-              { "id" : 7, "label" : "撤回", "value" : 11 }
-            ]
-          },
-          {
-            "title" : "评估价（万元）",
-            "type"  : "price",
-            "field" : ["consultPriceStart", "consultPriceEnd"]
-          }
-        ]
-      },
       readState: 0,
     };
     this.loading = false;

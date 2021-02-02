@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Button } from '@tarojs/components';
+import {View, Button, Text} from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { connect } from 'react-redux';
 import NavigationBar from '../../components/navigation-bar';
@@ -27,20 +27,20 @@ class Index extends Component <IProps>{
 
   componentDidHide () { }
 
-  handleNavigate = () => {
+  handleNavigateDemo = () => {
     Taro.navigateTo({
-      url:'/pages/demo/index',
+      url: '/pages/demo/index',
     });
   };
-
   render () {
     return (
       <View>
         <NavigationBar title='源诚资产监控'/>
-        <View>Hello world!</View>
+        <View>Hello world! this is view</View>
+        <Text>Hello world! this is text</Text>
         <View>从home模块里面取出的数据是{this.props.count}</View>
-        <View>
-          <Button onClick={this.handleNavigate} className='btn-max-w' plain type='primary'>跳转demo</Button>
+        <View style={{margin : 20}}>
+          <Button onClick={this.handleNavigateDemo} className='btn-max-w' plain type='primary'>跳转demo</Button>
         </View>
       </View>
     )
