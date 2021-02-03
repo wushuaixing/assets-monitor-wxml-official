@@ -1,11 +1,5 @@
-export const HTTP_STATUS = {
-  SUCCESS             : 200,
-  CLIENT_ERROR        : 400,
-  AUTHENTICATE        : 401,
-  FORBIDDEN           : 403,
-  NOT_FOUND           : 404,
-  SERVER_ERROR        : 500,
-  BAD_GATEWAY         : 502,
-  SERVICE_UNAVAILABLE : 503,
-  GATEWAY_TIMEOUT     : 504
-};
+export const HTTP_STATUS = [
+  { code: 404, tipText: '请求资源不存在'},
+  { code: 502, tipText: '服务端出现了问题'},
+  { code: 403, tipText: '没有权限访问'},
+];
