@@ -1,9 +1,7 @@
-import request from '../../utils/request';
-import Api from '../../utils/api/index';
+import request from '../request/index';
 
 // jsSessionUrl
 export async function getJsSessionUrl(payload) {
-  console.log('api === ', Api.home.jsSessionUrl, payload);
-  return request.getNoToken(Api.home.jsSessionUrl,  { jsCode: payload.jsCode}, false);
+  return request.getNoToken('api/auth/open/wechat/jsSession',  { jsCode: payload.jsCode}, false);
 }
 
