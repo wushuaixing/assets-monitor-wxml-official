@@ -17,7 +17,7 @@
   .navigator-content{
     line-height: 45PX;
     text-align: center;
-    color: $text-title;
+    color: $common-text;
     font-weight: bold;
     font-size: 32px;
     padding: 0 230px;
@@ -27,5 +27,5 @@
   }
 }
 .navigation-wrapper-border{
-  border-bottom: 1px solid $border-base;
+  border-bottom: 1px solid $border-color;
 }

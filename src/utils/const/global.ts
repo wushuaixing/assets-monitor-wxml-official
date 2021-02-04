@@ -1,5 +1,6 @@
 interface globalType {
-  tabName?: string
+  tabName?: string,
+  setGlobalData?: number
 }
 
 const globalData: globalType = {};

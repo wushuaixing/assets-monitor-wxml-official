@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
-import {View, Button, Text} from '@tarojs/components';
+import {View, Button, Text, Image} from '@tarojs/components';
 import Taro from '@tarojs/taro';
+import { AtSwitch, AtTabs }  from 'taro-ui'
 import { connect } from 'react-redux';
 import NavigationBar from '../../components/navigation-bar';
+import img from '../../assets/img/tab-bar/home.png';
 import './index.scss'
+import {getGlobalData, setGlobalData} from "../../utils/const/global";
 
 type IProps = {
   count: number,
@@ -12,6 +15,7 @@ type IProps = {
 
 type IState = {
   animation: any,
+  current: number
 };
 
 @connect(({ home }) => ({ ...home }))
@@ -21,6 +25,7 @@ class Index extends Component <IProps, IState>{
     super(props);
     this.state = {
       animation: '',
+      current: 0,
     };
   }
 
@@ -28,10 +33,9 @@ class Index extends Component <IProps, IState>{
   }
 
   componentDidMount () {
-    // const { dispatch } = this.props;
-    // dispatch({type: 'home/getJsSession', payload: {
-    //   jsCode: '001exAFa12PDoA03K2Ga1hUlK72exAFX',
-    //   }})
+    Taro.getSystemInfo().then(res => {
+      setGlobalData('statusBarHeight', res.statusBarHeight);
+    });
   }
 
   componentWillUnmount () { }
@@ -41,50 +45,63 @@ class Index extends Component <IProps, IState>{
 
   componentDidHide () { }
 
-  handleNavigateDemo = () => {
-    // this.down();
-    Taro.switchTab({
-      url: '/pages/demo/index',
-    });
-  };
-
-  down = () => {
-    var animation = Taro.createAnimation({
-      transformOrigin: "50% 50%",
-      duration: 1000,
-      timingFunction: "ease",
-      delay: 0
-    });
-    animation.translateY(200).step();
+  handleClick (value) {
     this.setState({
-      animation: animation.export(),
-    });
-  };
-
-  comeBack = () => {
-    var animation = Taro.createAnimation({
-      transformOrigin: "50% 50%",
-      duration: 1000,
-      timingFunction: "ease",
-      delay: 0
-    });
-    animation.translateY(0).step();
-    this.setState({
-      animation: animation.export(),
-    });
-  };
-
+      current: value
+    })
+  }
 
   render () {
-    const { animation } = this.state;
+    const tabList = [
+      { title: '资产', id: 1 },
+      { title: '风险', id: 2 },
+    ];
     return (
-      <View>
-        <NavigationBar title='源诚资产监控'/>
-        <View className='text'>输入验证码</View>
-        <Text className='tips'>输入验证码</Text>
-        <View animation={animation}>从home模块里面取出的数据是{this.props.count}</View>
-        <View style={{margin : 20}}>
-          <Button onClick={this.handleNavigateDemo} className='btn-max-w' plain type='primary'>跳转demo</Button>
+      <View className='home'>
+        <View className='home-title'>
+          <NavigationBar title='源诚资产监控'/>
+        </View>
+        <View className='home-header'>
+          <View className='home-header-tab'>
+            <Image className='home-header-tab-img' src={img}/>
+            <Text className='home-header-tab-text'>添加业务</Text>
+          </View>
+          <View className='home-header-tab'>
+            <Image className='home-header-tab-img' src={img}/>
+            <Text className='home-header-tab-text'>画像查询</Text>
+          </View>
+          <View className='home-header-tab'>
+            <Image className='home-header-tab-img' src={img}/>
+            <Text className='home-header-tab-text'>拍卖查询</Text>
+          </View>
+        </View>
+
+        <View className='home-middle'>
+          <View className='home-middle-tab'>
+            <Image className='home-middle-tab-img' src={img}/>
+            <Text className='home-middle-tab-text'>添加业务</Text>
+          </View>
+          <View className='home-middle-tab'>
+            <Image className='home-middle-tab-img' src={img}/>
+            <Text className='home-middle-tab-text'>添加业务</Text>
+          </View>
+          <View className='home-middle-tab'>
+            <Image className='home-middle-tab-img' src={img}/>
+            <Text className='home-middle-tab-text'>添加业务</Text>
+          </View>
+          <View className='home-middle-tab'>
+            <Image className='home-middle-tab-img' src={img}/>
+            <Text className='home-middle-tab-text'>添加业务</Text>
+          </View>
+        </View>
+
+        <View className='home-data'>
+          <AtTabs className='large-tab' scroll current={this.state.current} tabList={tabList} onClick={this.handleClick.bind(this)}/>
+        </View>
+
+        <View className='home-read'>
+          <View className='home-read-title'>资产线索</View>
+          <AtSwitch className='home-read-switch' title='只显示未读'/>
         </View>
       </View>
     )

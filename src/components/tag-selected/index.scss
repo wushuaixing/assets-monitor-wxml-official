@@ -1,0 +1,24 @@
+@mixin item{
+  font-size: 30px;
+  line-height: 30px;
+  padding: 12px 32px;
+  border-radius: 4px;
+}
+
+.tag{
+  display: flex;
+  justify-content: space-between;
+  margin: 30px 32px 0 32px;
+  &-item-active{
+    color: $primary-color;
+    background-color: $light-blue-color;
+    font-weight: 500;
+    @include item;
+  }
+  &-item-normal{
+    color: $common-text;
+    background-color: $page-bg-color;
+    font-weight: 400;
+    @include item;
+  }
+}
