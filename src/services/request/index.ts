@@ -31,7 +31,7 @@ type optionType = {
   error: any,
 }
 
-const base = 'https://wechat.yczcjk.com/';
+const base = 'https://wechat.yczcjk.com';
 
 const logError = (name?: string, action?: any, info?: any) => {
   if (!info) {

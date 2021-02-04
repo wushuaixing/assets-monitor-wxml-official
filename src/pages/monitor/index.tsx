@@ -1,17 +1,20 @@
 import React, { Component } from 'react'
-// @ts-ignore
+import Taro, { getCurrentInstance } from '@tarojs/taro';
 import { View, Text } from '@tarojs/components'
 import './index.scss'
 
 export default class Monitor extends Component {
+  $instance = getCurrentInstance();
 
   componentWillMount () { }
 
-  componentDidMount () { }
+  componentDidMount () {
+  }
 
   componentWillUnmount () { }
 
-  componentDidShow () { }
+  componentDidShow () {
+  }
 
   componentDidHide () { }
 

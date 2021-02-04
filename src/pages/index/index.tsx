@@ -28,10 +28,10 @@ class Index extends Component <IProps, IState>{
   }
 
   componentDidMount () {
-    const { dispatch } = this.props;
-    dispatch({type: 'home/getJsSession', payload: {
-      jsCode: '001exAFa12PDoA03K2Ga1hUlK72exAFX',
-      }})
+    // const { dispatch } = this.props;
+    // dispatch({type: 'home/getJsSession', payload: {
+    //   jsCode: '001exAFa12PDoA03K2Ga1hUlK72exAFX',
+    //   }})
   }
 
   componentWillUnmount () { }
@@ -43,7 +43,7 @@ class Index extends Component <IProps, IState>{
 
   handleNavigateDemo = () => {
     // this.down();
-    Taro.navigateTo({
+    Taro.switchTab({
       url: '/pages/demo/index',
     });
   };
@@ -80,8 +80,8 @@ class Index extends Component <IProps, IState>{
     return (
       <View>
         <NavigationBar title='源诚资产监控'/>
-        <View>Hello world! this is view</View>
-        <Text>Hello world! this is text</Text>
+        <View className='text'>输入验证码</View>
+        <Text className='tips'>输入验证码</Text>
         <View animation={animation}>从home模块里面取出的数据是{this.props.count}</View>
         <View style={{margin : 20}}>
           <Button onClick={this.handleNavigateDemo} className='btn-max-w' plain type='primary'>跳转demo</Button>

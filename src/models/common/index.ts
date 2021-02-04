@@ -1,3 +1,5 @@
+// import { getRule } from "../common";
+
 export default {
   namespace: 'common',
   state: {
@@ -5,6 +7,11 @@ export default {
     currentPage: '/pages/index/index',
   },
   effects: {
+    // *authRule({ payload }, {all, call, put }) {
+    //   const res = yield call(getRule, payload);
+    //   console.log('getJsSession res === ', res);
+    //   // yield put({type: 'saveCatalog', payload: res});
+    // },
   },
   reducers: {
 
