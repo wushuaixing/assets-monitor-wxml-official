@@ -1,41 +1,22 @@
-//导航、一级tab背景色
-$common-base: #384482;
-//导航经过背景色
-$common-base-hover: #43529C;
-//导航栏选中背景
-$common-base-active: #303a70;
-//警告、价格色
-$common-error: #FB5A5C;
-//通过、开启、成功提示色
-$common-success: #3DBD7D;
-//收藏、按钮背景色
-$common-warning: #FB8E3C;
+//主色调
+$primary-tips: #0979E6;
+//浅蓝背景色
+$tab-bg-color: #F0F5FF;
 
-//一级标题、按钮文字、一级tab、二级tab
-$text-title: #20242E;
-//链接文字色
-$text-link: #1C80E1;
-// 按钮经过颜色
-$text-btn-hover: #1E8CFA;
-//链接文字经过色
-$text-link-hover: #186FC7;
-//列表标题文字色
-$text-content: #4E5566;
-//其他辅助信息色
-$text-remark: #7D8699;
-//输入框提示文字颜色
-$text-placeholder: #B2B8C9;
+//警示颜色
+$warning-color: #FF3B30;
+//警示tab背景颜色
+$warning-bg-color: #FFE7E6;
 
-// 页面背景色、列表标题背景色、置灰按钮背景色
-$background-base: #F0F1F5;
-// 底部背景色
-$background-footer: #3A404D;
-// 按钮、输入框边框颜色
-$border-base: #DADDE6;
-$border-tab: #DADDE6;
-// 分割线颜色
-$background-line: #E5E5E5;
-// 列表内容经过背景色
-$background-list-hover: #EBF1FA;
-// 列表内容背景色
-$background-list: #F6F6F7;
+//主要的文字颜色
+$common-text: #333333;
+//展示标题颜色
+$label-color: #999999;
+//信息展示颜色
+$text-color: #666666;
+
+//星星背景色
+$star-color: #F5A623;
+//未展示星星颜色
+$star-disable: #F6B343;
+
