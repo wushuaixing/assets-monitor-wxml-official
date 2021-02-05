@@ -3,10 +3,13 @@ $primary-color: #0979E6;
 //浅蓝背景色
 $light-blue-color: #F0F5FF;
 
-//警示颜色
-$warning-color: #FF3B30;
+//严重警示颜色
+$error-color: #FF3B30;
 //警示tab背景颜色
-$warning-bg-color: #FFE7E6;
+$error-bg-color: #FFE7E6;
+
+//一般警示颜色
+$warning-color: #FF6010;
 
 //主要的文字颜色
 $common-text: #333333;
@@ -23,4 +26,6 @@ $star-color: #F5A623;
 $star-disable: #F6B343;
 
 $page-bg-color: #F5F5F5;
+
+$border-divider-color: #D9D9D9;
 

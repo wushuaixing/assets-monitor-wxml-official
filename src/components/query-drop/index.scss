@@ -1,24 +1,51 @@
+@mixin item-text{
+  font-size: 28px;
+  line-height: 28px;
+  display: inline-block;
+}
+
 .drop{
+  background-color: white;
   &-box{
     display: flex;
-    justify-content: space-between;
-    &-item{
+    justify-content: space-around;
+    width: 100%;
+    &-tab{
       display: flex;
-      align-items: center;
-      margin: 0 10px;
-      &-icon{
-        margin-left: 10px;
+      font-size: 28px;
+      line-height: 28px;
+      font-weight: 400;
+      color: $common-text;
+      width: 33%;
+      position: relative;
+      justify-content: center;
+      &-text{
+        height: 28px;
+        &-active{
+          color: $primary-color;
+          font-weight: 500;
+          @include item-text
+        }
+        &-normal{
+          @include item-text
+        }
+        &-icon::before{
+          margin-left: 8px;
+          color: $border-divider-color;
+        }
+      }
+      &-divider{
+        position: absolute;
+        right: 0;
+        background-color: $border-divider-color;
+        height: 24px;
+        width: 1px;
+        top: 2px;
       }
     }
   }
 
   &-query{
-    &-line{
-      height: 1px;
-      background-color: #DADDE6;
-      margin-top: 10px;
-    }
-
     &-mask{
       opacity: .4;
       background: #000;

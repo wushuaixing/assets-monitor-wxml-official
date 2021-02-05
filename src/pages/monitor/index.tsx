@@ -3,16 +3,27 @@ import Taro, { getCurrentInstance } from '@tarojs/taro';
 import { View, Text } from '@tarojs/components'
 import NavigationBar from '../../components/navigation-bar';
 import TagSelected from '../../components/tag-selected';
+import QueryDrop from '../../components/query-drop';
+import Tab from '../../components/tab';
 import './index.scss'
-import {AtTabs} from "taro-ui";
+import { AtTabs, AtIcon } from "taro-ui";
 
 
 type IProps = {
 
 };
 
+
+interface configType{
+  id: number,
+  title: string,
+}
+
 type IState = {
   current: number
+  assetsConfig: configType[]
+  riskConfig: configType[]
+  isScroll?: boolean
 };
 
 export default class Monitor extends Component <IProps, IState>{
@@ -20,6 +31,20 @@ export default class Monitor extends Component <IProps, IState>{
     super(props);
     this.state = {
       current: 0,
+      isScroll: false,
+      assetsConfig: [
+        { title: '全部', id: 1},
+        { title: '三星', id: 2},
+        { title: '二星', id: 3},
+        { title: '一星', id: 4}
+      ],
+      riskConfig: [
+        { title: '全部', id: 1},
+        { title: '高风险', id: 2},
+        { title: '警示', id: 3},
+        { title: '提示', id: 4},
+        { title: '利好', id: 5}
+      ]
     };
   }
 
@@ -41,25 +66,33 @@ export default class Monitor extends Component <IProps, IState>{
     })
   }
 
+  handleChangeTab = (item) => {
+    console.log('item === ', item);
+  };
+
 
   render () {
     const tabList = [
       { title: '资产线索', id: 1 },
       { title: '风险信息', id: 2 },
     ];
-    const { current } = this.state;
+    const { current, assetsConfig, riskConfig } = this.state;
     return (
       <View className='monitor'>
-        <NavigationBar title={'源诚资产监控'} border />
-        <View>
-          <AtTabs
-            className='large-tab'
-            scroll
-            current={current}
-            tabList={tabList}
-            onClick={this.handleClick.bind(this)}/>
-        </View>
-        <TagSelected/>
+        <NavigationBar title={'源诚资产监控'} type={'blue'}/>
+        <Tab config={tabList} onClick={this.handleClick}/>
+        {/*<View>*/}
+        {/*  <AtTabs*/}
+        {/*    className='large-tab'*/}
+        {/*    current={current}*/}
+        {/*    tabList={tabList}*/}
+        {/*    onClick={this.handleClick.bind(this)}/>*/}
+        {/*</View>*/}
+        <TagSelected config={current === 0 ? assetsConfig : riskConfig } onClick={this.handleChangeTab}/>
+        <QueryDrop />
+        {
+
+        }
       </View>
     )
   }

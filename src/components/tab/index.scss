@@ -1,0 +1,46 @@
+@mixin tabItem{
+  font-size: 34px;
+  line-height: 34px;
+  padding: 24px 0;
+  display: inline-block;
+  position: absolute;
+  top: 0;
+}
+
+@mixin bgItem{
+  width: 750px;
+  height: 82px;
+  background-size: cover;
+}
+
+.tab{
+  position: relative;
+  &-bg{
+    width: 100%;
+    &-leftActive{
+      background-image: url("../../assets/img/page/left-active.png");
+      @include bgItem;
+    }
+    &-rightActive{
+      background-image: url("../../assets/img/page/right-active.png");
+      @include bgItem;
+    }
+  }
+  &-item-active{
+    @include tabItem;
+    color: $primary-color;
+    font-weight: 500;
+  }
+  &-item-normal{
+    @include tabItem;
+    color: #FFFFFF;
+    font-weight: 400;
+  }
+
+  &-item-left{
+    left: 120px;
+  }
+  &-item-right{
+    right: 120px;
+  }
+}
