@@ -1,6 +1,8 @@
 import Taro from '@tarojs/taro';
 import { urlEncode, formatDateTime}from "../../utils/tools/common";
 import { HTTP_STATUS } from '../../utils/const/status'
+import {base} from '../../utils/config';
+
 interface resType {
   data: {
     code: number
@@ -31,7 +33,6 @@ type optionType = {
   error: any,
 }
 
-const base = 'https://wechat.yczcjk.com';
 
 const logError = (name?: string, action?: any, info?: any) => {
   if (!info) {

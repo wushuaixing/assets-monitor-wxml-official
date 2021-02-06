@@ -1,6 +1,11 @@
 interface globalType {
   tabName?: string,
-  setGlobalData?: number
+  openId?: string,
+  statusBarHeight?: number,
+  statusRailHome?: number,
+  systemAuthRule?: any,
+  systemRoleType?: any,
+  weChatCode?: string,
 }
 
 const globalData: globalType = {};
