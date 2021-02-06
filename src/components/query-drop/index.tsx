@@ -110,24 +110,24 @@ class QueryDrop extends Component<IProps, IState>{
 
   // 点击切换筛选条件
   handleClick = (info) => {
-    const { filterConfig } = this.state;
-    let config: configType[] = [];
-    if(filterConfig.length > 0){
-      filterConfig.forEach((item) => {
+    const { config } = this.state;
+    let newConfig: configType[] = [];
+    if(config.length > 0){
+      config.forEach((item) => {
         if(info.id === item.id){
-          config.push({
+          newConfig.push({
             ...info,
             isOpen: !info.isOpen,
           });
         }
         else {
-          config.push({...item, isOpen: false});
+          newConfig.push({...item, isOpen: false});
         }
       });
     }
     this.setState({
       activeId: info.id,
-      config,
+      config: newConfig,
     })
   };
 
@@ -136,24 +136,35 @@ class QueryDrop extends Component<IProps, IState>{
     const { config, activeId, animation } = this.state;
     return (
       <View className='drop'>
-        <View>
-          <ScrollView>
-            <View className='drop-box'>
-              {
-                config.map((item) => {
-                  const color = item.isOpen ? "#1C80E1" : "#7D8699";
-                  return (
-                    <View onClick={() => this.handleClick(item)} className='drop-box-item'>
-                      <Text style={{ color : color }}>{item.title}</Text>
-                      <AtIcon value={item.isOpen ? "chevron-up" : 'chevron-down'} size='7' color={color} prefixClass='icon' className='drop-box-item-icon' />
-                    </View>
-                  )
-                })
-              }
-            </View>
-          </ScrollView>
+        <View className='drop-box'>
+          {
+            config.map((item, index) => {
+              const color = item.isOpen ? "#1C80E1" : "#7D8699";
+              const selected = item.isSelectd;
+              return (
+                <View onClick={() => this.handleClick(item)} className='drop-box-tab'>
+                  <View className='drop-box-tab-text'>
+                    <Text
+                      className={`drop-box-tab-text-${selected ? `active` : `normal`}`}
+                    >
+                      {item.title}
+                    </Text>
+                    {/*<AtIcon*/}
+                    {/*  value={item.isOpen ? "chevron-up" : 'chevron-down'}*/}
+                    {/*  size='7'*/}
+                    {/*  color={color}*/}
+                    {/*  prefixClass='icon'*/}
+                    {/*  className='drop-box-tab-text-icon'*/}
+                    {/*/>*/}
+                  </View>
+                  {
+                    index < config.length - 1 && <View className='drop-box-tab-divider'/>
+                  }
+                </View>
+              )
+            })
+          }
         </View>
-        <View className='drop-query-line' />
         {/*{*/}
         {/*  activeId >= 0 && <View className='drop-query' animation={animation}>*/}
 				{/*		<View className='drop-query-modal'>*/}

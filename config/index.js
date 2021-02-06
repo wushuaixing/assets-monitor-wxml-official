@@ -32,6 +32,9 @@ const config = {
   },
   mini: {
     postcss: {
+      autoprefixer:{
+        enable: true
+      },
       pxtransform: {
         enable: true,
         config: {

@@ -7,11 +7,15 @@ import './index.scss';
 type IProps = {
   border?: boolean,
   title?: string,
+  type?: string
 }
 
-const NavigationBar: FC<IProps> = ({border, title }) => {
+const NavigationBar: FC<IProps> = ({border, title, type}) => {
   const statusBarHeight = getGlobalData('statusBarHeight') || 20;
-  const style = { paddingTop : `${statusBarHeight}px` };
+  const style = {
+    paddingTop : `${statusBarHeight}px`,
+    backgroundColor: type === 'blue' ? '#0979E6' : '#FFF'
+  };
   const backStates = Taro.getCurrentPages().length > 1;
 
   return(
@@ -23,7 +27,7 @@ const NavigationBar: FC<IProps> = ({border, title }) => {
           </View>
         ) : null
       }
-      <View className='navigator-content'>{title}</View>
+      <View className='navigator-content' style={{color: type === 'blue' ? '#fff' : '#333'}}>{title}</View>
     </View>
   )
 };

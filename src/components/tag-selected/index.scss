@@ -1,24 +1,29 @@
-@mixin item{
+@mixin tagItem{
   font-size: 30px;
-  line-height: 30px;
-  padding: 12px 32px;
-  border-radius: 4px;
+  line-height: 54px;
+  border-radius: 27px;
+  width: 124px;
+  height: 54px;
+  display: flex;
+  justify-content: center;
+  align-content: center;
 }
 
 .tag{
   display: flex;
   justify-content: space-between;
-  margin: 30px 32px 0 32px;
+  background-color: white;
+  padding: 30px 20px;
   &-item-active{
     color: $primary-color;
     background-color: $light-blue-color;
     font-weight: 500;
-    @include item;
+    @include tagItem;
   }
   &-item-normal{
     color: $common-text;
     background-color: $page-bg-color;
     font-weight: 400;
-    @include item;
+    @include tagItem;
   }
 }

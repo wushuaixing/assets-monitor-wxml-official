@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { View} from '@tarojs/components';
+
 import './index.scss';
 
 interface configType{
@@ -8,15 +9,15 @@ interface configType{
 }
 
 type IProps = {
-  config: configType[]
   onClick: (item: configType) => void
+  config: configType[]
 }
 
 type IState = {
   selected: number
 };
 
-class TagSelected extends Component<IProps, IState>{
+class Tab extends Component<IProps, IState>{
 
   constructor(props) {
     super(props);
@@ -25,7 +26,7 @@ class TagSelected extends Component<IProps, IState>{
     };
   }
 
-  onClickTag = (item) => {
+  onClickTab = (item) => {
     const { onClick } = this.props;
     this.setState({
       selected: item.id
@@ -34,18 +35,20 @@ class TagSelected extends Component<IProps, IState>{
     })
   };
 
+
   render(){
     const { selected } = this.state;
     const { config } = this.props;
     return (
-      <View className='tag'>
+      <View className='tab' >
+        <View className={`tab-bg-${selected === 1 ? 'leftActive' : 'rightActive'}`}/>
         {
-          config.map((item) => {
+          config.map((item, index) => {
             const active = selected === item.id;
             return (
               <View
-                onClick={() => this.onClickTag(item)}
-                className={`tag-item-${active ? `active` : `normal`}`}
+                onClick={() => this.onClickTab(item)}
+                className={`tab-item-${active ? `active` : `normal`} tab-item-${index === 0 ? 'left' : 'right'}`}
               >
                 {item.title}
               </View>
@@ -53,7 +56,8 @@ class TagSelected extends Component<IProps, IState>{
           })
         }
       </View>
+
     );
   }
 }
-export default TagSelected;
+export default Tab;

@@ -34,6 +34,7 @@ class Index extends Component <IProps, IState>{
 
   componentDidMount () {
     Taro.getSystemInfo().then(res => {
+      console.log('statusBarHeight === ', res);
       setGlobalData('statusBarHeight', res.statusBarHeight);
     });
   }
@@ -96,7 +97,7 @@ class Index extends Component <IProps, IState>{
         </View>
 
         <View className='home-data'>
-          <AtTabs className='large-tab' scroll current={this.state.current} tabList={tabList} onClick={this.handleClick.bind(this)}/>
+          <AtTabs className='large-tab' current={this.state.current} tabList={tabList} onClick={this.handleClick.bind(this)}/>
         </View>
 
         <View className='home-read'>
