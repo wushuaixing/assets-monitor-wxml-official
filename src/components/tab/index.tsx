@@ -26,7 +26,7 @@ class Tab extends Component<IProps, IState>{
     };
   }
 
-  onClickTag = (item) => {
+  onClickTab = (item) => {
     const { onClick } = this.props;
     this.setState({
       selected: item.id
@@ -47,7 +47,7 @@ class Tab extends Component<IProps, IState>{
             const active = selected === item.id;
             return (
               <View
-                onClick={() => this.onClickTag(item)}
+                onClick={() => this.onClickTab(item)}
                 className={`tab-item-${active ? `active` : `normal`} tab-item-${index === 0 ? 'left' : 'right'}`}
               >
                 {item.title}

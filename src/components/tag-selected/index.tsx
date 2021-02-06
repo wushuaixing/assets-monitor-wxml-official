@@ -32,7 +32,6 @@ class TagSelected extends Component<IProps, IState>{
     }, () => {
       onClick(item);
     })
-
   };
 
   render(){

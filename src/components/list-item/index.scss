@@ -1,0 +1,77 @@
+@mixin starItem{
+  font-size: 26px;
+  margin: 0 2px;
+  line-height: 40px;
+  display: inline-block;
+  height: 40px;
+}
+
+.item{
+  background-color: #FFFFFF;
+  &-segmentation{
+    background-color: #F5F5F5;
+    height: 24px;
+  }
+  &-header{
+    display: flex;
+    flex-direction: row;
+    padding: 25px 24px;
+    &-pic{
+      width: 80px;
+      height: 80px;
+    }
+    &-title{
+      &-tag{
+        display: flex;
+        flex-direction: row;
+        &-star{
+          margin-left: 20px;
+          border: 2px solid #F5A623;
+          padding: 0 12px;
+          border-radius: 2px;
+          height: 40px;
+          display: inline-block;
+          line-height: 40px;
+          &-active{
+            color: #F57A00;
+            @include starItem;
+          }
+          &-normal{
+            color: $warning-bg-color;
+            @include starItem;
+          }
+        }
+        &-type{
+          display: inline-block;
+          text-align: center;
+          font-size: 24px;
+          line-height: 40px;
+          height: 40px;
+          border: 2px solid $primary-color;
+          color: $primary-color;
+          border-radius: 2px;
+          margin-left: 12px;
+          padding: 0 12px;
+        }
+        &-status{
+          display: inline-block;
+          text-align: center;
+          font-size: 24px;
+          line-height: 40px;
+          height: 40px;
+          border: 2px solid $light-text-color;
+          color: $text-color;
+          border-radius: 2px;
+          margin-left: 12px;
+          padding: 0 12px;
+        }
+      }
+    }
+  }
+
+  &-line{
+    height: 1px;
+    width: 100%;
+    background-color: $border-color;
+  }
+}

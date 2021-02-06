@@ -149,13 +149,13 @@ class QueryDrop extends Component<IProps, IState>{
                     >
                       {item.title}
                     </Text>
-                    <AtIcon
-                      value={item.isOpen ? "chevron-up" : 'chevron-down'}
-                      size='7'
-                      color={color}
-                      prefixClass='icon'
-                      className='drop-box-tab-text-icon'
-                    />
+                    {/*<AtIcon*/}
+                    {/*  value={item.isOpen ? "chevron-up" : 'chevron-down'}*/}
+                    {/*  size='7'*/}
+                    {/*  color={color}*/}
+                    {/*  prefixClass='icon'*/}
+                    {/*  className='drop-box-tab-text-icon'*/}
+                    {/*/>*/}
                   </View>
                   {
                     index < config.length - 1 && <View className='drop-box-tab-divider'/>
