@@ -47,16 +47,18 @@ export default class ImageCode extends Component<any,isState> {
   render() {
     const {isOpened} = this.state;
     return (
-      <AtModal isOpened={isOpened}>
-        <AtModalContent>
-          <View className='yc-login-accountInvalid-text'>
-            账号已过期，建议联系客服<br />客服电话：133-7256-7936
-          </View>
-        </AtModalContent>
-        <AtModalAction>
-          <Button onClick={this.onConfirm}>我知道了</Button>
-        </AtModalAction>
-      </AtModal>
+      <View className='yc-login-accountInvalid'>
+        <AtModal isOpened={isOpened}>
+          <AtModalContent>
+            <View className='yc-login-accountInvalid-text'>
+              账号已过期，建议联系客服<br />客服电话：133-7256-7936
+            </View>
+          </AtModalContent>
+          <AtModalAction>
+            <Button onClick={this.onConfirm}>我知道了</Button>
+          </AtModalAction>
+        </AtModal>
+      </View>
     )
   }
 }

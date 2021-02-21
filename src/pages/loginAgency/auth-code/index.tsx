@@ -37,7 +37,6 @@ export default class AuthCode extends Component<IProps,isState> {
 
 
   componentWillMount() {
-    console.log('getCurrentInstance()',getCurrentInstance())
     const { router:{params:{phone}}} = getCurrentInstance();
     this.setState({phone})
   }
@@ -79,7 +78,6 @@ export default class AuthCode extends Component<IProps,isState> {
       captcha: inputValue
     }, () => {
       if (inputValue.length === 4) {
-        console.log('触发登陆');
         const {captcha,phone} = this.state;
         const params = {
           mobile:phone,
@@ -90,11 +88,11 @@ export default class AuthCode extends Component<IProps,isState> {
           type:'login/getSmsLogin',
           payload:{...params}
         }).then(res=>{
-          console.log('res',res)
-          if(res.code === 200){
-            Taro.setStorageSync('token', res.data.token);
+          if(res.data.code === 200){
+            const {data:{token,rules}} = res.data;
+            Taro.setStorageSync('token', token);
             Taro.setStorageSync('loginNumber', phone);
-            let auth_Rule = res.data.rules;
+            let auth_Rule = rules;
             setGlobalData('systemAuthRule',auth_Rule)
             let searchUser = auth_Rule.filter(item => {
               return item.groupName === 'menu_sy';
@@ -103,7 +101,7 @@ export default class AuthCode extends Component<IProps,isState> {
             if (searchUser.length === 0) {
               Taro.reLaunch({ url : '/pages/search/index' });
             }else {
-              Taro.reLaunch({ url : '/pages/home/index' });
+              Taro.reLaunch({ url : '/pages/index/index' });
             }
           }else{
             this.setState({
@@ -116,12 +114,10 @@ export default class AuthCode extends Component<IProps,isState> {
   };
 
   onClick = () =>{
-    console.log("inputClick")
     this.setState({focus:true})
   }
 
   onAgainClick = () =>{
-    console.log("againClick")
     clearInterval(timer)
     this.setState({
       captcha:'',
@@ -148,7 +144,6 @@ export default class AuthCode extends Component<IProps,isState> {
 
   render() {
     const {captcha, focus, phone,second,againStatus } = this.state;
-    console.log('state',this.state)
     return (
       <View  className='yc-login'>
         <View className='yc-login-header'>

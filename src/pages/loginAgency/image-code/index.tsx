@@ -1,6 +1,6 @@
 import React,{Component} from 'react'
 import {Button,Input,Image,View,Text} from '@tarojs/components'
-import { AtModal, AtModalHeader, AtModalContent, AtModalAction, AtIcon } from "taro-ui"
+import { AtModal, AtModalContent, AtModalAction } from "taro-ui"
 import { connect } from 'react-redux';
 import {base} from '../../../utils/config';
 import {getGlobalData} from "../../../utils/const/global";
@@ -40,6 +40,9 @@ export default class ImageCode extends Component<any,isState> {
 
   handleCancel=() => {
     const { onCancel } = this.props;
+    this.setState({
+      isOpened:false
+    })
     if (onCancel)onCancel();
   };
 
@@ -61,22 +64,44 @@ export default class ImageCode extends Component<any,isState> {
     })
   }
 
+  handleRefresh = () => {
+    const { codeImg } = this.state;
+    this.setState({
+      codeImg : `${codeImg}&${Math.random()}`,
+      codeImgValue:''
+    });
+  };
+
 
   render() {
-    const {isOpened,codeImg} = this.state;
-    console.log('imageCodethis.state',this.state)
+    const {isOpened,codeImg,codeImgValue} = this.state;
+    console.log('codeImg',codeImg)
     return (
-      <AtModal isOpened={isOpened}>
-        <AtModalContent className="modal-content">
-          <View className='modal-content-text'>请输入验证码</View>
-          {/*<Image src={codeImg} />*/}
-          {/*<Input onInput={this.onInput}/>*/}
-        </AtModalContent>
-        <AtModalAction>
-          <Button onClick={this.handleCancel}>取消</Button>
-          <Button onClick={this.onConfirm}>确定</Button>
-        </AtModalAction>
-      </AtModal>
+      <View className='yc-login-imgCode modal-content'>
+        <AtModal isOpened={isOpened}>
+          <AtModalContent>
+            <View className='modal-content-text'>请输入验证码</View>
+            <View className='modal-content-code'>
+              <View className='modal-content-code-img'>
+                <Image src={codeImg} />
+              </View>
+              <View className='modal-content-code-text' onClick={this.handleRefresh}>换一张</View>
+            </View>
+            <View className='modal-content-wrapper'>
+              <View className='modal-content-wrapper-icon'>
+                <Text className="iconfont icon-yanzhengma" style={{fontSize:'40px'}} />
+              </View>
+              <View className='modal-content-wrapper-input'>
+                <Input onInput={this.onInput} placeholder='请输入验证码' value={codeImgValue}/>
+              </View>
+            </View>
+          </AtModalContent>
+          <AtModalAction>
+            <Button onClick={this.handleCancel}>取消</Button>
+            <Button onClick={this.onConfirm}>确定</Button>
+          </AtModalAction>
+        </AtModal>
+      </View>
     )
   }
 }

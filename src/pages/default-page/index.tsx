@@ -26,7 +26,6 @@ export default class DefaultPage extends Component<IProps,isState>{
         type:'login/getAuthRule',
         payload:{}
       }).then(res=>{
-        console.log('res',res)
         const {code,data} = res.data || {};
         if (code === 200){
           let searchUser = data.orgPageGroups.filter(item => item.groupName === 'menu_sy');
@@ -72,7 +71,6 @@ export default class DefaultPage extends Component<IProps,isState>{
           type:'login/getOpenId',
           payload:{jsCode},
         }).then(result=>{
-          console.log('result',result)
           Taro.hideLoading();
           const { code,data } = result.data || {};
           if(code === 200){

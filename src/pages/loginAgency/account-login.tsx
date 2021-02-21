@@ -69,7 +69,6 @@ export default class AccountLogin extends Component<IProps,isState> {
       type:'login/getLoginPreCheck',
       payload:{username:accountName},
     }).then(res=>{
-      console.log('res',res)
       if(res.statusCode === 200){
         // this.preInfo = res.data;
         const { data:{mustVerifyImageCode, blockLogin} } = res.data || {};
@@ -77,7 +76,7 @@ export default class AccountLogin extends Component<IProps,isState> {
         if (mustVerifyImageCode){
           this.setState({ imgCodeStatus : true });
         }else {
-          this.toPasswordLogin();
+          this.toPasswordLogin('');
         }
       }else{
         Message(res.message || '网络异常请稍后再试！');
@@ -95,12 +94,10 @@ export default class AccountLogin extends Component<IProps,isState> {
       jsCode:getGlobalData('openId'),
       imageVerifyCode
     }
-    console.log('params',params)
     this.props.dispatch({
       type:'login/getPasswordLogin',
       payload:{...params}
     }).then(res=>{
-      console.log('res',res)
       const { code, message } = res.data;
       const {data} = res.data || {};
       if (code === 200){
@@ -128,7 +125,6 @@ export default class AccountLogin extends Component<IProps,isState> {
   }
 
   onInput = (e,type) =>{
-    console.log('账号',e,type)
     const {detail:{value}} = e;
     this.setState({
       [type]:value
@@ -154,7 +150,6 @@ export default class AccountLogin extends Component<IProps,isState> {
   }
 
   render() {
-    console.log('this.state',this.state)
     const {imgCodeStatus,accountInvalidStatus,accountName,accountPassword,pswFocus,nameFocus} = this.state;
     return (
       <View className="yc-login-phoneContent">
@@ -210,7 +205,7 @@ export default class AccountLogin extends Component<IProps,isState> {
           </View>
         </View>
         {
-          imgCodeStatus && <ImageCode onConfirm={this.toPasswordLogin} onCancel={() => {
+          !imgCodeStatus && <ImageCode onConfirm={this.toPasswordLogin} onCancel={() => {
             this.setState({ imgCodeStatus : false });
           }}/>
         }
