@@ -6,6 +6,18 @@
 
 .drop{
   background-color: white;
+  position: relative;
+
+  &-query-mask{
+    position: absolute;
+    opacity: 0.5;
+    background: #000;
+    height: 100%;
+    width: 100%;
+    top: 28px;
+    z-index: 10;
+  }
+
   &-box{
     display: flex;
     justify-content: space-around;
@@ -21,10 +33,11 @@
       justify-content: center;
       &-text{
         height: 28px;
+        color: #333333;
         &-active{
+          @include item-text;
           color: $primary-color;
           font-weight: 500;
-          @include item-text
         }
         &-normal{
           @include item-text
@@ -33,6 +46,16 @@
           margin-left: 8px;
           color: $border-divider-color;
         }
+      }
+      &-icon-normal{
+        font-size: 16px;
+        margin-left: 8px;
+        color: #D9D9D9;
+      }
+      &-icon-active{
+        font-size: 16px;
+        margin-left: 8px;
+        color: $primary-color;
       }
       &-divider{
         position: absolute;
@@ -43,15 +66,16 @@
         top: 2px;
       }
     }
-  }
+}
 
   &-query{
-    &-mask{
-      opacity: .4;
-      background: #000;
-      height: 100%;
-      width: 100%;
-      position: absolute;
-    }
+    position: absolute;
+  }
+
+  &-content{
+    background-color: white;
+    z-index: 20; // mask的层级是10
+    position: absolute;
+    width: 100%;
   }
 }
