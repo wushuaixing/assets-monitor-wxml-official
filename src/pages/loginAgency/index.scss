@@ -90,6 +90,20 @@
       &-content{
         width:574px;
         display: inline-block;
+        &-iconPhone{
+          font-size:40px;
+          color:#fff;
+        }
+        &-iconRemove{
+          font-size:32px;
+          color:#fff;
+          float:right;
+          margin:3px 8px 0 0;
+        }
+        &-iconAccount{
+          font-size:40px;
+          color:#CCCCCC;
+        }
         &-input{
           display: inline-block;
           margin-left: 8px;

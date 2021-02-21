@@ -157,7 +157,7 @@ export default class AccountLogin extends Component<IProps,isState> {
           <View className="yc-login-phoneContent-title" style={{color:'#333333'}}>源诚资产监控平台</View>
           <View className="yc-login-phoneContent-phone">
             <View className="yc-login-phoneContent-phone-content">
-              <Text className="iconfont icon-account" style={{fontSize:'40px',color:'#CCCCCC'}} />
+              <Text className="iconfont icon-account yc-login-phoneContent-phone-content-iconAccount" />
               <View className="yc-login-accountContent">
                 <Input
                   name='accountName'
@@ -167,11 +167,11 @@ export default class AccountLogin extends Component<IProps,isState> {
                   value={accountName}
                 />
               </View>
-              <Text className="iconfont icon-remove"  style={{fontSize:'32px',color:'#CCCCCC',float:'right',margin:'3px 8px 0 0'}} onClick={()=>{this.onRemoveClick('accountName')}}/>
+              <Text className="iconfont icon-remove  yc-login-phoneContent-phone-content-iconRemove"  style={{color:'#CCCCCC'}} onClick={()=>{this.onRemoveClick('accountName')}}/>
             </View>
             <View className="yc-login-phoneContent-phone-content">
-              <View className="yc-login-phoneContent-line" style={{background:'#CCCCCC',marginBottom:'60px'}}/>
-              <Text className="iconfont icon-password" style={{fontSize:'40px',color:'#CCCCCC'}} />
+              <View className="yc-login-phoneContent-line" style={{background:'#CCCCCC',marginBottom:'60rpx'}}/>
+              <Text className="iconfont icon-password  yc-login-phoneContent-phone-content-iconAccount" />
               <View className="yc-login-accountContent">
                 <Input
                   name='accountPassWord'
@@ -182,7 +182,7 @@ export default class AccountLogin extends Component<IProps,isState> {
                   value={accountPassword}
                 />
               </View>
-              <Text className="iconfont icon-remove"  style={{fontSize:'32px',color:'#CCCCCC',float:'right',margin:'3px 8px 0 0'}} onClick={()=>{this.onRemoveClick('accountPassword')}}/>
+              <Text className="iconfont icon-remove  yc-login-phoneContent-phone-content-iconRemove"  style={{color:'#CCCCCC'}} onClick={()=>{this.onRemoveClick('accountPassword')}}/>
             </View>
             <View className="yc-login-phoneContent-line" style={{background:'#CCCCCC'}}/>
             <View className="yc-login-accountContent-accountBtn">
@@ -205,7 +205,7 @@ export default class AccountLogin extends Component<IProps,isState> {
           </View>
         </View>
         {
-          !imgCodeStatus && <ImageCode onConfirm={this.toPasswordLogin} onCancel={() => {
+          imgCodeStatus && <ImageCode onConfirm={this.toPasswordLogin} onCancel={() => {
             this.setState({ imgCodeStatus : false });
           }}/>
         }

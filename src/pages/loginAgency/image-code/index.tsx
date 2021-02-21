@@ -89,7 +89,7 @@ export default class ImageCode extends Component<any,isState> {
             </View>
             <View className='modal-content-wrapper'>
               <View className='modal-content-wrapper-icon'>
-                <Text className="iconfont icon-yanzhengma" style={{fontSize:'40px'}} />
+                <Text className="iconfont icon-yanzhengma" style={{fontSize:'40rpx'}} />
               </View>
               <View className='modal-content-wrapper-input'>
                 <Input onInput={this.onInput} placeholder='请输入验证码' value={codeImgValue}/>

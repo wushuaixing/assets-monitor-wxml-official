@@ -1,18 +1,18 @@
-import React,{Component} from 'react'
+import React, {Component} from 'react'
 import {View, Input, Text, Image} from '@tarojs/components'
-import Taro, {getCurrentInstance } from '@tarojs/taro';
+import Taro, {getCurrentInstance} from '@tarojs/taro';
 import '../index.scss'
 import loginTopImg from "../../../assets/img/login/logo_black.png";
 import loginFooterImg from "../../../assets/img/login/logo_bottom_black.png";
-import { connect } from 'react-redux';
-import { getGlobalData,setGlobalData } from '../../../utils/const/global';
+import {connect} from 'react-redux';
+import {getGlobalData, setGlobalData} from '../../../utils/const/global';
 
-type isState ={
+type isState = {
   captcha: string,
   focus: boolean,
   phone: string,
-  second:number,
-  againStatus:boolean
+  second: number,
+  againStatus: boolean
 }
 type IProps = {
   count: number,
@@ -20,10 +20,10 @@ type IProps = {
     then(param: (res) => void): any;
   },
 };
-const Message = title => Taro.showToast({ title, icon : 'none' });
+const Message = title => Taro.showToast({title, icon: 'none'});
 let timer;
-@connect(({ login }) => ({ login }))
-export default class AuthCode extends Component<IProps,isState> {
+@connect(({login}) => ({login}))
+export default class AuthCode extends Component<IProps, isState> {
   constructor(props: any) {
     super(props);
     this.state = {
@@ -31,13 +31,13 @@ export default class AuthCode extends Component<IProps,isState> {
       focus: true,
       phone: '',
       second: 59,
-      againStatus:false,
+      againStatus: false,
     }
   }
 
 
   componentWillMount() {
-    const { router:{params:{phone}}} = getCurrentInstance();
+    const {router: {params: {phone}}} = getCurrentInstance();
     this.setState({phone})
   }
 
@@ -54,17 +54,19 @@ export default class AuthCode extends Component<IProps,isState> {
   componentDidHide() {
   }
 
-  onTimer = () =>{
-    if(timer){clearInterval(timer)}
+  onTimer = () => {
+    if (timer) {
+      clearInterval(timer)
+    }
     timer = setInterval(() => {
       if (this.state.second > 0) {
-        this.setState({  second : this.state.second - 1 });
-      }else {
+        this.setState({second: this.state.second - 1});
+      } else {
         // const { phoneNum:_phoneNum } = this.state;
         this.setState({
-          second     : 59,
+          second: 59,
           // codeStatus : _phoneNum ? 'normal' : 'disable'
-          againStatus:true,
+          againStatus: true,
         });
         clearInterval(timer);
       }
@@ -72,83 +74,84 @@ export default class AuthCode extends Component<IProps,isState> {
   }
 
   onChangeCaptcha = (e) => {
-    const {detail:{value}} = e;
-    const inputValue = value.slice(0,4);
+    const {detail: {value}} = e;
+    const inputValue = value.slice(0, 4);
     this.setState({
       captcha: inputValue
     }, () => {
       if (inputValue.length === 4) {
-        const {captcha,phone} = this.state;
+        const {captcha, phone} = this.state;
         const params = {
-          mobile:phone,
-          code:captcha,
-          jsCode:getGlobalData('openId')
+          mobile: phone,
+          code: captcha,
+          jsCode: getGlobalData('openId')
         }
         this.props.dispatch({
-          type:'login/getSmsLogin',
-          payload:{...params}
-        }).then(res=>{
-          if(res.data.code === 200){
-            const {data:{token,rules}} = res.data;
+          type: 'login/getSmsLogin',
+          payload: {...params}
+        }).then(res => {
+          if (res.data.code === 200) {
+            const {data: {token, rules}} = res.data;
             Taro.setStorageSync('token', token);
             Taro.setStorageSync('loginNumber', phone);
             let auth_Rule = rules;
-            setGlobalData('systemAuthRule',auth_Rule)
+            setGlobalData('systemAuthRule', auth_Rule)
             let searchUser = auth_Rule.filter(item => {
               return item.groupName === 'menu_sy';
             });
-            setGlobalData('systemRoleType',searchUser.length === 0 ? 'search' : 'normal')
+            setGlobalData('systemRoleType', searchUser.length === 0 ? 'search' : 'normal')
             if (searchUser.length === 0) {
-              Taro.reLaunch({ url : '/pages/search/index' });
-            }else {
-              Taro.reLaunch({ url : '/pages/index/index' });
+              Taro.reLaunch({url: '/pages/search/index'});
+            } else {
+              Taro.reLaunch({url: '/pages/index/index'});
             }
-          }else{
+          } else {
             this.setState({
-              againStatus:true
+              againStatus: true
             })
           }
-        }).catch(()=>{})
+        }).catch(() => {
+        })
       }
     });
   };
 
-  onClick = () =>{
-    this.setState({focus:true})
+  onClick = () => {
+    this.setState({focus: true})
   }
 
-  onAgainClick = () =>{
+  onAgainClick = () => {
     clearInterval(timer)
     this.setState({
-      captcha:'',
-      againStatus:false,
-    },()=>{
-      const {phone} = this.state;
-      this.props.dispatch({
-        type:'login/getSms',
-        payload:{mobile:phone},
-      }).then(res=>{
-        this.onTimer();
-        const {code} = res.data || {}
-        if(code === 200){
-          this.setState({
-            second:59,
-          })
-        }else{
-          Message(res.message)
-        }
-      }).catch(()=>{})
+      captcha: '',
+      againStatus: false,
+    })
+    const {phone} = this.state;
+    this.props.dispatch({
+      type: 'login/getSms',
+      payload: {mobile: phone},
+    }).then(res => {
+      this.onTimer();
+      const {code} = res.data || {}
+      if (code === 200) {
+        this.setState({
+          second: 59,
+        })
+      } else {
+        Message(res.message)
+      }
+    }).catch(() => {
     })
   }
 
 
   render() {
-    const {captcha, focus, phone,second,againStatus } = this.state;
+    const {captcha, focus, phone, second, againStatus} = this.state;
     return (
-      <View  className='yc-login'>
+      <View className='yc-login'>
         <View className='yc-login-header'>
           <View className="yc-login-header-logoTopView">
-            <Image className='yc-login-header-logoTop' src={loginTopImg} />
+            <Image className='yc-login-header-logoTop' src={loginTopImg}/>
           </View>
           <View className='yc-login-header-text'>输入验证码</View>
         </View>
@@ -158,9 +161,10 @@ export default class AuthCode extends Component<IProps,isState> {
             <View className='yc-login-authCode-phoneText-phone'>{phone}</View>
           </View>
           <View className='yc-login-authCode-container' onClick={this.onClick}>
-            <Input className='yc-login-authCode-container-input' type='number' maxlength={4} focus={focus} onInput={this.onChangeCaptcha} />
+            <Input className='yc-login-authCode-container-input' type='number' maxlength={4} focus={focus}
+                   onInput={this.onChangeCaptcha}/>
             {
-              [0,1,2,3].map((_value, index) => {
+              [0, 1, 2, 3].map((_value, index) => {
                 return <View
                   className={index === captcha.length ? 'yc-login-authCode-container-input-box yc-login-authCode-container-input-box-at' : 'yc-login-authCode-container-input-box'}
                   key={index}>
@@ -179,7 +183,7 @@ export default class AuthCode extends Component<IProps,isState> {
                 <View className='yc-login-authCode-againContent-againText'>
                   点击重新获取验证码
                 </View>
-                <Text className="iconfont icon-refresh" style={{fontSize:'32px',color:'#0979E6'}}/>
+                <Text className="iconfont icon-refresh" style={{fontSize: '32rpx', color: '#0979E6'}}/>
               </View>
             </View>
           }
@@ -187,10 +191,10 @@ export default class AuthCode extends Component<IProps,isState> {
             !againStatus && <View className='yc-login-authCode-secondText'>{`${second}s后重新发送`}</View>
           }
 
-        <View className='yc-login-footer' style={{marginTop:'423px'}}>
-          <Image className='yc-login-footer-footerImg' src={loginFooterImg} style={{opacity:'0.15'}} />
+          <View className='yc-login-footer' style={{marginTop: '423rpx'}}>
+            <Image className='yc-login-footer-footerImg' src={loginFooterImg} style={{opacity: '0.15'}}/>
+          </View>
         </View>
-      </View>
       </View>
     )
   }
