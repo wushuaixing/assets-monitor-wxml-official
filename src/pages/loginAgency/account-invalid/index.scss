@@ -1,0 +1,32 @@
+.yc-login{
+  &-accountInvalid{
+    &-text{
+      margin:31px 0 31px 102px;
+      display: inline-block;
+      width: 401px;
+      height: 102px;
+      font-size: 32px;
+      font-family: PingFangSC-Regular, PingFang SC;
+      font-weight: 400;
+      color: #333333;
+      line-height: 51px;
+    }
+  }
+}
+.yc-login .yc-login-accountInvalid .at-modal__container{
+  width: 606px;
+  height: 264px;
+  background: #FFFFFF;
+  border-radius: 8px;
+}
+.yc-login .yc-login-accountInvalid .at-modal__content{
+  height:164px;
+  min-height: auto;
+  padding: 0;
+}
+.yc-login .yc-login-accountInvalid .at-modal__footer .at-modal__action > button{
+  height:100px;
+  line-height: 100px;
+  font-size:34px;
+  color:#0979E6;
+}

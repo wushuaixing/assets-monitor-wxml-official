@@ -1,8 +1,20 @@
 import React, { Component } from 'react'
-import { View, Text } from '@tarojs/components'
+import { View, Button,Input } from '@tarojs/components'
+import Taro from '@tarojs/taro';
 import './index.scss'
 
-export default class Search extends Component {
+
+interface isState {
+  code: string,
+}
+
+export default class Search extends Component<any,isState> {
+  constructor(props: any) {
+    super(props);
+    this.state = {
+      code: ''
+    }
+  }
 
   componentWillMount () { }
 
@@ -14,16 +26,19 @@ export default class Search extends Component {
 
   componentDidHide () { }
 
+  onBtnClick = () =>{
+    Taro.login().then(res=>{
+      const jsCode = res.code;
+      this.setState({code:jsCode})
+    })
+  }
+
   render () {
+    const {code} = this.state;
     return (
       <View >
-        <Text>Hello Search!</Text>
-        <Text>Hello Search!</Text>
-        <Text>Hello Search!</Text>
-        <Text>Hello Search!</Text>
-        <Text>Hello Search!</Text>
-        <Text>Hello Search!</Text>
-        <Text>Hello Search!</Text>
+       <Button onClick={this.onBtnClick}>获取jsCode</Button>
+        <Input value={code}/>
       </View>
     )
   }

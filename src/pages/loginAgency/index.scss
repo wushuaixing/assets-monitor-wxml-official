@@ -1,0 +1,275 @@
+.yc-login {
+  width:100%;
+  height:1624px;
+  position: relative;
+  //background: linear-gradient(180deg, #0979E6 0%, #1654FF 100%);
+  background: #fff;
+  overflow: auto;
+  font-family: PingFangSC-Regular, PingFang SC;
+  &-header {
+    &-logoTopView{
+      position: relative;
+      width: 510px;
+      height: 340px;
+    }
+    &-logoTop {
+      width: 100%;
+      height: 100%;
+    }
+    &-logo{
+      width:106px;
+      height:106px;
+      position: absolute;
+      top:268px;
+      left:88px;
+    }
+    &-text{
+      position: absolute;
+      top:318px;
+      left:88px;
+      display: inline-block;
+      width: 240px;
+      height: 48px;
+      font-size: 48px;
+      font-weight: 400;
+      color: #333333;
+      line-height: 48px;
+    }
+  }
+  &-content{
+    position: relative;
+    &-loginText{
+      display: inline-block;
+      margin:40px 0 0 88px;
+      width: 120px;
+      height: 30px;
+      font-size: 30px;
+      font-weight: 400;
+      color: #FFFFFF;
+      line-height: 30px;
+    }
+    &-accountText{
+      display: inline-block;
+      margin:40px 0 0 88px;
+      width: 150px;
+      height: 30px;
+      font-size: 30px;
+      font-weight: 400;
+      color: #0979E6;
+      line-height: 30px;
+    }
+  }
+  &-accountContent{
+    display: inline-block;
+    margin-left: 8px;
+    vertical-align: top;
+    margin-top:3px;
+    & input{
+      height: 34px;
+      font-size: 34px;
+      font-weight: 400;
+      color: #333333;
+      line-height: 34px;
+    }
+  }
+  &-phoneContent{
+    position: relative;
+    &-box {
+      margin: 74px 0 0 88px;
+    }
+    &-title{
+      width:288px;
+      height:36px;
+      font-size: 36px;
+      font-weight: 500;
+      color: #FFFFFF;
+      line-height: 36px;
+    }
+    &-phone{
+      margin-top:64px;
+      &-content{
+        width:574px;
+        display: inline-block;
+        &-input{
+          display: inline-block;
+          margin-left: 8px;
+          vertical-align: top;
+          margin-top:3px;
+        }
+        &-input input{
+          height: 34px;
+          font-size: 34px;
+          font-weight: 400;
+          color: #FFFFFF;
+          line-height: 34px;
+        }
+      }
+    }
+    &-line{
+      margin-top:20px;
+      width: 574px;
+      height: 2px;
+      background: #FFFFFF;
+    }
+    &-text{
+      display: inline-block;
+      margin-top:16px;
+      width: 288px;
+      height: 24px;
+      font-size: 24px;
+      font-weight: 400;
+      color: #FFFFFF;
+      line-height: 24px;
+      opacity: 0.85;
+    }
+    &-errorText{
+      display: inline-block;
+      margin-top:16px;
+      width: 338px;
+      height: 26px;
+      font-size: 26px;
+      font-weight: 400;
+      color: #FF8330;
+      line-height: 26px;
+    }
+    &-btn{
+      width: 574px;
+      height: 98px;
+      margin-top:64px;
+      .at-button__text{
+        display: inline-block;
+        width: 252px;
+        height: 36px;
+        font-size: 36px;
+        font-weight: 500;
+        color: #0979E6;
+      }
+    }
+  }
+  .yc-login-phoneContent-phone-input .input-placeholder{
+    color: #fff;
+    opacity: 0.45;
+  }
+  .yc-login-accountContent .input-placeholder{
+    color: #CCCCCC;
+    opacity: 1;
+  }
+  .yc-login-accountContent-accountBtn{
+    width: 574px;
+    height: 98px;
+    margin-top:88px;
+  }
+  .yc-login-accountContent-accountBtn .at-button__text{
+    display: inline-block;
+    width: 72px;
+    height: 36px;
+    font-size: 36px;
+    font-weight: 500;
+    color: #FFFFFF;
+  }
+  &-footer{
+    position: relative;
+    top:198px;
+    margin-top:198px;
+    height:578px;
+    &-footerImg{
+      width:100%;
+      height:100%;
+      display: block;
+    }
+  }
+  &-authCode{
+    position: relative;
+    &-phoneText{
+      margin:58px 0 0 88px;
+      &-text{
+        display: inline-block;
+        width: 256px;
+        height: 36px;
+        font-size: 32px;
+        font-weight: 400;
+        color: #666666;
+        line-height: 36px;
+      }
+      &-phone{
+        display: inline-block;
+        height: 36px;
+        font-size: 36px;
+        font-family: HelveticaNeue;
+        color: #333333;
+        line-height: 36px;
+      }
+    }
+    &-container{
+      margin: 80px 0 0 88px;
+      display: flex;
+      width: 574px;
+      justify-content: space-between;
+      box-sizing: border-box;
+      &-input{
+        opacity: 0;
+        position: absolute;
+        width: 200%;
+        height: 15%;
+        color: #fff0;
+        caret-color: #FFF;
+        left: -100%;
+        top: 0;
+        &-box{
+          width:98px;
+          height:60px;
+          border-bottom: solid 2px #333333;
+          box-sizing: border-box;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size:48px;
+          color: #333333;
+          &-at{
+            font-size: 24px;
+            &:after{
+              content:'|';
+              color:#000;
+              height:40px;
+            }
+          }
+        }
+      }
+    }
+    &-errorText{
+      margin:24px 0 0 88px;
+      display: inline-block;
+      width: 182px;
+      height: 26px;
+      font-size: 26px;
+      font-weight: 400;
+      color: #FF3B30;
+      line-height: 26px;
+    }
+    &-againContent{
+      margin:32px 0 0 88px;
+      &-againText{
+        display: inline-block;
+        width: 234px;
+        height: 26px;
+        font-size: 26px;
+        font-weight: 400;
+        color: #0979E6;
+        line-height: 26px;
+        margin-top: 3px;
+        vertical-align: top;
+      }
+    }
+
+    &-secondText{
+      margin:32px 0 0 88px;
+      display: inline-block;
+      width: 253px;
+      height: 26px;
+      font-size: 26px;
+      font-weight: 400;
+      color: #999999;
+      line-height: 26px;
+    }
+  }
+}

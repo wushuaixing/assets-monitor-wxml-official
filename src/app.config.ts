@@ -4,7 +4,11 @@ export default {
     "pages/monitor/index",
     "pages/search/index",
     "pages/user/index",
-    "pages/demo/index"
+    "pages/demo/index",
+    "pages/loginAgency/index",
+    "pages/default-page/index",
+    "pages/loginAgency/auth-code/index"
+
   ],
   window: {
     backgroundTextStyle: 'light',
@@ -45,4 +49,5 @@ export default {
     backgroundColor: "#FFFFFF",
   },
   "usingComponents": {},
+  entryPagePath:'pages/default-page/index', // 指定小程序的默认启动路径
 }
