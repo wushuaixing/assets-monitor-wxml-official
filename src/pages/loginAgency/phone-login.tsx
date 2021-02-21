@@ -102,7 +102,7 @@ export default class PhoneLogin extends Component<IProps,isState> {
         <View className="yc-login-phoneContent-title">源诚资产监控平台</View>
         <View className="yc-login-phoneContent-phone">
           <View className="yc-login-phoneContent-phone-content">
-          <Text className="iconfont icon-phone" style={{fontSize:'40px',color:'#fff'}} />
+          <Text className="iconfont icon-phone yc-login-phoneContent-phone-content-iconPhone" />
             <View className="yc-login-phoneContent-phone-content-input">
               <Input
                 name='phoneNum'
@@ -114,7 +114,7 @@ export default class PhoneLogin extends Component<IProps,isState> {
                 value={mobile}
               />
             </View>
-            <Text className="iconfont icon-remove"  style={{fontSize:'32px',color:'#fff',float:'right',margin:'3px 8px 0 0'}} onClick={this.onRemoveClick}/>
+            <Text className="iconfont icon-remove yc-login-phoneContent-phone-content-iconRemove" onClick={this.onRemoveClick}/>
           </View>
           <View className="yc-login-phoneContent-line" />
           {
