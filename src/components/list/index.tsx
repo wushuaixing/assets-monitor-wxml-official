@@ -6,7 +6,13 @@ import { connect } from 'react-redux';
 import ListItem from '../list-item/index';
 
 function buildData () {
-  return Array(10).fill(0).map((_, i) => { return {id: i, title: `这是第${i}个title`, time: '2021-11-11'}});
+  return Array(10).fill(0).map((_, i) => { return {
+    id: i,
+    title: `这是第${i}个title`,
+    time: '2021-11-11',
+    star: i % 3 + 1,
+    dataType: i,
+  }});
 }
 
 interface dataItem{
@@ -55,7 +61,7 @@ class List extends Component <IProps, IState>{
   componentDidHide () { }
 
   listReachBottom = () => {
-    Taro.showLoading()
+    Taro.showLoading();
     // 如果 loading 与视图相关，那它就应该放在 `this.state` 里
     // 我们这里使用的是一个同步的 API 调用 loading，所以不需要
     this.loading = true;
@@ -78,7 +84,6 @@ class List extends Component <IProps, IState>{
     const dataLen: number = data.length;
     const height: number = 1211;
     const itemSize: number = 30;
-    console.log('VirtualList props === ', this.props);
     return (
       <View>
         <VirtualList

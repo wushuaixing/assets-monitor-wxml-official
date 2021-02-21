@@ -1,8 +1,9 @@
 import React, { Component } from "react";
-import Taro from '@tarojs/taro';
+import Taro, { eventCenter, getCurrentInstance }from '@tarojs/taro';
 import { ScrollView, Text, View} from '@tarojs/components';
 import {AtButton, AtIcon} from "taro-ui";
 import FormItem from '../form-item/index';
+import Conditions from '../conditions/index';
 import './index.scss';
 
 interface configType{
@@ -13,7 +14,7 @@ interface configType{
   conditions: {
     label?: string,
     type?: string,
-    field?: Array<string> | string,
+    field?: any,
     requird?: boolean,
     placeholder?: string,
     value?: string
@@ -29,9 +30,12 @@ type IState = {
   animation: any
   activeId?: number
   searchConfig?: [[]]
+  isMask: boolean
+  maskHeight: number
 };
 
 class QueryDrop extends Component<IProps, IState>{
+  $instance = getCurrentInstance();
 
   constructor(props) {
     super(props);
@@ -44,33 +48,34 @@ class QueryDrop extends Component<IProps, IState>{
           isSelectd: false,
           conditions: [
             {
-              type: 'time',
-              field: ["startGmtRegister", "endGmtRegister"],
-              requird: true,
-              value: '',
-            },
-            {
-              label: '当事人',
-              placeholder: '请输入当事人名称',
-              requird: true,
-              type: 'input',
-              field: 'partiesName',
-              value: '',
-            },
-            {
-              label: '当事人',
-              placeholder: '请输入当事人名称',
-              requird: true,
-              type: 'choose',
-              field: 'partiesName',
-              value: '',
-              options: [
-                {id: 1, label: '不限', value: '1'},
-                {id: 2, label: '即将开始', value: '2'},
-                {id: 3, label: '正在进行', value: '3'},
-                {id: 4, label: '中止', value: '4'},
+              type: 'line-choose',
+              field: [
+                {
+                  id: 1,
+                  name: '全部',
+                  childrenName: [
+                    {name: '全部', value: '1'},
+                    {name: '司法拍卖', value: '2'},
+                    {name: '代位权-立案信息', value: '2'},
+                    {name: '代位权-开庭公告', value: '1'},
+                    {name: '代位权-开庭公告', value: '1'},
+                  ]
+                },
+                {
+                  id: 2,
+                  name: '全部',
+                  childrenName: [
+                    {name: '全部', value: '1'},
+                    {name: '司法拍卖', value: '2'},
+                    {name: '代位权-立案信息', value: '2'},
+                    {name: '代位权-开庭公告', value: '1'},
+                    {name: '代位权-开庭公告', value: '1'},
+                  ]
+                }
               ],
-            }
+              requird: true,
+              value: '',
+            },
           ]
         },
         {
@@ -79,7 +84,37 @@ class QueryDrop extends Component<IProps, IState>{
           isOpen: false,
           isSelectd: false,
           conditions: [
+            {
+              type: 'line-choose',
+              field: [
+                {
+                  id: 1,
+                  name: '全部',
+                  childrenName: [
+                    {name: '全部', value: '1'},
+                    {name: '司法拍卖', value: '2'},
+                    {name: '代位权-立案信息', value: '2'},
+                    {name: '代位权-开庭公告', value: '1'},
+                    {name: '代位权-开庭公告', value: '1'},
+                  ]
+                },
+                {
+                  id: 2,
+                  name: '全部',
+                  childrenName: [
+                    {name: '全部', value: '1'},
+                    {name: '司法拍卖', value: '2'},
+                    {name: '代位权-立案信息', value: '2'},
+                    {name: '代位权-开庭公告', value: '1'},
+                    {name: '代位权-开庭公告', value: '1'},
+                  ]
+                }
+              ],
+              requird: true,
+              value: '',
+            },
           ]
+
         },
         {
           id: 3,
@@ -87,26 +122,88 @@ class QueryDrop extends Component<IProps, IState>{
           isOpen: false,
           isSelectd: false,
           conditions: [
+            {
+              type: 'line-choose',
+              field: [
+                {
+                  id: 1,
+                  name: '全部',
+                  childrenName: [
+                    {name: '全部', value: '1'},
+                    {name: '司法拍卖', value: '2'},
+                    {name: '代位权-立案信息', value: '2'},
+                    {name: '代位权-开庭公告', value: '1'},
+                    {name: '代位权-开庭公告', value: '1'},
+                  ]
+                },
+                {
+                  id: 2,
+                  name: '全部',
+                  childrenName: [
+                    {name: '全部', value: '1'},
+                    {name: '司法拍卖', value: '2'},
+                    {name: '代位权-立案信息', value: '2'},
+                    {name: '代位权-开庭公告', value: '1'},
+                    {name: '代位权-开庭公告', value: '1'},
+                  ]
+                }
+              ],
+              requird: true,
+              value: '',
+            },
           ]
         },
       ],
       animation: '',
       activeId: -1,
+      isMask: false,
+      maskHeight: 0,
     };
   }
 
-  packUp = () => {
-    let animation = Taro.createAnimation({
-      transformOrigin: "50% 50%",
-      duration: 1000,
-      timingFunction: "ease",
-      delay: 0
+  componentWillMount(): void {
+    const onReadyEventId = this.$instance.router.onReady;
+    const onShowEventId = this.$instance.router.onShow;
+
+    eventCenter.once(onReadyEventId, () => {
+      let height = 0;
+      Taro.getSystemInfo({
+        success: (info) => {
+          // console.log('info === ', info);
+          height = info.windowHeight;
+          // onReady 触发后才能获取小程序渲染层的节点
+          Taro.createSelectorQuery().select('#drop-box')
+            .boundingClientRect()
+            .exec(res => {
+              // console.log('res === ', res, height);
+              this.setState({
+                maskHeight: height - res[0].top
+              })
+            } )
+        }
+      });
+
     });
-    animation.translateY(200).step();
-    this.setState({
-      animation: animation.export()
-    })
+    // 监听
+    eventCenter.on(onShowEventId, this.onShow)
+  }
+
+  onShow = () => {
+    // console.log('onShow')
   };
+
+  // packUp = () => {
+  //   let animation = Taro.createAnimation({
+  //     transformOrigin: "50% 50%",
+  //     duration: 1000,
+  //     timingFunction: "ease",
+  //     delay: 0
+  //   });
+  //   animation.translateY(200).step();
+  //   this.setState({
+  //     animation: animation.export()
+  //   })
+  // };
 
   // 点击切换筛选条件
   handleClick = (info) => {
@@ -118,28 +215,46 @@ class QueryDrop extends Component<IProps, IState>{
           newConfig.push({
             ...info,
             isOpen: !info.isOpen,
+            isSelectd: !info.isSelectd
           });
         }
         else {
-          newConfig.push({...item, isOpen: false});
+          newConfig.push({...item, isOpen: false, isSelectd: false });
         }
       });
     }
     this.setState({
       activeId: info.id,
       config: newConfig,
+      isMask: true
+    })
+  };
+
+  handleClosePanel = () => {
+    const { config } = this.state;
+    let newConfig: configType[] = [];
+    if(config.length > 0){
+      config.forEach((item) => {
+        newConfig.push({...item, isOpen: false, isSelectd: false });
+      });
+    }
+    this.setState({
+      activeId: -1,
+      config: newConfig,
+      isMask: false
     })
   };
 
 
   render(){
-    const { config, activeId, animation } = this.state;
+    const { config, activeId, animation, isMask, maskHeight } = this.state;
+    // console.log('maskHeight === ', maskHeight);
+    // const conditions = activeId >= 0 && config.filter(i => i.isSelectd)[0].conditions;
     return (
       <View className='drop'>
-        <View className='drop-box'>
+        <View className='drop-box' id='drop-box'>
           {
             config.map((item, index) => {
-              const color = item.isOpen ? "#1C80E1" : "#7D8699";
               const selected = item.isSelectd;
               return (
                 <View onClick={() => this.handleClick(item)} className='drop-box-tab'>
@@ -149,13 +264,9 @@ class QueryDrop extends Component<IProps, IState>{
                     >
                       {item.title}
                     </Text>
-                    {/*<AtIcon*/}
-                    {/*  value={item.isOpen ? "chevron-up" : 'chevron-down'}*/}
-                    {/*  size='7'*/}
-                    {/*  color={color}*/}
-                    {/*  prefixClass='icon'*/}
-                    {/*  className='drop-box-tab-text-icon'*/}
-                    {/*/>*/}
+                    {
+                      index === 0 || index === 1 ? <Text className={`iconfont icon-${selected ? `up` : `down`}-arrow drop-box-tab-icon-${selected ? `active` : `normal`}`} /> : <Text className={`iconfont icon-more drop-box-tab-icon-${selected ? `active` : `normal`}`} />
+                    }
                   </View>
                   {
                     index < config.length - 1 && <View className='drop-box-tab-divider'/>
@@ -165,24 +276,16 @@ class QueryDrop extends Component<IProps, IState>{
             })
           }
         </View>
-        {/*{*/}
-        {/*  activeId >= 0 && <View className='drop-query' animation={animation}>*/}
-				{/*		<View className='drop-query-modal'>*/}
-        {/*      {*/}
-        {/*        conditions.length > 0 && conditions.map(it => {*/}
-        {/*          return (*/}
-        {/*            <FormItem {...it} requird={it.requird} onChange={handleChangeValue}>{it.type}</FormItem>*/}
-        {/*          )*/}
-        {/*        })*/}
-        {/*      }*/}
-				{/*		</View>*/}
-				{/*		<View>*/}
-				{/*			<AtButton type='primary' size='normal' onClick={confirm}>确认</AtButton>*/}
-				{/*			<AtButton type='primary' size='normal' onClick={handleCancel}>取消</AtButton>*/}
-				{/*		</View>*/}
-				{/*		<View className='drop-query-mask' onClick={handleClosePanel}/>*/}
-				{/*	</View>*/}
-        {/*}*/}
+        {
+          isMask && activeId >= 0 && <View className='drop-content'>
+            {
+              <Conditions />
+            }
+					</View>
+        }
+        {
+          isMask && <View className='drop-query-mask' style={{ height: maskHeight }} onClick={this.handleClosePanel} />
+        }
       </View>
     );
   }

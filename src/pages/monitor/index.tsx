@@ -1,23 +1,22 @@
 import React, { Component } from 'react'
 import Taro, { getCurrentInstance } from '@tarojs/taro';
 import { View, Text } from '@tarojs/components'
+import { connect } from 'react-redux';
 import NavigationBar from '../../components/navigation-bar';
 import TagSelected from '../../components/tag-selected';
 import QueryDrop from '../../components/query-drop';
 import Tab from '../../components/tab';
 import List from '../../components/list';
 import './index.scss'
-import { AtTabs, AtIcon } from "taro-ui";
 
-
-type IProps = {
-
-};
 
 
 interface configType{
   id: number,
   title: string,
+}
+
+type IProps = {
 }
 
 type IState = {
@@ -27,6 +26,7 @@ type IState = {
   isScroll?: boolean
 };
 
+@connect(({ monitor }) => ({ ...monitor }))
 export default class Monitor extends Component <IProps, IState>{
   constructor(props) {
     super(props);
@@ -49,7 +49,8 @@ export default class Monitor extends Component <IProps, IState>{
     };
   }
 
-  componentWillMount () { }
+  componentWillMount () {
+  }
 
   componentDidMount () {
   }
@@ -62,7 +63,6 @@ export default class Monitor extends Component <IProps, IState>{
   componentDidHide () { }
 
   handleClick = (value) => {
-    console.log('value === ', value);
     this.setState({
       current: value.id
     })
@@ -98,9 +98,7 @@ export default class Monitor extends Component <IProps, IState>{
 						</View>
 					</View>
         }
-        <List>
-          <View>4556</View>
-        </List>
+        <List />
       </View>
     )
   }
