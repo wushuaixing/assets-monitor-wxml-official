@@ -34,6 +34,8 @@
       &-text{
         height: 28px;
         color: #333333;
+        display: flex;
+        align-content: center;
         &-active{
           @include item-text;
           color: $primary-color;
