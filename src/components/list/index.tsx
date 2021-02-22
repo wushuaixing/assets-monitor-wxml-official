@@ -4,9 +4,10 @@ import {Text, View} from '@tarojs/components'
 import VirtualList from '@tarojs/components/virtual-list'
 import { connect } from 'react-redux';
 import ListItem from '../list-item/index';
+import './index.scss';
 
 function buildData () {
-  return Array(10).fill(0).map((_, i) => { return {
+  return Array(1140).fill(0).map((_, i) => { return {
     id: i,
     title: `这是第${i}个title`,
     time: '2021-11-11',
@@ -25,6 +26,8 @@ interface IProps{
   count?: number,
   dispatch?: ({type: string, payload: object}) => {}
   children?: React.ElementType
+  params?: any
+  onChangeScroll?: () => void
 }
 
 interface IState{
@@ -78,14 +81,18 @@ class List extends Component <IProps, IState>{
     }, 1000)
   };
 
+  backToTop = () => {
+
+  };
+
 
   render () {
     const { data } = this.state;
-    const dataLen: number = data.length;
+    const dataLen: number = 1400;
     const height: number = 1211;
-    const itemSize: number = 30;
+    const itemSize: number = 285;
     return (
-      <View>
+      <View className='list'>
         <VirtualList
           useIsScrolling={true}
           className='List'
@@ -96,11 +103,22 @@ class List extends Component <IProps, IState>{
           itemData={data}
           itemCount={dataLen}
           itemSize={itemSize}
+          onScroll={({scrollDirection, scrollOffset }) => {
+            console.log('scrollDirection === ', scrollDirection);
+            console.log('scrollOffset === ', scrollOffset);
+            if(!this.loading && scrollDirection === 'forward' && scrollOffset > ((dataLen - 9) * itemSize + 100)){
+              this.listReachBottom()
+            }
+          }}
         >
           {
             ListItem
           }
         </VirtualList>
+        <View className='list-top' onClick={this.backToTop}>
+          up
+          {/*<Image className='monitor-top-arrow' />*/}
+        </View>
       </View>
     )
   }

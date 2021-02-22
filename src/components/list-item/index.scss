@@ -22,17 +22,6 @@
       height: 80px;
     }
     &-box{
-      position: relative;
-      &:after{
-        position: absolute;
-        content: ' ';
-        top: -8px;
-        right: -8px;
-        width: 16px;
-        height: 16px;
-        background-color: $error-color;
-        border-radius: 50%;
-      }
     }
     &-title{
       &-tag{

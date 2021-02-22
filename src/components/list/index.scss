@@ -1,0 +1,11 @@
+.list{
+  position: relative;
+  &-top{
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    right: 50px;
+    bottom: 50px;
+    z-index: 5;
+  }
+}

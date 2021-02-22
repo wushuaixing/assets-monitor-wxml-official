@@ -6,158 +6,52 @@ import FormItem from '../form-item/index';
 import Conditions from '../conditions/index';
 import './index.scss';
 
+interface conditionsType{
+  label?: string,
+  type: string,
+  field?: any,
+  requird?: boolean,
+  placeholder?: string,
+  value?: string
+  options?: any
+}
+
 interface configType{
   id: number,
   title: string,
   isOpen?: boolean,
   isSelectd?: boolean,
-  conditions: {
-    label?: string,
-    type?: string,
-    field?: any,
-    requird?: boolean,
-    placeholder?: string,
-    value?: string
-    options?: any
-  }[]
+  conditions: conditionsType
 }
 
 type IProps = {
+  type: string
+  config: configType[]
+  onsetParams: (params?: any) => void
 }
 
 type IState = {
   config: configType[]
   animation: any
-  activeId?: number
+  activeId: number
   searchConfig?: [[]]
   isMask: boolean
   maskHeight: number
+  conditions: conditionsType
 };
+
 
 class QueryDrop extends Component<IProps, IState>{
   $instance = getCurrentInstance();
-
   constructor(props) {
     super(props);
     this.state = {
-      config: [
-        {
-          id: 1,
-          title: '立案日期',
-          isOpen: false,
-          isSelectd: false,
-          conditions: [
-            {
-              type: 'line-choose',
-              field: [
-                {
-                  id: 1,
-                  name: '全部',
-                  childrenName: [
-                    {name: '全部', value: '1'},
-                    {name: '司法拍卖', value: '2'},
-                    {name: '代位权-立案信息', value: '2'},
-                    {name: '代位权-开庭公告', value: '1'},
-                    {name: '代位权-开庭公告', value: '1'},
-                  ]
-                },
-                {
-                  id: 2,
-                  name: '全部',
-                  childrenName: [
-                    {name: '全部', value: '1'},
-                    {name: '司法拍卖', value: '2'},
-                    {name: '代位权-立案信息', value: '2'},
-                    {name: '代位权-开庭公告', value: '1'},
-                    {name: '代位权-开庭公告', value: '1'},
-                  ]
-                }
-              ],
-              requird: true,
-              value: '',
-            },
-          ]
-        },
-        {
-          id: 2,
-          title: '更新日期',
-          isOpen: false,
-          isSelectd: false,
-          conditions: [
-            {
-              type: 'line-choose',
-              field: [
-                {
-                  id: 1,
-                  name: '全部',
-                  childrenName: [
-                    {name: '全部', value: '1'},
-                    {name: '司法拍卖', value: '2'},
-                    {name: '代位权-立案信息', value: '2'},
-                    {name: '代位权-开庭公告', value: '1'},
-                    {name: '代位权-开庭公告', value: '1'},
-                  ]
-                },
-                {
-                  id: 2,
-                  name: '全部',
-                  childrenName: [
-                    {name: '全部', value: '1'},
-                    {name: '司法拍卖', value: '2'},
-                    {name: '代位权-立案信息', value: '2'},
-                    {name: '代位权-开庭公告', value: '1'},
-                    {name: '代位权-开庭公告', value: '1'},
-                  ]
-                }
-              ],
-              requird: true,
-              value: '',
-            },
-          ]
-
-        },
-        {
-          id: 3,
-          title: '更多筛选',
-          isOpen: false,
-          isSelectd: false,
-          conditions: [
-            {
-              type: 'line-choose',
-              field: [
-                {
-                  id: 1,
-                  name: '全部',
-                  childrenName: [
-                    {name: '全部', value: '1'},
-                    {name: '司法拍卖', value: '2'},
-                    {name: '代位权-立案信息', value: '2'},
-                    {name: '代位权-开庭公告', value: '1'},
-                    {name: '代位权-开庭公告', value: '1'},
-                  ]
-                },
-                {
-                  id: 2,
-                  name: '全部',
-                  childrenName: [
-                    {name: '全部', value: '1'},
-                    {name: '司法拍卖', value: '2'},
-                    {name: '代位权-立案信息', value: '2'},
-                    {name: '代位权-开庭公告', value: '1'},
-                    {name: '代位权-开庭公告', value: '1'},
-                  ]
-                }
-              ],
-              requird: true,
-              value: '',
-            },
-          ]
-        },
-      ],
+      config: props.config,
       animation: '',
       activeId: -1,
       isMask: false,
       maskHeight: 0,
+      conditions: props.config[0].conditions,
     };
   }
 
@@ -188,6 +82,22 @@ class QueryDrop extends Component<IProps, IState>{
     eventCenter.on(onShowEventId, this.onShow)
   }
 
+  componentWillUpdate(nextProps: Readonly<IProps>): void {
+    const { config, type} = this.props;
+    if(JSON.stringify(config) !== JSON.stringify(nextProps.config)){
+      this.setState({
+        config: nextProps.config
+      })
+    }
+    // 每次资产/风险切换的时候，会重新选择条件
+    if(type !== nextProps.type){
+      this.setState({
+        isMask: false,
+        activeId: -1
+      })
+    }
+  }
+
   onShow = () => {
     // console.log('onShow')
   };
@@ -207,6 +117,7 @@ class QueryDrop extends Component<IProps, IState>{
 
   // 点击切换筛选条件
   handleClick = (info) => {
+    // console.log('info === ', info);
     const { config } = this.state;
     let newConfig: configType[] = [];
     if(config.length > 0){
@@ -226,10 +137,12 @@ class QueryDrop extends Component<IProps, IState>{
     this.setState({
       activeId: info.id,
       config: newConfig,
-      isMask: true
+      isMask: true,
+      conditions: info.conditions
     })
   };
 
+  // 点击关闭筛选条件
   handleClosePanel = () => {
     const { config } = this.state;
     let newConfig: configType[] = [];
@@ -245,10 +158,16 @@ class QueryDrop extends Component<IProps, IState>{
     })
   };
 
+  // 收集子组件传来的参数
+  handleParmas = (params) => {
+    console.log('handleParmas params 111111=== ', params);
+    const { onsetParams } = this.props;
+    onsetParams(params);
+  };
+
 
   render(){
-    const { config, activeId, animation, isMask, maskHeight } = this.state;
-    // console.log('maskHeight === ', maskHeight);
+    const { config, activeId, animation, isMask, maskHeight, conditions} = this.state;
     // const conditions = activeId >= 0 && config.filter(i => i.isSelectd)[0].conditions;
     return (
       <View className='drop'>
@@ -279,7 +198,11 @@ class QueryDrop extends Component<IProps, IState>{
         {
           isMask && activeId >= 0 && <View className='drop-content'>
             {
-              <Conditions />
+              <Conditions
+                conditions={conditions}
+                onCancel={this.handleClosePanel}
+                onsetParams={this.handleParmas}
+              />
             }
 					</View>
         }
