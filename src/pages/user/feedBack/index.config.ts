@@ -1,4 +1,4 @@
 export default {
-  navigationBarTitleText: '查询',
+  navigationBarTitleText: '意见反馈',
   disableScroll: true,
 }

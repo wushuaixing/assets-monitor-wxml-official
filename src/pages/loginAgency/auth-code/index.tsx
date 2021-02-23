@@ -107,7 +107,8 @@ export default class AuthCode extends Component<IProps, isState> {
             }
           } else {
             this.setState({
-              againStatus: true
+              againStatus: true,
+              captcha: ''
             })
           }
         }).catch(() => {
@@ -132,13 +133,13 @@ export default class AuthCode extends Component<IProps, isState> {
       payload: {mobile: phone},
     }).then(res => {
       this.onTimer();
-      const {code} = res.data || {}
+      const {message, code} = res.data || {}
       if (code === 200) {
         this.setState({
           second: 59,
         })
       } else {
-        Message(res.message)
+        Message(message)
       }
     }).catch(() => {
     })
@@ -176,22 +177,25 @@ export default class AuthCode extends Component<IProps, isState> {
             }
           </View>
           {
-            againStatus &&
+            againStatus && second !== 59 ?
             <View>
               <View className='yc-login-authCode-errorText'>验证码输入错误</View>
+            </View> : null
+          }
+          {/*{*/}
+          {/*  !againStatus && <View className='yc-login-authCode-secondText'>{`${second}s后重新发送`}</View>*/}
+          {/*}*/}
+          {
+            againStatus && second === 59 ?
               <View className='yc-login-authCode-againContent' onClick={this.onAgainClick}>
                 <View className='yc-login-authCode-againContent-againText'>
                   点击重新获取验证码
                 </View>
                 <Text className="iconfont icon-refresh" style={{fontSize: '32rpx', color: '#0979E6'}}/>
-              </View>
-            </View>
+              </View> :
+              <View className='yc-login-authCode-secondText'>{`${second}s后重新发送`}</View>
           }
-          {
-            !againStatus && <View className='yc-login-authCode-secondText'>{`${second}s后重新发送`}</View>
-          }
-
-          <View className='yc-login-footer' style={{marginTop: '423rpx'}}>
+          <View className='yc-login-footer' style={{height:'59vh'}}>
             <Image className='yc-login-footer-footerImg' src={loginFooterImg} style={{opacity: '0.15'}}/>
           </View>
         </View>

@@ -108,7 +108,7 @@ export default class AccountLogin extends Component<IProps,isState> {
         setGlobalData('systemRoleType',userStatus ? 'normal' : 'search' )
         if (!userStatus) Taro.reLaunch({ url : '/pages/search/index' });
         else Taro.reLaunch({ url : '/pages/index/index' });
-      }else if (res.code === 15002){
+      }else if (code === 15002){
         this.setState({
           accountInvalidStatus : true,
         });

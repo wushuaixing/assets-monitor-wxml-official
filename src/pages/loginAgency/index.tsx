@@ -6,7 +6,6 @@ import loginFooterImg from '../../assets/img/login/logo_bottom_black.png';
 import loginAccountImg from '../../assets/img/login/logo_account.png';
 import AccountLogin from './account-login';
 import PhoneLogin from './phone-login';
-
 import './index.scss';
 
 
@@ -33,7 +32,6 @@ export default class Index extends Component<any,isState> {
 
   render () {
     const { loginType } = this.state;
-    console.log('loginType',loginType,loginType === 1)
     return (
       <View className='yc-login' style={{background:loginType=== 1 ? 'linear-gradient(180deg, #0979E6 0%, #1654FF 100%)' : '#fff'}}>
         <View className='yc-login-header'>
