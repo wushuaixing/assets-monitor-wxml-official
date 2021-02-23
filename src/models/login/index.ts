@@ -3,7 +3,7 @@ import { getOpenIdUrl, getSmsUrl,getLoginPreCheckUrl,getPasswordLoginUrl,getSmsL
 export default {
   namespace: 'login',
   state: {
-    count:12
+    accountNumber:''
   },
   effects: {
     *getOpenId({ payload }, { call, put }) {
@@ -31,15 +31,18 @@ export default {
       const res = yield call(getAuthRuleUrl);
       return res;
     },
+    *getAccountNumber({ payload },{put}) {
+      yield put({type: 'getAccountNumberSuccess', payload: payload.accountNumber});
+    },
   },
   reducers: {
 
-    // getOpenIdSuccess: (state,{ payload }) =>{
-    //   console.log('getOpenIdSuccess',state,payload)
-    //   return{
-    //     ...state,
-    //     ...payload
-    //   }
-    // }
+    getAccountNumberSuccess: (state,{ payload }) =>{
+      return{
+        ...payload,
+        ...state,
+        accountNumber:payload
+      }
+    }
   }
 };
