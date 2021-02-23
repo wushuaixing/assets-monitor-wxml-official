@@ -6,24 +6,13 @@ import { connect } from 'react-redux';
 import ListItem from '../list-item/index';
 import './index.scss';
 
-function buildData () {
-  return Array(1140).fill(0).map((_, i) => { return {
-    id: i,
-    title: `这是第${i}个title`,
-    time: '2021-11-11',
-    star: i % 3 + 1,
-    dataType: i,
-  }});
-}
 
-interface dataItem{
-  id: number,
-  title: string
-  time: string
-}
+
+
 
 interface IProps{
-  count?: number,
+  count?: number
+  listLength?: number
   dispatch?: ({type: string, payload: object}) => {}
   children?: React.ElementType
   params?: any
@@ -31,7 +20,6 @@ interface IProps{
 }
 
 interface IState{
-  data: dataItem[],
   readState: number
 }
 
@@ -40,7 +28,6 @@ class List extends Component <IProps, IState>{
   constructor(props: IProps) {
     super(props);
     this.state = {
-      data: buildData(),
       readState: 0,
     };
     this.loading = false;
@@ -87,8 +74,8 @@ class List extends Component <IProps, IState>{
 
 
   render () {
-    const { data } = this.state;
-    const dataLen: number = 1400;
+    const { data, listLength } = this.props;
+    const dataLen: number = listLength || 1400;
     const height: number = 1211;
     const itemSize: number = 285;
     return (

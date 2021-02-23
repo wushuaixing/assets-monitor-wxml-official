@@ -1,9 +1,8 @@
 import React, { Component } from "react";
 import Taro, { eventCenter, getCurrentInstance }from '@tarojs/taro';
 import { ScrollView, Text, View} from '@tarojs/components';
-import {AtButton, AtIcon} from "taro-ui";
-import FormItem from '../form-item/index';
 import Conditions from '../conditions/index';
+import { connect } from 'react-redux';
 import './index.scss';
 
 interface conditionsType{
@@ -19,8 +18,7 @@ interface conditionsType{
 interface configType{
   id: number,
   title: string,
-  isOpen?: boolean,
-  isSelectd?: boolean,
+  isSelected?: boolean,
   conditions: conditionsType
 }
 
@@ -40,7 +38,7 @@ type IState = {
   conditions: conditionsType
 };
 
-
+@connect(({ common }) => ({ ...common }))
 class QueryDrop extends Component<IProps, IState>{
   $instance = getCurrentInstance();
   constructor(props) {
@@ -83,10 +81,17 @@ class QueryDrop extends Component<IProps, IState>{
   }
 
   componentWillUpdate(nextProps: Readonly<IProps>): void {
-    const { config, type} = this.props;
+    const { config, type, queryAssetsConfig} = this.props;
+    console.log('props queryAssetsConfig === ', queryAssetsConfig);
+    console.log('nextProps queryAssetsConfig === ', nextProps.queryAssetsConfig);
     if(JSON.stringify(config) !== JSON.stringify(nextProps.config)){
       this.setState({
         config: nextProps.config
+      })
+    }
+    if(JSON.stringify(queryAssetsConfig) !== JSON.stringify(nextProps.queryAssetsConfig)){
+      this.setState({
+        queryAssetsConfig: nextProps.queryAssetsConfig
       })
     }
     // 每次资产/风险切换的时候，会重新选择条件
@@ -118,63 +123,84 @@ class QueryDrop extends Component<IProps, IState>{
   // 点击切换筛选条件
   handleClick = (info) => {
     // console.log('info === ', info);
+    let newInfo = {...info};
+    newInfo.title = '新的';
     const { config } = this.state;
-    let newConfig: configType[] = [];
-    if(config.length > 0){
-      config.forEach((item) => {
-        if(info.id === item.id){
-          newConfig.push({
-            ...info,
-            isOpen: !info.isOpen,
-            isSelectd: !info.isSelectd
-          });
-        }
-        else {
-          newConfig.push({...item, isOpen: false, isSelectd: false });
-        }
-      });
-    }
-    this.setState({
-      activeId: info.id,
-      config: newConfig,
-      isMask: true,
-      conditions: info.conditions
-    })
+    const { dispatch } = this.props;
+    dispatch({
+      type:'common/updateassetsConfig',
+      payload: {
+        item: newInfo
+      }
+    }).then((res) => {
+      console.log('queryAssetsConfig res === ', res);
+      console.log('queryAssetsConfig this.props === ', this.props);
+    });
+    console.log('props 111=== ', this.props);
+    // let newConfig: configType[] = [];
+    // if(config.length > 0){
+    //   config.forEach((item) => {
+    //     if(info.id === item.id){
+    //       newConfig.push({
+    //         ...info,
+    //         isSelected: !info.isSelected
+    //       });
+    //     }
+    //     else {
+    //       newConfig.push({...item, });
+    //     }
+    //   });
+    // }
+    // this.setState({
+    //   activeId: info.id,
+    //   config: newConfig,
+    //   isMask: true,
+    //   conditions: info.conditions
+    // })
   };
 
   // 点击关闭筛选条件
   handleClosePanel = () => {
-    const { config } = this.state;
-    let newConfig: configType[] = [];
-    if(config.length > 0){
-      config.forEach((item) => {
-        newConfig.push({...item, isOpen: false, isSelectd: false });
-      });
-    }
     this.setState({
       activeId: -1,
-      config: newConfig,
       isMask: false
     })
   };
 
   // 收集子组件传来的参数
   handleParmas = (params) => {
-    console.log('handleParmas params 111111=== ', params);
     const { onsetParams } = this.props;
     onsetParams(params);
+  };
+
+  // 控制父组件的title展示
+  handleEditConfig = (id, title, conditions) => {
+    let newConfig: configType[] = [];
+    const { config } = this.state;
+    config.forEach((item) => {
+      if(item.id === id){
+        newConfig.push({...item, title: title || item.title, isSelected: true, conditions: conditions})
+      }
+      else {
+        newConfig.push({...item })
+      }
+    });
+    this.setState({
+      config: [...newConfig]
+    });
   };
 
 
   render(){
     const { config, activeId, animation, isMask, maskHeight, conditions} = this.state;
+    console.log('props render=== ', this.props);
     // const conditions = activeId >= 0 && config.filter(i => i.isSelectd)[0].conditions;
     return (
       <View className='drop'>
         <View className='drop-box' id='drop-box'>
           {
             config.map((item, index) => {
-              const selected = item.isSelectd;
+              const selected = item.isSelected;
               return (
                 <View onClick={() => this.handleClick(item)} className='drop-box-tab'>
                   <View className='drop-box-tab-text'>
@@ -199,9 +225,11 @@ class QueryDrop extends Component<IProps, IState>{
           isMask && activeId >= 0 && <View className='drop-content'>
             {
               <Conditions
+                currentId={activeId}
                 conditions={conditions}
                 onCancel={this.handleClosePanel}
                 onsetParams={this.handleParmas}
+                onEditConfig={this.handleEditConfig}
               />
             }
 					</View>

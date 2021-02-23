@@ -8,7 +8,14 @@ export default {
     "pages/loginAgency/index",
     "pages/default-page/index",
     "pages/loginAgency/auth-code/index"
-
+  ],
+  subpackages: [
+    {
+      root  : "subpackage/",
+      pages : [
+        'pages/monitor/asset-auction/index',
+      ]
+    },
   ],
   window: {
     backgroundTextStyle: 'light',

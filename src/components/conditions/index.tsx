@@ -25,21 +25,24 @@ interface rightArrayType{
 }
 
 type IProps = {
+  currentId: number
   conditions: conditionType
   onCancel: () => void
   onsetParams: ({}) => void
+  onEditConfig: (id: number, title: string, conditions: conditionType) => void
 }
 
 type IState = {
-  conditions: conditionType
-  leftArray: leftArrayType[]
-  rightArray: rightArrayType[]
-  chooseArray: rightArrayType[]
-  lineChooseValue: string[]
   isStartTime: boolean
   isEndTime: boolean
   startTime: string
   endTime: string
+  titleName: string
+  lineChooseValue: string[]
+  conditions: conditionType
+  leftArray: leftArrayType[]
+  rightArray: rightArrayType[]
+  chooseArray: rightArrayType[]
 };
 
 // 聚合获取线性选择的左边框
@@ -82,21 +85,20 @@ class Conditions extends Component<IProps, IState>{
       isStartTime: false,
       isEndTime: false,
       startTime: '',
-      endTime: ''
+      endTime: '',
+      titleName: '',
     };
     this.params = {};
   }
 
   componentDidMount (){
     const { conditions } = this.props;
-    // console.log('conditions === ', conditions);
     if(conditions.type === 'line-choose'){
+      let activeId = getLeftArray(conditions).filter(it => it.isSelected)[0].id;
       this.setState({
         leftArray: getLeftArray(conditions),
+        rightArray: getRightArray(conditions, activeId),
       });
-      this.setState({
-        rightArray: getRightArray(conditions, 1),
-      })
     } else if(conditions.type === 'selected'){
       this.setState({
         chooseArray: getChooseArray(conditions),
@@ -106,17 +108,22 @@ class Conditions extends Component<IProps, IState>{
 
   componentWillUpdate(nextProps: Readonly<IProps>): void {
     const { conditions } = this.props;
-    // console.log('nextProps conditions === ', nextProps.conditions, JSON.stringify(nextProps.conditions));
     if(JSON.stringify(conditions) !== JSON.stringify(nextProps.conditions)){
       if(nextProps.conditions.type === 'line-choose'){
+        let activeId = getLeftArray(nextProps.conditions).filter(it => it.isSelected)[0].id;
         this.setState({
           leftArray: getLeftArray(nextProps.conditions),
-          rightArray: getRightArray(nextProps.conditions, 1)
+          rightArray: getRightArray(nextProps.conditions, activeId)
         });
       }
       else if(nextProps.conditions.type === 'selected'){
         this.setState({
           chooseArray: getChooseArray(nextProps.conditions),
+        });
+      }else if(nextProps.conditions.type === 'time'){
+        this.setState({
+          isStartTime: false,
+          isEndTime: false
         });
       }
     }
@@ -125,11 +132,24 @@ class Conditions extends Component<IProps, IState>{
   // 选择单项之后关闭窗口
   onSelected = (item) => {
     const { chooseArray } = this.state;
-    const { onsetParams } = this.props;
+    const { onsetParams, onEditConfig, currentId, conditions } = this.props;
+    let field:any = conditions.field;
+    let newField = [];
+    field.forEach(i => {
+      if(item.id === i.id){
+        newField.push({...i, isSelected: true})
+      }
+      else {
+        newField.push({...i, isSelected: false})
+      }
+    });
+    let newConditions = {...conditions, field: newField};
+    // 将参数传到父组件去
     const params = {...this.params};
     this.params = {...params, isRead: item.value};
-    // 将参数传到父组件去
     onsetParams(this.params);
+    // 文字显示传到父组件
+    onEditConfig(currentId, item.name, newConditions);
     const newChooseArray: rightArrayType[] = [];
     chooseArray.forEach((i => {
       if(i.id === item.id){
@@ -158,6 +178,7 @@ class Conditions extends Component<IProps, IState>{
       }
     }));
     this.setState({
+      titleName: it.name,
       leftArray: newLeftArray,
       rightArray: getRightArray(conditions, it.id),
     })
@@ -178,7 +199,8 @@ class Conditions extends Component<IProps, IState>{
       }
     }));
     this.setState({
-      rightArray: newRightArray
+      rightArray: newRightArray,
+      titleName: it.name,
     })
   };
 
@@ -200,7 +222,9 @@ class Conditions extends Component<IProps, IState>{
 
   // 重置
   onReset = () => {
-    const { conditions } = this.props;
+    const { currentId, conditions, onEditConfig } = this.props;
+    console.log('conditions === ', conditions);
+    onEditConfig(currentId, '', conditions);
     this.setState({
       isStartTime: false,
       isEndTime: false,
@@ -214,12 +238,31 @@ class Conditions extends Component<IProps, IState>{
 
   // 确认按钮
   onConfirm = () => {
-    const { onCancel, onsetParams} = this.props;
-    const { startTime, endTime } = this.state;
+    const { onCancel, onsetParams, onEditConfig, currentId, conditions } = this.props;
+    const { startTime, endTime, titleName, leftArray, rightArray} = this.state;
     const newParams = {...this.params};
     this.params = {...newParams, updateTimeStart: startTime, updateTimeEnd: endTime };
     // 将参数传到父组件去
+    let field = conditions.field;
+    let newField = [];
+    let leftItem = leftArray.filter(item => item.isSelected)[0];
+    field.forEach(item => {
+      if(leftItem.id === item.id){
+        newField.push({...item, isSelected: true, childrenName: rightArray})
+      }
+      else {
+        newField.push({...item, isSelected: false})
+      }
+    });
+
+    let newConditions = {...conditions, field: newField};
     onsetParams(this.params);
+    if(currentId === 2){
+      onEditConfig(currentId, titleName, newConditions);
+    }
+    else {
+      onEditConfig(currentId, titleName, conditions);
+    }
     onCancel();
   };
 
