@@ -15,7 +15,7 @@ interface conditionsType{
   options?: any
 }
 
-interface configType{
+export interface configType{
   id: number,
   title: string,
   isSelected?: boolean,
@@ -24,18 +24,20 @@ interface configType{
 
 type IProps = {
   type: string
+  initConfig: configType[]
   config: configType[]
   onsetParams: (params?: any) => void
+  dispatch: (payload: any) => void
 }
 
 type IState = {
-  config: configType[]
+  // config: configType[]
   animation: any
   activeId: number
   searchConfig?: [[]]
   isMask: boolean
   maskHeight: number
-  conditions: conditionsType
+  // conditions: conditionsType
 };
 
 @connect(({ common }) => ({ ...common }))
@@ -44,12 +46,11 @@ class QueryDrop extends Component<IProps, IState>{
   constructor(props) {
     super(props);
     this.state = {
-      config: props.config,
       animation: '',
       activeId: -1,
       isMask: false,
       maskHeight: 0,
-      conditions: props.config[0].conditions,
+      // conditions: {},
     };
   }
 
@@ -77,31 +78,37 @@ class QueryDrop extends Component<IProps, IState>{
 
     });
     // 监听
-    eventCenter.on(onShowEventId, this.onShow)
+    eventCenter.on(onShowEventId, this.onShow);
+    const { dispatch, initConfig} = this.props;
+    dispatch({
+      type:'common/initConfig',
+      payload: initConfig
+    });
   }
 
-  componentWillUpdate(nextProps: Readonly<IProps>): void {
-    const { config, type, queryAssetsConfig} = this.props;
-    console.log('props queryAssetsConfig === ', queryAssetsConfig);
-    console.log('nextProps queryAssetsConfig === ', nextProps.queryAssetsConfig);
-    if(JSON.stringify(config) !== JSON.stringify(nextProps.config)){
-      this.setState({
-        config: nextProps.config
-      })
-    }
-    if(JSON.stringify(queryAssetsConfig) !== JSON.stringify(nextProps.queryAssetsConfig)){
-      this.setState({
-        queryAssetsConfig: nextProps.queryAssetsConfig
-      })
-    }
-    // 每次资产/风险切换的时候，会重新选择条件
-    if(type !== nextProps.type){
-      this.setState({
-        isMask: false,
-        activeId: -1
-      })
-    }
-  }
+
+  // componentWillUpdate(nextProps: Readonly<IProps>): void {
+  //   const { config, type, queryAssetsConfig} = this.props;
+  //   console.log('props queryAssetsConfig === ', queryAssetsConfig);
+  //   console.log('nextProps queryAssetsConfig === ', nextProps.queryAssetsConfig);
+  //   if(JSON.stringify(config) !== JSON.stringify(nextProps.config)){
+  //     this.setState({
+  //       config: nextProps.config
+  //     })
+  //   }
+  //   if(JSON.stringify(queryAssetsConfig) !== JSON.stringify(nextProps.queryAssetsConfig)){
+  //     this.setState({
+  //       queryAssetsConfig: nextProps.queryAssetsConfig
+  //     })
+  //   }
+  //   // 每次资产/风险切换的时候，会重新选择条件
+  //   if(type !== nextProps.type){
+  //     this.setState({
+  //       isMask: false,
+  //       activeId: -1
+  //     })
+  //   }
+  // }
 
   onShow = () => {
     // console.log('onShow')
@@ -122,21 +129,18 @@ class QueryDrop extends Component<IProps, IState>{
 
   // 点击切换筛选条件
   handleClick = (info) => {
-    // console.log('info === ', info);
-    let newInfo = {...info};
-    newInfo.title = '新的';
-    const { config } = this.state;
     const { dispatch } = this.props;
     dispatch({
-      type:'common/updateassetsConfig',
+      type:'common/updateConfig',
       payload: {
-        item: newInfo
+        id: info.id,
+        info: info
       }
-    }).then((res) => {
-      console.log('queryAssetsConfig res === ', res);
-      console.log('queryAssetsConfig this.props === ', this.props);
     });
-    console.log('props 111=== ', this.props);
+    this.setState({
+      activeId: info.id,
+      isMask: true,
+    });
     // let newConfig: configType[] = [];
     // if(config.length > 0){
     //   config.forEach((item) => {
@@ -174,32 +178,34 @@ class QueryDrop extends Component<IProps, IState>{
   };
 
   // 控制父组件的title展示
-  handleEditConfig = (id, title, conditions) => {
-    let newConfig: configType[] = [];
-    const { config } = this.state;
-    config.forEach((item) => {
-      if(item.id === id){
-        newConfig.push({...item, title: title || item.title, isSelected: true, conditions: conditions})
-      }
-      else {
-        newConfig.push({...item })
-      }
-    });
-    this.setState({
-      config: [...newConfig]
-    });
-  };
+  // handleEditConfig = (id, title, conditions) => {
+  //   let newConfig: configType[] = [];
+  //   const { config } = this.state;
+  //   config.forEach((item) => {
+  //     if(item.id === id){
+  //       newConfig.push({...item, title: title || item.title, isSelected: true, conditions: conditions})
+  //     }
+  //     else {
+  //       newConfig.push({...item })
+  //     }
+  //   });
+  //   this.setState({
+  //     config: [...newConfig]
+  //   });
+  // };
 
 
   render(){
-    const { config, activeId, animation, isMask, maskHeight, conditions} = this.state;
+    const { activeId, animation, isMask, maskHeight } = this.state;
+    const { config, showConfig} = this.props;
+    // const config = queryAssetsConfig : queryRiskConfig
     console.log('props render=== ', this.props);
     // const conditions = activeId >= 0 && config.filter(i => i.isSelectd)[0].conditions;
     return (
       <View className='drop'>
         <View className='drop-box' id='drop-box'>
           {
-            config.map((item, index) => {
+            showConfig.length > 0 && showConfig.map((item, index) => {
               const selected = item.isSelected;
               return (
                 <View onClick={() => this.handleClick(item)} className='drop-box-tab'>
@@ -226,10 +232,10 @@ class QueryDrop extends Component<IProps, IState>{
             {
               <Conditions
                 currentId={activeId}
-                conditions={conditions}
+                // conditions={conditions}
                 onCancel={this.handleClosePanel}
                 onsetParams={this.handleParmas}
-                onEditConfig={this.handleEditConfig}
+                // onEditConfig={this.handleEditConfig}
               />
             }
 					</View>

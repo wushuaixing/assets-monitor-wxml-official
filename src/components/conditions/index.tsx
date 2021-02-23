@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import {Image, Input, ScrollView, Text, View} from '@tarojs/components';
 import { AtButton, AtFloatLayout, AtCalendar} from 'taro-ui';
 import clear from '../../assets/img/components/clear.png';
+import { connect } from 'react-redux';
+import configType from '../query-drop/index'
 import './index.scss';
 
 interface conditionType{
@@ -25,6 +27,7 @@ interface rightArrayType{
 }
 
 type IProps = {
+  config: configType[]
   currentId: number
   conditions: conditionType
   onCancel: () => void
@@ -56,30 +59,34 @@ function getLeftArray(conditions) {
 
 // 聚合获取线性选择的右边框
 function getRightArray(conditions, id) {
-  let rightArray: rightArrayType[] = [];
-  if(conditions.type === 'line-choose'){
-    rightArray = conditions.field.filter(it => it.id === id)[0].childrenName;
-  }
-  return rightArray;
-}
+//   let rightArray: rightArrayType[] = [];
+//   if(conditions.type === 'line-choose'){
+//     rightArray = conditions.field.filter(it => it.id === id)[0].childrenName;
+//   }
+//   return rightArray;
+// }
 
 // 聚合单项选择选择项数组
-function getChooseArray(conditions) {
-  let chooseArray: any = [];
-  if(conditions.type === 'selected' && conditions.field.length > 0){
-    chooseArray = conditions.field
-  }
-  return chooseArray;
+// function getChooseArray(conditions) {
+//   let chooseArray: any = [];
+//   if(conditions.type === 'selected' && conditions.field.length > 0){
+//     chooseArray = conditions.field
+//   }
+//   return chooseArray;
+// }
+
+function getConditions(config, id) {
+  let conditions: conditionType = {};
+  config.filter((item) => item.id === id)[0].conditions;
+  return conditions;
 }
 
-
+@connect(({ common }) => ({ ...common }))
 class Conditions extends Component<IProps, IState>{
   constructor(props) {
     super(props);
     this.state = {
-      conditions: props.conditions,
-      leftArray: [],
-      rightArray: [],
+      conditions: getConditions(props.config, props.currentId),
       lineChooseValue: [],
       chooseArray: [],
       isStartTime: false,
@@ -92,116 +99,135 @@ class Conditions extends Component<IProps, IState>{
   }
 
   componentDidMount (){
-    const { conditions } = this.props;
-    if(conditions.type === 'line-choose'){
-      let activeId = getLeftArray(conditions).filter(it => it.isSelected)[0].id;
-      this.setState({
-        leftArray: getLeftArray(conditions),
-        rightArray: getRightArray(conditions, activeId),
-      });
-    } else if(conditions.type === 'selected'){
-      this.setState({
-        chooseArray: getChooseArray(conditions),
-      });
-    }
+    // console.log('conditions props ==', this.props);
+    // const { conditions } = this.props;
+    // if(conditions.type === 'line-choose'){
+    //   let activeId = getLeftArray(conditions).filter(it => it.isSelected)[0].id;
+    //   this.setState({
+    //     leftArray: getLeftArray(conditions),
+    //     rightArray: getRightArray(conditions, activeId),
+    //   });
+    // } else if(conditions.type === 'selected'){
+    //   this.setState({
+    //     chooseArray: getChooseArray(conditions),
+    //   });
+    // }
   }
 
   componentWillUpdate(nextProps: Readonly<IProps>): void {
-    const { conditions } = this.props;
-    if(JSON.stringify(conditions) !== JSON.stringify(nextProps.conditions)){
-      if(nextProps.conditions.type === 'line-choose'){
-        let activeId = getLeftArray(nextProps.conditions).filter(it => it.isSelected)[0].id;
-        this.setState({
-          leftArray: getLeftArray(nextProps.conditions),
-          rightArray: getRightArray(nextProps.conditions, activeId)
-        });
-      }
-      else if(nextProps.conditions.type === 'selected'){
-        this.setState({
-          chooseArray: getChooseArray(nextProps.conditions),
-        });
-      }else if(nextProps.conditions.type === 'time'){
-        this.setState({
-          isStartTime: false,
-          isEndTime: false
-        });
-      }
+    const { config } = this.props;
+    if(JSON.stringify(config) !== JSON.stringify(nextProps.config)){
+      this.setState({
+        config: nextProps.config
+      })
     }
   }
 
+  // componentWillUpdate(nextProps: Readonly<IProps>): void {
+  //   const { conditions } = this.props;
+  //   if(JSON.stringify(conditions) !== JSON.stringify(nextProps.conditions)){
+  //     if(nextProps.conditions.type === 'line-choose'){
+  //       let activeId = getLeftArray(nextProps.conditions).filter(it => it.isSelected)[0].id;
+  //       this.setState({
+  //         leftArray: getLeftArray(nextProps.conditions),
+  //         rightArray: getRightArray(nextProps.conditions, activeId)
+  //       });
+  //     }
+  //     else if(nextProps.conditions.type === 'selected'){
+  //       this.setState({
+  //         chooseArray: getChooseArray(nextProps.conditions),
+  //       });
+  //     }else if(nextProps.conditions.type === 'time'){
+  //       this.setState({
+  //         isStartTime: false,
+  //         isEndTime: false
+  //       });
+  //     }
+  //   }
+  // }
+
   // 选择单项之后关闭窗口
-  onSelected = (item) => {
-    const { chooseArray } = this.state;
-    const { onsetParams, onEditConfig, currentId, conditions } = this.props;
-    let field:any = conditions.field;
-    let newField = [];
-    field.forEach(i => {
-      if(item.id === i.id){
-        newField.push({...i, isSelected: true})
-      }
-      else {
-        newField.push({...i, isSelected: false})
+  onSelected = (info) => {
+    const { currentId, dispatch } = this.props;
+    dispatch({
+      type:'common/updateSelect',
+      payload: {
+        currentId: currentId,
+        id: info.id,
+        info: info
       }
     });
-    let newConditions = {...conditions, field: newField};
-    // 将参数传到父组件去
-    const params = {...this.params};
-    this.params = {...params, isRead: item.value};
-    onsetParams(this.params);
-    // 文字显示传到父组件
-    onEditConfig(currentId, item.name, newConditions);
-    const newChooseArray: rightArrayType[] = [];
-    chooseArray.forEach((i => {
-      if(i.id === item.id){
-        newChooseArray.push({...i, isSelected: true})
-      }
-      else {
-        newChooseArray.push({...i, isSelected: false})
-      }
-    }));
-    this.setState({
-      chooseArray: newChooseArray
-    })
+    // const { chooseArray } = this.state;
+    // const { onsetParams, onEditConfig, currentId, conditions } = this.props;
+    // let field:any = conditions.field;
+    // let newField = [];
+    // field.forEach(i => {
+    //   if(item.id === i.id){
+    //     newField.push({...i, isSelected: true})
+    //   }
+    //   else {
+    //     newField.push({...i, isSelected: false})
+    //   }
+    // });
+    // let newConditions = {...conditions, field: newField};
+    // // 将参数传到父组件去
+    // const params = {...this.params};
+    // this.params = {...params, isRead: item.value};
+    // onsetParams(this.params);
+    // // 文字显示传到父组件
+    // onEditConfig(currentId, item.name, newConditions);
+    // const newChooseArray: rightArrayType[] = [];
+    // chooseArray.forEach((i => {
+    //   if(i.id === item.id){
+    //     newChooseArray.push({...i, isSelected: true})
+    //   }
+    //   else {
+    //     newChooseArray.push({...i, isSelected: false})
+    //   }
+    // }));
+    // this.setState({
+    //   chooseArray: newChooseArray
+    // })
   };
 
   // 线性选择的第一列
-  chooseType = (it: leftArrayType) => {
-    const { leftArray } = this.state;
-    const { conditions } = this.props;
-    let newLeftArray: leftArrayType[] = [];
-    leftArray.forEach((i => {
-      if(i.id === it.id){
-        newLeftArray.push({...i, isSelected: true})
+  chooseType = (info: leftArrayType) => {
+    const { currentId, dispatch } = this.props;
+    dispatch({
+      type:'common/updateChooseLeft',
+      payload: {
+        currentId: currentId,
+        info: info
       }
-      else {
-        newLeftArray.push({...i, isSelected: false})
-      }
-    }));
-    this.setState({
-      titleName: it.name,
-      leftArray: newLeftArray,
-      rightArray: getRightArray(conditions, it.id),
-    })
+    });
   };
 
   // 线性选择的子节点
-  chooseChildrenType = (it: rightArrayType) => {
-    const { rightArray } = this.state;
-    const params = {...this.params};
-    this.params = {...params, assetAndRiskType: it.value};
-    let newRightArray: rightArrayType[] = [];
-    rightArray.forEach((i => {
-      if(i.id === it.id){
-        newRightArray.push({...i, isSelected: true})
+  chooseChildrenType = (info: rightArrayType) => {
+    const { currentId, dispatch } = this.props;
+    dispatch({
+      type:'common/updateChooseRight',
+      payload: {
+        currentId: currentId,
+        info: info
       }
-      else {
-        newRightArray.push({...i, isSelected: false})
-      }
-    }));
-    this.setState({
-      rightArray: newRightArray,
-      titleName: it.name,
-    })
+    });
+    // const { rightArray } = this.state;
+    // const params = {...this.params};
+    // this.params = {...params, assetAndRiskType: it.value};
+    // let newRightArray: rightArrayType[] = [];
+    // rightArray.forEach((i => {
+    //   if(i.id === it.id){
+    //     newRightArray.push({...i, isSelected: true})
+    //   }
+    //   else {
+    //     newRightArray.push({...i, isSelected: false})
+    //   }
+    // }));
+    // this.setState({
+    //   rightArray: newRightArray,
+    //   titleName: it.name,
+    // })
   };
 
   // 点击输入框触发日期弹窗组件
@@ -223,7 +249,7 @@ class Conditions extends Component<IProps, IState>{
   // 重置
   onReset = () => {
     const { currentId, conditions, onEditConfig } = this.props;
-    console.log('conditions === ', conditions);
+    // console.log('conditions === ', conditions);
     onEditConfig(currentId, '', conditions);
     this.setState({
       isStartTime: false,
@@ -302,16 +328,18 @@ class Conditions extends Component<IProps, IState>{
   };
 
   render(){
-    const { chooseArray, leftArray, rightArray, isStartTime, isEndTime, startTime, endTime } = this.state;
-    const { conditions } = this.props;
-    const { type } = conditions;
+    const { chooseArray, isStartTime, isEndTime, startTime, endTime } = this.state;
+    const { config, leftArray, rightArray, currentId } = this.props;
+    let conditions = config.filter(item => item.id === currentId)[0].conditions;
+    const { type, field } = conditions;
+    console.log('conditions props === ', this.props);
     return (
       <View className='conditions'>
         <View className='conditions-line'/>
         {
           type === 'selected' && <View id='conditions-selected' className='conditions-selected'>
             {
-              chooseArray.length > 0 && chooseArray.map(item => {
+              field.length > 0 && field.map(item => {
                 const { isSelected } = item;
                 return (
                   <View className='conditions-selected-item' onClick={() => this.onSelected(item)}>
