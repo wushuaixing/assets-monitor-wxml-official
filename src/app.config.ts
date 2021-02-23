@@ -7,8 +7,8 @@ export default {
     "pages/demo/index",
     "pages/loginAgency/index",
     "pages/default-page/index",
-    "pages/loginAgency/auth-code/index"
-
+    "pages/loginAgency/auth-code/index",
+    "pages/user/feedBack/index",
   ],
   window: {
     backgroundTextStyle: 'light',

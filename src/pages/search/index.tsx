@@ -1,18 +1,19 @@
 import React, { Component } from 'react'
-import { View, Button,Input } from '@tarojs/components'
-import Taro from '@tarojs/taro';
+import {Image, View} from '@tarojs/components'
+import { AtIcon,AtToast  } from 'taro-ui'
+import AssetsImg from '../../assets/img/search/search_assetsLogo.png'
+import AssetsBgImg from '../../assets/img/search/search_assets_bg.png'
+import ErrorIcon from '../../assets/img/search/search_errorIcon.png'
 import './index.scss'
 
-
-interface isState {
-  code: string,
+type isState = {
+  showErrorMessage:boolean
 }
-
-export default class Search extends Component<any,isState> {
+export default class Search extends Component<any, isState> {
   constructor(props: any) {
     super(props);
     this.state = {
-      code: ''
+      showErrorMessage:false
     }
   }
 
@@ -26,19 +27,32 @@ export default class Search extends Component<any,isState> {
 
   componentDidHide () { }
 
-  onBtnClick = () =>{
-    Taro.login().then(res=>{
-      const jsCode = res.code;
-      this.setState({code:jsCode})
-    })
+  onClick= () =>{
+   this.setState({
+     showErrorMessage:true
+   })
   }
 
   render () {
-    const {code} = this.state;
+    const {showErrorMessage} = this.state;
     return (
-      <View >
-       <Button onClick={this.onBtnClick}>获取jsCode</Button>
-        <Input value={code}/>
+      <View className='yc-search'>
+        <View className='yc-search-assets' onClick={this.onClick}>
+          <Image src={AssetsBgImg} className='yc-search-assets-bgImg'/>
+          <View className='yc-search-assets-content'>
+            <Image src={AssetsImg} />
+            <View className='yc-search-assets-content-text'>
+              <View className='yc-search-assets-content-text-top'>资产线索</View>
+              <View className='yc-search-assets-content-text-bottom'>个人/企业概况一手掌握</View>
+            </View>
+            <View className='yc-search-assets-content-icon'>
+              <AtIcon value='chevron-right' size='24' color='#fff' />
+            </View>
+          </View>
+        </View>
+        {
+          showErrorMessage && <AtToast isOpened text="即将上线，敬请关注" image={ErrorIcon} />
+        }
       </View>
     )
   }
