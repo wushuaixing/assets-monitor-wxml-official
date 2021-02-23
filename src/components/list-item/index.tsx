@@ -23,7 +23,6 @@ type Iprops = {
 
 const ListItem = React.memo((props: Iprops) => {
   const { id, index, style, data } = props;
-  console.log('ListItem props === ', data);
   return (
     <View id={id} className='item'>
       <View className='item-segmentation'/>
@@ -58,11 +57,13 @@ const ListItem = React.memo((props: Iprops) => {
           <View className='item-content-info-colon'>：</View>
           <View className='item-content-info-text'>2020-03-25</View>
         </View>
-        <View className='item-content-info'>
-          <View className='item-content-info-label'>案号</View>
-          <View className='item-content-info-colon'>：</View>
-          <View className='item-content-info-text'>【一拍】(破)华鑫化纤科技有限公司、余姚新华鑫纤维销售有限公司应收款项</View>
-        </View>
+        {
+          index % 2 === 0 && <View className='item-content-info'>
+						<View className='item-content-info-label'>案号</View>
+						<View className='item-content-info-colon'>：</View>
+						<View className='item-content-info-text'>【一拍】(破)华鑫化纤科技有限公司、余姚新华鑫纤维销售有限公司应收款项</View>
+					</View>
+        }
         <View className='item-content-info'>
           <View className='item-content-info-label'>案件类型</View>
           <View className='item-content-info-colon'>：</View>

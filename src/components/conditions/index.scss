@@ -23,12 +23,86 @@
   border-radius: 4px;
 }
 
+@mixin boxStyle{
+  width: 312px;
+  height: 74px;
+  line-height: 70px;
+  border: 1px solid #D5D5D5;
+  font-size: 28px;
+  border-radius: 4px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  align-content: center;
+  justify-content: space-between;
+  overflow: visible;
+}
+
+@mixin inputStyle{
+  display: inline-block;
+  padding: 14px 0;
+  font-size: 28px;
+  width: 80%;
+  color: #D5D5D5;
+  text-align: center;
+}
+
+@mixin iconStyle{
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  padding: 10px;
+}
+
+@mixin selectedText{
+  font-weight: 400;
+  font-size: 28px;
+  line-height: 96px;
+}
+
+@mixin textStyle{
+  color: $common-text;
+  font-size: 28px;
+}
+
+@mixin placeholderStyle{
+  color: #CCCCCC;
+}
+
 .conditions{
   padding-top: 24px;
   &-line{
     background-color: $border-color;
     height: 1px;
   }
+
+  &-selected{
+    &-item{
+      height: 96px;
+      margin: 0 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      &-name-active{
+        @include selectedText;
+        color: $primary-color;
+      }
+
+      &-name-normal{
+        @include selectedText;
+        color: #4E5566;
+      }
+
+      &-icon{
+        color: $primary-color;
+        font-size: 32px;
+      }
+    }
+    &-item:not(:last-child){
+      border-bottom: 1px solid $divider-color;
+    }
+  }
+
   &-line-choose{
     background-color: white;
     display: flex;
@@ -67,7 +141,6 @@
         line-height: 32px;
       }
     }
-
   }
 
   &-btn{
@@ -87,6 +160,60 @@
       width: 390px;
       background-color: $primary-color;
       border-color: $primary-color;
+    }
+  }
+
+  &-time{
+    display: flex;
+    margin: 24px 32px;
+    flex-direction: column;
+    &-title{
+      color: $label-color;
+      font-size: 30px;
+      font-weight: 400;
+    }
+    &-box{
+      display: flex;
+      flex-direction: row;
+      margin-top: 24px;
+      overflow: visible;
+      &-segmentation{
+        display: flex;
+        align-items: center;
+        margin: 0 24px;
+        font-size: 26px;
+        color: $light-text-color;
+      }
+      &-left{
+        @include boxStyle;
+        &-input{
+          @include inputStyle;
+          &-text{
+            @include textStyle
+          }
+          &-placeholder{
+            @include placeholderStyle
+          }
+        }
+        &-icon{
+          @include iconStyle;
+        }
+      }
+      &-right{
+        @include boxStyle;
+        &-input{
+          @include inputStyle;
+          &-text{
+            @include textStyle
+          }
+          &-placeholder{
+            @include placeholderStyle
+          }
+        }
+        &-icon{
+          @include iconStyle;
+        }
+      }
     }
   }
 }
