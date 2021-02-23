@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
-import {Image, View} from '@tarojs/components'
+import {Image, Text, View} from '@tarojs/components'
 import { AtIcon,AtToast  } from 'taro-ui'
-import AssetsImg from '../../assets/img/search/search_assetsLogo.png'
 import AssetsBgImg from '../../assets/img/search/search_assets_bg.png'
 import ErrorIcon from '../../assets/img/search/search_errorIcon.png'
 import './index.scss'
@@ -40,7 +39,7 @@ export default class Search extends Component<any, isState> {
         <View className='yc-search-assets' onClick={this.onClick}>
           <Image src={AssetsBgImg} className='yc-search-assets-bgImg'/>
           <View className='yc-search-assets-content'>
-            <Image src={AssetsImg} />
+            <Text className="iconfont icon-search_assets yc-search-assets-content-img" />
             <View className='yc-search-assets-content-text'>
               <View className='yc-search-assets-content-text-top'>资产线索</View>
               <View className='yc-search-assets-content-text-bottom'>个人/企业概况一手掌握</View>
