@@ -6,6 +6,22 @@
   height: 40px;
 }
 
+@mixin textStyle{
+  font-size: 28px;
+  width: 562px;
+  max-width: 562px;
+  line-height: 28px;
+  display: inline-block;
+}
+
+@mixin titleStyle{
+  font-size: 30px;
+  height: 30px;
+  line-height: 30px;
+  margin: 12px 0 0 20px;
+  font-weight: 500;
+}
+
 .item{
   background-color: #FFFFFF;
   &-segmentation{
@@ -22,6 +38,14 @@
       height: 80px;
     }
     &-box{
+      position: relative;
+      &-mask{
+        position: absolute;
+        background-color: rgba(255, 255, 255, 0.5);
+        width: 90px;
+        height: 90px;
+        top: 17px;
+      }
     }
     &-title{
       &-tag{
@@ -69,13 +93,13 @@
           padding: 0 12px;
         }
       }
-      &-text{
+      &-readtext{
+        color: #808080;
+        @include titleStyle;
+      }
+      &-noreadtext{
         color: $common-text;
-        font-size: 30px;
-        height: 30px;
-        line-height: 30px;
-        margin: 12px 0 0 20px;
-        font-weight: 500;
+        @include titleStyle;
       }
     }
     &-time{
@@ -118,13 +142,18 @@
         line-height: 28px;
         display: inline-block;
       }
-      &-text{
+      &-readtext{
+        color: $label-color;
+        @include textStyle
+      }
+      &-noreadtext{
         color: $text-color;
+        @include textStyle;
+      }
+      &-status{
+        color: #F5A623;
         font-size: 28px;
-        width: 562px;
-        max-width: 562px;
-        line-height: 28px;
-        display: inline-block;
+        font-weight: 500;
       }
     }
   }
