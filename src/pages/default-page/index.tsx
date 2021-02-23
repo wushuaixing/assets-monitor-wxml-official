@@ -71,6 +71,7 @@ export default class DefaultPage extends Component<IProps,isState>{
           type:'login/getOpenId',
           payload:{jsCode},
         }).then(result=>{
+          console.log('openId',result)
           Taro.hideLoading();
           const { code,data } = result.data || {};
           if(code === 200){
