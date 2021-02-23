@@ -54,7 +54,8 @@ export default class FeedBack extends Component<IProps, isState> {
 
   onImgChange = (files) => {
     this.setState({
-      fileList: []
+      fileList: [],
+      files
     })
     const that = this;
     for (var i = 0; i < files.length; i++) {
@@ -70,18 +71,17 @@ export default class FeedBack extends Component<IProps, isState> {
           method: 'POST',
         },
         success(res) {
-          that.onHandleChange(res, files)
+          that.onHandleChange(res)
         }
       })
     }
   }
 
-  onHandleChange = (res, files) => {
+  onHandleChange = (res) => {
     const dataSource = JSON.parse(res.data);
     const {fileList} = this.state;
     if (dataSource.code === 200) {
       this.setState({
-        files,
         fileList: fileList.concat(dataSource.data)
       })
     }
@@ -99,18 +99,18 @@ export default class FeedBack extends Component<IProps, isState> {
         type: 'user/getAdvice',
         payload: {...params},
       }).then(res => {
-        const {code,message} = res.data;
+        const {code, message} = res.data;
         if (code === 200) {
           Message('意见反馈成功');
-          setTimeout(()=>{
+          setTimeout(() => {
             Taro.navigateBack({
               delta: 1
             })
-          },800)
-        }else{
+          }, 800)
+        } else {
           Message(message || '意见反馈失败');
         }
-      }).catch(()=>{
+      }).catch(() => {
         Message('网络异常请稍后再试！')
       })
     } else {
@@ -137,7 +137,7 @@ export default class FeedBack extends Component<IProps, isState> {
           <View className='yc-feedBack-content-image'>
             <View className='yc-feedBack-content-image-text'>上传图片(可选)</View>
             <AtImagePicker
-              count={4}
+              count={4 - files.length}
               showAddBtn={files.length < 4}
               multiple
               files={files}
@@ -148,7 +148,7 @@ export default class FeedBack extends Component<IProps, isState> {
         <View className='yc-feedBack-bottom'>
           <View className='yc-feedBack-bottom-text'>
             我们会尽快处理您的反馈。
-            <View>您还可以拨打客服电话150-7777-7777来提出意见和建议。</View>
+            <View>您还可以拨打客服电话133-7256-7936来提出意见和建议。</View>
           </View>
           <View className='yc-feedBack-bottom-btn'>
             <AtButton type='primary' onClick={this.onSubmit}>提交反馈</AtButton>

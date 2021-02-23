@@ -182,9 +182,6 @@ export default class AuthCode extends Component<IProps, isState> {
               <View className='yc-login-authCode-errorText'>验证码输入错误</View>
             </View> : null
           }
-          {/*{*/}
-          {/*  !againStatus && <View className='yc-login-authCode-secondText'>{`${second}s后重新发送`}</View>*/}
-          {/*}*/}
           {
             againStatus && second === 59 ?
               <View className='yc-login-authCode-againContent' onClick={this.onAgainClick}>
@@ -193,7 +190,7 @@ export default class AuthCode extends Component<IProps, isState> {
                 </View>
                 <Text className="iconfont icon-refresh" style={{fontSize: '32rpx', color: '#0979E6'}}/>
               </View> :
-              <View className='yc-login-authCode-secondText'>{`${second}s后重新发送`}</View>
+              <View className='yc-login-authCode-secondText'>{`${second}s后重新获取验证码`}</View>
           }
           <View className='yc-login-footer' style={{height:'59vh'}}>
             <Image className='yc-login-footer-footerImg' src={loginFooterImg} style={{opacity: '0.15'}}/>
