@@ -17,6 +17,11 @@
     &-content{
       margin-left:72px;
       padding-top:72px;
+      &-img{
+        font-size: 96px;
+        color: #fff;
+        opacity: 0.65;
+      }
       &-text{
         display: inline-block;
         vertical-align: top;
@@ -47,11 +52,6 @@
         margin:17px 0 0 103px;
         opacity: 0.5;
       }
-    }
-    &-content >image{
-      width:96px;
-      height:96px;
-      opacity: 0.65;
     }
   }
 

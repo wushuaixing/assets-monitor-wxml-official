@@ -5,10 +5,17 @@ export default {
     "pages/search/index",
     "pages/user/index",
     "pages/demo/index",
-    "pages/loginAgency/index",
     "pages/default-page/index",
-    "pages/loginAgency/auth-code/index",
     "pages/user/feedBack/index",
+  ],
+  subpackages:[
+    {
+      root:'pages/loginAgency/',
+      pages:[
+        "index",
+        "auth-code/index"
+      ]
+    }
   ],
   window: {
     backgroundTextStyle: 'light',

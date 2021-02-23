@@ -102,9 +102,11 @@ export default class FeedBack extends Component<IProps, isState> {
         const {code,message} = res.data;
         if (code === 200) {
           Message('意见反馈成功');
-          Taro.navigateBack({
-            delta: 1
-          })
+          setTimeout(()=>{
+            Taro.navigateBack({
+              delta: 1
+            })
+          },800)
         }else{
           Message(message || '意见反馈失败');
         }
