@@ -75,33 +75,36 @@ class List extends Component <IProps, IState>{
 
   render () {
     const { data, listLength } = this.props;
+    console.log('VirtualList data === ', data);
     const dataLen: number = listLength || 1400;
     const height: number = 1211;
     const itemSize: number = 285;
     return (
       <View className='list'>
-        <VirtualList
-          useIsScrolling={true}
-          className='List'
-          unlimitedSize={true}
-          position={'relative'}
-          height={height}
-          width={'100%'}
-          itemData={data}
-          itemCount={dataLen}
-          itemSize={itemSize}
-          onScroll={({scrollDirection, scrollOffset }) => {
-            console.log('scrollDirection === ', scrollDirection);
-            console.log('scrollOffset === ', scrollOffset);
-            if(!this.loading && scrollDirection === 'forward' && scrollOffset > ((dataLen - 9) * itemSize + 100)){
-              this.listReachBottom()
+        {
+          data.length > 0 && <VirtualList
+						useIsScrolling={true}
+						className='List'
+						unlimitedSize={true}
+						position={'relative'}
+						height={height}
+						width={'100%'}
+						itemData={data}
+						itemCount={dataLen}
+						itemSize={itemSize}
+						onScroll={({scrollDirection, scrollOffset }) => {
+              console.log('scrollDirection === ', scrollDirection);
+              console.log('scrollOffset === ', scrollOffset);
+              if(!this.loading && scrollDirection === 'forward' && scrollOffset > ((dataLen - 9) * itemSize + 100)){
+                this.listReachBottom()
+              }
+            }}
+					>
+            {
+              ListItem
             }
-          }}
-        >
-          {
-            ListItem
-          }
-        </VirtualList>
+					</VirtualList>
+        }
         <View className='list-top' onClick={this.backToTop}>
           up
           {/*<Image className='monitor-top-arrow' />*/}
