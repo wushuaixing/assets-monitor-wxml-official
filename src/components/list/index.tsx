@@ -6,10 +6,6 @@ import { connect } from 'react-redux';
 import ListItem from '../list-item/index';
 import './index.scss';
 
-
-
-
-
 interface IProps{
   count?: number
   listLength?: number
@@ -51,21 +47,21 @@ class List extends Component <IProps, IState>{
   componentDidHide () { }
 
   listReachBottom = () => {
-    Taro.showLoading();
-    // 如果 loading 与视图相关，那它就应该放在 `this.state` 里
-    // 我们这里使用的是一个同步的 API 调用 loading，所以不需要
-    this.loading = true;
-    setTimeout(() => {
-      const { data } = this.state;
-      const arr = data.concat(buildData(data.length));
-      console.log('arr ==== ', arr);
-      this.setState({
-        data: arr,
-      }, () => {
-        this.loading = false;
-        Taro.hideLoading()
-      })
-    }, 1000)
+    // Taro.showLoading();
+    // // 如果 loading 与视图相关，那它就应该放在 `this.state` 里
+    // // 我们这里使用的是一个同步的 API 调用 loading，所以不需要
+    // this.loading = true;
+    // setTimeout(() => {
+    //   const { data } = this.state;
+    //   const arr = data.concat(buildData(data.length));
+    //   console.log('arr ==== ', arr);
+    //   this.setState({
+    //     data: arr,
+    //   }, () => {
+    //     this.loading = false;
+    //     Taro.hideLoading()
+    //   })
+    // }, 1000)
   };
 
   backToTop = () => {

@@ -25,6 +25,7 @@ interface configType{
 
 type IProps = {
   dispatch: (params: any) => void
+  list: dataItem[]
 }
 
 type IState = {
@@ -219,9 +220,9 @@ export default class Monitor extends Component <IProps, IState>{
   };
 
   render () {
-    const { data, currentId, isScroll, count} = this.state;
+    const { data, currentId, isScroll } = this.state;
+    const { list, count } = this.props;
     console.log('page props === ', this.props);
-    console.log('page state === ', this.state);
 
     return (
       <View className='monitor'>
@@ -254,7 +255,7 @@ export default class Monitor extends Component <IProps, IState>{
 					</View>
         }
         <List
-          data={data}
+          data={list}
           listLength={count}
           params={this.params}
           onChangeScroll={this.handleChangeScroll}

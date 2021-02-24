@@ -89,8 +89,6 @@ function checkHttpStatus(response: any, resolve, reject) {
   }
 }
 
-
-
 const baseOptions = (params: {[propName: string] : any}, method?: string = 'GET') => {
   let { url, data, isToken, customUrl = '' } = params;
   const token: string = Taro.getStorageSync('token');
