@@ -24,12 +24,15 @@ interface configType{
 }
 
 type IProps = {
+  dispatch: (params: any) => void
 }
 
 type IState = {
   currentId: number
   isScroll?: boolean
   data: dataItem[]
+  loading: boolean
+  count: number
 };
 
 const tabList = [
@@ -169,10 +172,25 @@ export default class Monitor extends Component <IProps, IState>{
     this.state = {
       currentId: 1,
       isScroll: false,
-      data: buildData(80),
+      data: [],
+      loading: false,
+      count: 0,
     };
     this.params = {};
   }
+
+  componentWillMount(): void {
+    const { dispatch } = this.props;
+    dispatch({
+      type:'monitor/assetList',
+      payload: {}
+    });
+    dispatch({
+      type:'monitor/assetListCount',
+      payload: {}
+    });
+  }
+
 
   // 资产/ 风险tab的切换
   handleClick = (item) => {
@@ -201,9 +219,10 @@ export default class Monitor extends Component <IProps, IState>{
   };
 
   render () {
-    const { data, currentId, isScroll} = this.state;
-    // console.log('parmas === ', this.params);
+    const { data, currentId, isScroll, count} = this.state;
     console.log('page props === ', this.props);
+    console.log('page state === ', this.state);
+
     return (
       <View className='monitor'>
         <NavigationBar title={'源诚资产监控'} type={'blue'}/>
@@ -236,7 +255,7 @@ export default class Monitor extends Component <IProps, IState>{
         }
         <List
           data={data}
-          listLength={30}
+          listLength={count}
           params={this.params}
           onChangeScroll={this.handleChangeScroll}
         />

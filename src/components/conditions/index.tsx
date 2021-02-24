@@ -3,7 +3,7 @@ import {Image, Input, ScrollView, Text, View} from '@tarojs/components';
 import { AtButton, AtFloatLayout, AtCalendar} from 'taro-ui';
 import clear from '../../assets/img/components/clear.png';
 import { connect } from 'react-redux';
-import configType from '../query-drop/index'
+// import configType from '../query-drop/index'
 import './index.scss';
 
 interface conditionType{
@@ -27,7 +27,7 @@ interface rightArrayType{
 }
 
 type IProps = {
-  config: configType[]
+  config: any
   currentId: number
   conditions: conditionType
   onCancel: () => void
@@ -58,7 +58,7 @@ function getLeftArray(conditions) {
 }
 
 // 聚合获取线性选择的右边框
-function getRightArray(conditions, id) {
+// function getRightArray(conditions, id) {
 //   let rightArray: rightArrayType[] = [];
 //   if(conditions.type === 'line-choose'){
 //     rightArray = conditions.field.filter(it => it.id === id)[0].childrenName;
@@ -82,7 +82,7 @@ function getConditions(config, id) {
 }
 
 @connect(({ common }) => ({ ...common }))
-class Conditions extends Component<IProps, IState>{
+export default class Conditions extends Component <IProps, IState>{
   constructor(props) {
     super(props);
     this.state = {
@@ -437,6 +437,3 @@ class Conditions extends Component<IProps, IState>{
     );
   }
 }
-
-export default Conditions;
-
