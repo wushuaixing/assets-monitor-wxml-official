@@ -4,7 +4,7 @@ import {getUserInfoUrl} from "../../services/user";
 export default {
   namespace: 'monitor',
   state: {
-    count: 12,
+    count: 0,
     list: [],
     assetsList: [],
     riskList: [],
@@ -12,15 +12,15 @@ export default {
   effects: {
     *assetList({ payload }, { call, put}) {
       const res = yield call(assetListApi, payload);
-      console.log('res === ', res);
-      const { data } = res;
       if(res.code === 200){
         yield put({ type: 'updateList', payload: res.data.list });
       }
     },
-    *assetListCount({}, {all, call, put }) {
+    *assetListCount({ }, { call, put }) {
       const res = yield call(assetListCountApi, );
-      return res;
+      if(res.code === 200){
+        yield put({ type: 'updateCount', payload: res.data });
+      }
     },
 
     *riskList({}, {all, call, put }) {
@@ -41,12 +41,18 @@ export default {
         ...payload,
       }
     },
+    updateList(state, { payload }) {
+      return {
+        ...state,
+        list: [...payload],
+      }
+    },
+    updateCount(state, { payload }) {
+      return {
+        ...state,
+        count: payload,
+      }
+    },
   },
-  updateList(state, {payload}){
-    console.log('payload === ', payload);
-    return {
-      ...state,
-      ...payload,
-    }
-  },
+
 }

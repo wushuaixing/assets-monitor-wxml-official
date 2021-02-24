@@ -10,6 +10,12 @@ export default {
   ],
   subpackages:[
     {
+      root:'subpackage/pages/',
+      pages:[
+        "monitor/asset-auction/index",
+      ]
+    },
+    {
       root:'pages/loginAgency/',
       pages:[
         "index",
