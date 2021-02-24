@@ -26,7 +26,7 @@ export default class DefaultPage extends Component<IProps,isState>{
         type:'login/getAuthRule',
         payload:{}
       }).then(res=>{
-        const {code,data} = res.data || {};
+        const {code,data} = res || {};
         if (code === 200){
           let searchUser = data.orgPageGroups.filter(item => item.groupName === 'menu_sy');
           setGlobalData('systemAuthRule',data.orgPageGroups)
@@ -50,7 +50,7 @@ export default class DefaultPage extends Component<IProps,isState>{
               payload:{jsCode},
             }).then(result=>{
               Taro.hideLoading();
-              const { code,data } = result.data || {};
+              const { code,data } = result || {};
               if(code === 200){
                 setGlobalData('openId',data)
                 Taro.redirectTo({ url : '/pages/loginAgency/index' });
@@ -73,7 +73,7 @@ export default class DefaultPage extends Component<IProps,isState>{
         }).then(result=>{
           console.log('openId',result)
           Taro.hideLoading();
-          const { code,data } = result.data || {};
+          const { code,data } = result || {};
           if(code === 200){
             setGlobalData('openId',data)
             Taro.redirectTo({ url : '/pages/loginAgency/index' });

@@ -38,12 +38,21 @@ export default class User extends Component<IProps, isState> {
   }
 
   componentWillMount() {
+  }
+
+  componentDidMount() {
+  }
+
+  componentWillUnmount() {
+  }
+
+  componentDidShow() {
     this.props.dispatch({
       type: 'user/getUserInfo',
       payload: {}
     }).then((res) => {
-      if (res.data.code === 200) {
-        const {data: {name = '', businessCount = 0, obligorCount = 0}} = res.data || {};
+      if (res.code === 200) {
+        const {data: {name = '', businessCount = 0, obligorCount = 0}} = res || {};
         const buildArr = [
           {key: '业务', value: businessCount, disabled: false},
           {key: '债务人', value: obligorCount, disabled: false},
@@ -56,15 +65,6 @@ export default class User extends Component<IProps, isState> {
         })
       }
     })
-  }
-
-  componentDidMount() {
-  }
-
-  componentWillUnmount() {
-  }
-
-  componentDidShow() {
   }
 
   componentDidHide() {
