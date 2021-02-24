@@ -99,7 +99,7 @@ export default class FeedBack extends Component<IProps, isState> {
         type: 'user/getAdvice',
         payload: {...params},
       }).then(res => {
-        const {code, message} = res.data;
+        const {code, message} = res;
         if (code === 200) {
           Message('意见反馈成功');
           setTimeout(() => {

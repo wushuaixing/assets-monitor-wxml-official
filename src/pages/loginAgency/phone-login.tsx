@@ -59,8 +59,7 @@ export default class PhoneLogin extends Component<IProps, isState> {
         type: 'login/getSms',
         payload: {mobile},
       }).then(res => {
-        console.log('res', res)
-        const {code} = res.data || {};
+        const {code} = res || {};
         if (code === 200) {
           Taro.navigateTo({
             url: `/pages/loginAgency/auth-code/index?phone=${mobile}`,
@@ -103,12 +102,9 @@ export default class PhoneLogin extends Component<IProps, isState> {
   onShareAccount = () => {
     setTimeout(() => {
       const {mobile} = this.state;
-      console.log('mobile', mobile)
       this.props.dispatch({
         type: 'login/getAccountNumber',
         payload: {accountNumber: mobile}
-      }).then((res)=>{
-        console.log('res',res,this.props)
       })
     })
   }

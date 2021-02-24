@@ -16,13 +16,13 @@ type isState = {
   files: [],
   accountName: string,
   accountPassword: string,
-  imgCodeStatus: boolean,
   accountInvalidStatus: boolean,
   nameFocus: boolean,
   pswFocus: boolean
 }
 type IProps = {
   accountNumber: string,
+  isOpenImageModal: boolean,
   dispatch: ({type: string, payload: object}) => {
     then(param: (res) => void): any;
   },
@@ -39,7 +39,6 @@ export default class AccountLogin extends Component<IProps, isState> {
       files: [],
       accountName: '',
       accountPassword: '',
-      imgCodeStatus: false,
       accountInvalidStatus: false,
       nameFocus: false,
       pswFocus: false,
@@ -72,12 +71,11 @@ export default class AccountLogin extends Component<IProps, isState> {
       type: 'login/getLoginPreCheck',
       payload: {username: accountName},
     }).then(res => {
-      if (res.statusCode === 200) {
-        // this.preInfo = res.data;
-        const {data: {mustVerifyImageCode, blockLogin}} = res.data || {};
+      if (res.code === 200) {
+        const {data: {mustVerifyImageCode, blockLogin}} = res || {};
         if (blockLogin) return Message('错误次数达到上限，账号被冻结，请一个小时候后尝试登录');
         if (mustVerifyImageCode) {
-          this.setState({imgCodeStatus: true});
+          this.onImgModalApi(true);
         } else {
           this.toPasswordLogin('');
         }
@@ -101,9 +99,9 @@ export default class AccountLogin extends Component<IProps, isState> {
       type: 'login/getPasswordLogin',
       payload: {...params}
     }).then(res => {
-      const {code, message} = res.data;
-      const {data} = res.data || {};
+      const {code, message, data} = res || {};
       if (code === 200) {
+        this.onImgModalApi(false);
         Taro.setStorageSync('token', data.token);
         Taro.setStorageSync('loginNumber', accountName);
         setGlobalData('systemAuthRule', data.rules)
@@ -112,12 +110,19 @@ export default class AccountLogin extends Component<IProps, isState> {
         if (!userStatus) Taro.reLaunch({url: '/pages/search/index'});
         else Taro.reLaunch({url: '/pages/index/index'});
       } else if (code === 15002) {
+        this.onImgModalApi(false);
         this.setState({
           accountInvalidStatus: true,
         });
       } else {
-        if (data.errorTime > 4) {
+        if (data && data.errorTime > 4) {
+          this.onImgModalApi(false);
           return Message(data.errorTime >= 10 ? message : `账号或密码错误，您还可以尝试${data.errorTimeLeft}次`);
+        }
+        if (message.match(/(图形验证码)/)) {
+          this.onImgModalApi(true);
+        } else {
+          this.onImgModalApi(false);
         }
         Message(message);
       }
@@ -167,9 +172,20 @@ export default class AccountLogin extends Component<IProps, isState> {
     })
   }
 
+  onCancel = () => {
+    this.onImgModalApi(false);
+  }
+
+  onImgModalApi = (isOpenImageModal) => {
+    this.props.dispatch({
+      type: 'login/getIsOpenImageModal',
+      payload: {isOpenImageModal}
+    })
+  }
+
   render() {
-    const {imgCodeStatus, accountInvalidStatus, accountName, accountPassword, pswFocus, nameFocus} = this.state;
-    console.log('this.props', this.props, this.props.accountNumber, accountName)
+    const {accountInvalidStatus, accountName, accountPassword, pswFocus, nameFocus} = this.state;
+    const {isOpenImageModal} = this.props.login.isOpenImageModal;
     return (
       <View className="yc-login-phoneContent">
         <View className="yc-login-phoneContent-box">
@@ -240,9 +256,7 @@ export default class AccountLogin extends Component<IProps, isState> {
           </View>
         </View>
         {
-          imgCodeStatus && <ImageCode onConfirm={this.toPasswordLogin} onCancel={() => {
-            this.setState({imgCodeStatus: false});
-          }}/>
+          isOpenImageModal && <ImageCode onConfirm={this.toPasswordLogin} onCancel={this.onCancel}/>
         }
         {
           accountInvalidStatus && <AccountInvalid onConfirm={this.onAccountInvalidClick}/>

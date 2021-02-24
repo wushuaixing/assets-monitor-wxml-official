@@ -90,8 +90,8 @@ export default class AuthCode extends Component<IProps, isState> {
           type: 'login/getSmsLogin',
           payload: {...params}
         }).then(res => {
-          if (res.data.code === 200) {
-            const {data: {token, rules}} = res.data;
+          if (res.code === 200) {
+            const {data: {token, rules}} = res || {};
             Taro.setStorageSync('token', token);
             Taro.setStorageSync('loginNumber', phone);
             let auth_Rule = rules;
@@ -108,7 +108,8 @@ export default class AuthCode extends Component<IProps, isState> {
           } else {
             this.setState({
               againStatus: true,
-              captcha: ''
+              captcha: '',
+              focus:true
             })
           }
         }).catch(() => {
@@ -133,7 +134,7 @@ export default class AuthCode extends Component<IProps, isState> {
       payload: {mobile: phone},
     }).then(res => {
       this.onTimer();
-      const {message, code} = res.data || {}
+      const {message, code} = res || {}
       if (code === 200) {
         this.setState({
           second: 59,
@@ -163,7 +164,7 @@ export default class AuthCode extends Component<IProps, isState> {
           </View>
           <View className='yc-login-authCode-container' onClick={this.onClick}>
             <Input className='yc-login-authCode-container-input' type='number' maxlength={4} focus={focus}
-                   onInput={this.onChangeCaptcha}/>
+                   onInput={this.onChangeCaptcha} value={captcha} />
             {
               [0, 1, 2, 3].map((_value, index) => {
                 return <View
@@ -177,7 +178,7 @@ export default class AuthCode extends Component<IProps, isState> {
             }
           </View>
           {
-            againStatus && second !== 59 ?
+            againStatus && second !== 59 && captcha === '' ?
             <View>
               <View className='yc-login-authCode-errorText'>验证码输入错误</View>
             </View> : null
@@ -192,7 +193,7 @@ export default class AuthCode extends Component<IProps, isState> {
               </View> :
               <View className='yc-login-authCode-secondText'>{`${second}s后重新获取验证码`}</View>
           }
-          <View className='yc-login-footer' style={{height:'59vh'}}>
+          <View className='yc-login-footer' style={{height:'61vh'}}>
             <Image className='yc-login-footer-footerImg' src={loginFooterImg} style={{opacity: '0.15'}}/>
           </View>
         </View>
