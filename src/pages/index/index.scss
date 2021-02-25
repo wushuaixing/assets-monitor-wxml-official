@@ -5,7 +5,6 @@
   box-shadow: -4px 4px 20px 0px rgba(185, 185, 185, 0.3);
   border-radius: 8px;
   z-index: 1;
-  margin:  0 12px;
   &-icon{
     position: absolute;
     z-index: 2;
@@ -32,6 +31,43 @@
       font-size: 24px;
       padding-right: 22px;
       line-height: 106px;
+    }
+  }
+}
+
+@mixin riskLogo{
+  width: 148px;
+  height: 106px;
+  position: relative;
+  box-shadow: -4px 4px 20px 0px rgba(185, 185, 185, 0.3);
+  border-radius: 8px;
+  z-index: 1;
+  &-icon{
+    position: absolute;
+    z-index: 2;
+    width: auto;
+    height: 100px;
+    right: 0;
+    bottom: 0;
+  }
+  &-text{
+    color: white;
+    font-size: 30px;
+    line-height: 30px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    &-left{
+      font-size: 24px;
+      padding: 5px 0 16px 20px;
+      &-title{
+        margin-top: 12px;
+      }
+    }
+    &-right{
+      font-size: 24px;
+      padding-right: 12px;
+      line-height: 100px;
     }
   }
 }
@@ -103,8 +139,8 @@
     margin: 24px;
     border-radius: 24px;
     background-color: white;
+    padding-bottom: 126px;
     &-box{
-      margin: 0 12px;
       background-color: white;
       border-bottom-left-radius: 24px;
       border-bottom-right-radius: 24px;
@@ -112,24 +148,147 @@
         color: $common-text;
         font-size: 30px;
         line-height: 30px;
-        margin-top: 9px;
+        margin: 9px 0 0 24px;
         font-weight: 500;
+        &-icon{
+          color: #666666;
+          font-size: 28px;
+          line-height: 28px;
+          margin-left: 10px;
+        }
       }
       &-star{
         display: flex;
-        margin-top: 25px;
+        margin: 25px 24px 0 24px;
         &-three{
-          background-image: linear-gradient(to right, #0CBC47 , #00DF7E);
+          background-image: linear-gradient(to right, #0CBC47, #00DF7E);
           @include starBox;
         }
         &-two{
           background-image: linear-gradient(to right, #00B5C1 , #00DAFF);
           @include starBox;
+          margin: 0 24px;
         }
         &-one{
           background-image: linear-gradient(to right, #3078FE , #5EB0FF);
           @include starBox;
         }
+        &-high{
+          @include riskLogo;
+          background-image: linear-gradient(to right, #FF3B3E, #FC8383);
+          .home-data-box-star-high-icon{
+            width: 86px;
+          }
+        }
+        &-warn{
+          background-image: linear-gradient(to right, #FF5414, #FFA349);
+          @include riskLogo;
+          margin: 0 10px;
+          .home-data-box-star-warn-icon{
+            width: 102px;
+          }
+        }
+        &-tip{
+          background-image: linear-gradient(to right, #00A7FA, #36C5FF);
+          @include riskLogo;
+          margin: 0 10px;
+          .home-data-box-star-tip-icon{
+            width: 86px;
+          }
+        }
+        &-good{
+          background-image: linear-gradient(to right, #0CBC47, #00DF7E);
+          @include riskLogo;
+          .home-data-box-star-good-icon{
+            width: 80px;
+          }
+        }
+      }
+      &-typeTitle{
+        color: $common-text;
+        font-size: 30px;
+        margin: 48px 0 0 24px;
+      }
+      &-firstLine{
+        background-color: $divider-color;
+        height: 1px;
+        width: 654px;
+        margin: 24px 24px 0 24px;
+      }
+      &-type{
+        display: flex;
+        margin: 0 24px;
+        width: 654px;
+        flex-wrap: wrap;
+        &-logo{
+          width: 327px;
+          height: 124px;
+          text-align: center;
+          position: relative;
+          display: flex;
+          flex-direction: row;
+          border-bottom: 1px solid $divider-color;
+          &-left{
+            margin: 40px 0 0 48px;
+            &-icon{
+              font-size: 44px;
+              line-height: 44px;
+              color: #808080;
+            }
+          }
+          &-right{
+            margin: 24px 0 0 48px;
+            &-name{
+              font-size: 28px;
+              line-height: 28px;
+              color: #666666;
+            }
+            &-num{
+              margin-top: 16px;
+              font-size: 32px;
+              line-height: 32px;
+              font-weight: 500;
+              text-align: left;
+            }
+          }
+          &-divider{
+            position: absolute;
+            right: 0;
+            background-color: $divider-color;
+            width: 1px;
+            height: 62px;
+            top: 30px;
+          }
+
+        }
+      }
+    }
+
+    &-noData{
+      position: relative;
+      display: flex;
+      text-align: center;
+      flex-direction: column;
+      &-pic{
+        position: absolute;
+        text-align: center;
+        top: -60px;
+        &-img{
+          width: 400px;
+          height: 240px;
+        }
+      }
+      &-tips{
+        font-size: 28px;
+        line-height: 28px;
+        color: #6D6D6D;
+      }
+      &-advice{
+        color: $primary-color;
+        margin-top: 14px;
+        font-size: 28px;
+        line-height: 28px;
+        cursor: pointer;
       }
     }
   }

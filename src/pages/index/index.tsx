@@ -14,9 +14,22 @@ import debtor from '../../assets/img/page/debtor.png';
 import collection from '../../assets/img/page/collection.png';
 import follow from '../../assets/img/page/follow.png';
 import star from '../../assets/img/page/star.png';
+import high from '../../assets/img/page/high-risk.png';
+import warn from '../../assets/img/page/warn-risk.png';
+import tip from '../../assets/img/page/tip-risk.png';
+import good from '../../assets/img/page/good-risk.png';
+import noresult from '../../assets/img/components/blank_noresult.png'
+
+
 import './index.scss'
 
-
+interface dataItem{
+  id: number
+  name: string
+  icon: string
+  num: number
+  isRule: boolean
+}
 type IProps = {
   count: number,
   dispatch: ({type: string, payload: object}) => {},
@@ -26,6 +39,8 @@ type IState = {
   animation: any,
   current: number
   type: string
+  assetsArray: dataItem[]
+  riskArray: dataItem[]
 };
 
 @connect(({ home }) => ({ ...home }))
@@ -37,6 +52,15 @@ class Index extends Component <IProps, IState>{
       animation: '',
       current: 1,
       type: 'assets',
+      // assetsArray: [
+      //   { id: 1, name: '资产拍卖', num: 99, isRule: false, icon: 'icon-auction'},
+      //   { id: 2, name: '代位权', num: 199, isRule: false, icon: 'icon-subrogation'},
+      // ],
+      assetsArray: [],
+      riskArray: [
+        { id: 1, name: '破产重整', num: 34, isRule: false, icon: 'icon-bankruptcy'},
+        { id: 2, name: '涉诉', num: 66, isRule: false, icon: 'icon-litigation'},
+      ]
     };
   }
 
@@ -69,7 +93,7 @@ class Index extends Component <IProps, IState>{
       { title: '资产', id: 1 },
       { title: '风险', id: 2 },
     ];
-    const { current } = this.state;
+    const { current, assetsArray, riskArray } = this.state;
     return (
       <View className='home'>
         <View className='home-title'>
@@ -127,41 +151,146 @@ class Index extends Component <IProps, IState>{
           <View className='home-data'>
             <Tab type={'homeTab'} config={tabList} onClick={this.handleClick}/>
             {
-              current === 1 && <View className='home-data-box'>
-								<View className='home-data-box-level'>线索等级</View>
-								<View className='home-data-box-star'>
-									<View className='home-data-box-star-three'>
-                    <Image className='home-data-box-star-three-icon' src={star}/>
-                    <View className='home-data-box-star-three-text'>
-											<View className='home-data-box-star-three-text-left'>
-												<View className='home-data-box-star-three-text-left-title'>三星</View>
-												<View className='home-data-box-star-three-text-left-title'>245</View>
-											</View>
-											<View className='home-data-box-star-three-text-right'>{`>`}</View>
+              current === 1 && (
+                assetsArray.length > 0 ? <View className='home-data-box'>
+                  <View className='home-data-box-level'>
+                    <Text>线索等级</Text>
+                    <Text className='iconfont icon-question home-data-box-level-icon'/>
+                  </View>
+                  <View className='home-data-box-star'>
+                    <View className='home-data-box-star-three'>
+                      <Image className='home-data-box-star-three-icon' src={star}/>
+                      <View className='home-data-box-star-three-text'>
+                        <View className='home-data-box-star-three-text-left'>
+                          <View className='home-data-box-star-three-text-left-title'>三星</View>
+                          <View className='home-data-box-star-three-text-left-title'>245</View>
+                        </View>
+                        <Text className='iconfont icon-right-arrow home-data-box-star-three-text-right' />
+                      </View>
+                    </View>
+                    <View className='home-data-box-star-two'>
+                      <Image className='home-data-box-star-two-icon' src={star}/>
+                      <View className='home-data-box-star-two-text'>
+                        <View className='home-data-box-star-two-text-left'>
+                          <View className='home-data-box-star-two-text-left-title'>二星</View>
+                          <View className='home-data-box-star-two-text-left-title'>245</View>
+                        </View>
+                        <Text className='iconfont icon-right-arrow home-data-box-star-three-text-right' />
+                      </View>
+                    </View>
+                    <View className='home-data-box-star-one'>
+                      <Image className='home-data-box-star-one-icon' src={star}/>
+                      <View className='home-data-box-star-one-text'>
+                        <View className='home-data-box-star-one-text-left'>
+                          <View className='home-data-box-star-one-text-left-title'>一星</View>
+                          <View className='home-data-box-star-one-text-left-title'>245</View>
+                        </View>
+                        <Text className='iconfont icon-right-arrow home-data-box-star-three-text-right' />
+                      </View>
                     </View>
                   </View>
-									<View className='home-data-box-star-two'>
-										<Image className='home-data-box-star-three-icon' src={star}/>
-										<View className='home-data-box-star-three-text'>
-											<View className='home-data-box-star-three-text-left'>
-												<View className='home-data-box-star-three-text-left-title'>二星</View>
-												<View className='home-data-box-star-three-text-left-title'>245</View>
+                  <View className='home-data-box-typeTitle'>线索类型</View>
+                  <View className='home-data-box-firstLine'/>
+                  <View className='home-data-box-type'>
+                    {
+                      assetsArray.map((item, index) => {
+                        return(
+                          <View className='home-data-box-type-logo'>
+                            <View className='home-data-box-type-logo-left'>
+                              <Text className={`iconfont ${item.icon} home-data-box-type-logo-left-icon`}/>
+                            </View>
+                            <View className='home-data-box-type-logo-right'>
+                              <View className='home-data-box-type-logo-right-name'>{item.name}</View>
+                              <View className='home-data-box-type-logo-right-num'>{item.num}</View>
+                            </View>
+                            {
+                              index % 2 === 0 && <View className='home-data-box-type-logo-divider'/>
+                            }
+                          </View>
+                        )
+                      })
+                    }
+                  </View>
+                </View> : <View className='home-data-noData'>
+                  <View className='home-data-noData-pic'>
+                    <Image className='home-data-noData-pic-img' src={noresult}/>
+                  </View>
+                  <View className='home-data-noData-tips'>暂未发现债务人相关的资产线索</View>
+                  <View className='home-data-noData-advice'>建议添加监控业务</View>
+                </View>
+              )
+            }
+            {
+              current === 2 && <View className='home-data-box'>
+								<View className='home-data-box-level'>
+									<Text>风险等级</Text>
+									<Text className='iconfont icon-question home-data-box-level-icon'/>
+								</View>
+								<View className='home-data-box-star'>
+									<View className='home-data-box-star-high'>
+										<Image className='home-data-box-star-high-icon' src={high}/>
+										<View className='home-data-box-star-high-text'>
+											<View className='home-data-box-star-high-text-left'>
+												<View className='home-data-box-star-high-text-left-title'>高风险</View>
+												<View className='home-data-box-star-high-text-left-title'>245</View>
 											</View>
-											<View className='home-data-box-star-three-text-right'>{`>`}</View>
+											<Text className='iconfont icon-right-arrow home-data-box-star-three-text-right' />
 										</View>
 									</View>
-									<View className='home-data-box-star-one'>
-										<Image className='home-data-box-star-three-icon' src={star}/>
-										<View className='home-data-box-star-three-text'>
-											<View className='home-data-box-star-three-text-left'>
-												<View className='home-data-box-star-three-text-left-title'>一星</View>
-												<View className='home-data-box-star-three-text-left-title'>245</View>
+									<View className='home-data-box-star-warn'>
+										<Image className='home-data-box-star-warn-icon' src={warn}/>
+										<View className='home-data-box-star-warn-text'>
+											<View className='home-data-box-star-warn-text-left'>
+												<View className='home-data-box-star-warn-text-left-title'>警示</View>
+												<View className='home-data-box-star-warn-text-left-title'>245</View>
 											</View>
-											<View className='home-data-box-star-three-text-right'>{`>`}</View>
+											<Text className='iconfont icon-right-arrow home-data-box-star-three-text-right' />
+										</View>
+									</View>
+									<View className='home-data-box-star-tip'>
+										<Image className='home-data-box-star-tip-icon' src={tip}/>
+										<View className='home-data-box-star-tip-text'>
+											<View className='home-data-box-star-tip-text-left'>
+												<View className='home-data-box-star-tip-text-left-title'>提示</View>
+												<View className='home-data-box-star-tip-text-left-title'>245</View>
+											</View>
+											<Text className='iconfont icon-right-arrow home-data-box-star-three-text-right' />
+										</View>
+									</View>
+									<View className='home-data-box-star-good'>
+										<Image className='home-data-box-star-good-icon' src={good}/>
+										<View className='home-data-box-star-good-text'>
+											<View className='home-data-box-star-good-text-left'>
+												<View className='home-data-box-star-good-text-left-title'>利好</View>
+												<View className='home-data-box-star-good-text-left-title'>245</View>
+											</View>
+											<Text className='iconfont icon-right-arrow home-data-box-star-three-text-right' />
 										</View>
 									</View>
                 </View>
-              </View>
+								<View className='home-data-box-typeTitle'>风险类型</View>
+								<View className='home-data-box-firstLine'/>
+								<View className='home-data-box-type'>
+                  {
+                    riskArray.map((item, index) => {
+                      return(
+                        <View className='home-data-box-type-logo'>
+                          <View className='home-data-box-type-logo-left'>
+                            <Text className={`iconfont ${item.icon} home-data-box-type-logo-left-icon`}/>
+                          </View>
+                          <View className='home-data-box-type-logo-right'>
+                            <View className='home-data-box-type-logo-right-name'>{item.name}</View>
+                            <View className='home-data-box-type-logo-right-num'>{item.num}</View>
+                          </View>
+                          {
+                            index % 2 === 0 && <View className='home-data-box-type-logo-divider'/>
+                          }
+                        </View>
+                      )
+                    })
+                  }
+								</View>
+							</View>
             }
           </View>
 
