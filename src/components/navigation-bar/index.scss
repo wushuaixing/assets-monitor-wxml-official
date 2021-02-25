@@ -1,7 +1,23 @@
+@mixin contentItem{
+
+}
+
+.navigation-blue{
+  background-color: $primary-color;
+}
+
+.navigation-white{
+  background-color: white;
+}
+
+.navigation-gradient{
+  background-image: linear-gradient(to right, #0979E6, #3581FE, #408FFF);
+}
+
 .navigation-wrapper{
   height: 45PX;
   position: relative;
-  background: #FFFFFF;
+  //background: #FFFFFF;
   //border-bottom: 1px solid #DADDE6;
   .navigator-chevron{
     position: absolute;
@@ -23,6 +39,14 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow:ellipsis;
+  }
+
+  .navigator-white{
+    color: white;
+  }
+
+  .navigator-black{
+    color: $common-text;
   }
 }
 .navigation-wrapper-border{

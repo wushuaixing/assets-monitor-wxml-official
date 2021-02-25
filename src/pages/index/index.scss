@@ -74,34 +74,40 @@
 
 .home{
   background-color: $page-bg-color;
-  &-header{
-    display: flex;
-    flex-direction: row;
-    align-content: center;
-    margin: 32px 24px 0 24px;
-    padding: 24px 0;
-    background: white;
-    //box-shadow: 0 2px 34px 0 rgba(55, 131, 254, 0.16);
-    border-radius: 24px;
-    justify-content: space-between;
-    &-tab{
+  &-bg{
+    background: url("../../assets/img/page/header-bg.png") no-repeat;
+    background-size: 100% auto;
+    width: 750px;
+    padding-top: 32px;
+    .home-header{
       display: flex;
-      flex-direction: column;
-      justify-content: center;
-      text-align: center;
-      margin: 0 auto;
-      width: 234px;
-      &-logo{
+      flex-direction: row;
+      align-content: center;
+      margin: 0 24px;
+      padding: 24px 0;
+      background: white;
+      //box-shadow: 0 2px 34px 0 rgba(55, 131, 254, 0.16);
+      border-radius: 24px;
+      justify-content: space-between;
+      &-tab{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
         text-align: center;
-        &-pic{
-          width: 88px;
-          height: 88px;
+        margin: 0 auto;
+        width: 234px;
+        &-logo{
+          text-align: center;
+          &-pic{
+            width: 88px;
+            height: 88px;
+          }
         }
-      }
-      &-text{
-        margin-top: 12px;
-        font-size: 28px;
-        color: $common-text;
+        &-text{
+          margin-top: 12px;
+          font-size: 28px;
+          color: $common-text;
+        }
       }
     }
   }
@@ -139,7 +145,7 @@
     margin: 24px;
     border-radius: 24px;
     background-color: white;
-    padding-bottom: 126px;
+    padding-bottom: 24px;
     &-box{
       background-color: white;
       border-bottom-left-radius: 24px;
@@ -220,6 +226,7 @@
         margin: 0 24px;
         width: 654px;
         flex-wrap: wrap;
+        padding-bottom: 96px;
         &-logo{
           width: 327px;
           height: 124px;
@@ -271,14 +278,15 @@
       flex-direction: column;
       &-pic{
         position: absolute;
-        text-align: center;
         top: -60px;
+        left: 151px;
         &-img{
           width: 400px;
           height: 240px;
         }
       }
       &-tips{
+        margin-top: 185px;
         font-size: 28px;
         line-height: 28px;
         color: #6D6D6D;
@@ -293,21 +301,125 @@
     }
   }
 
-  &-read{
-    display: flex;
+  &-case{
+    width: 702px;
     background-color: white;
-    align-items: center;
-    flex-direction: row;
-    justify-content: space-between;
+    border-radius: 24px;
+    margin: 24px;
     &-title{
-      font-size: 32px;
       color: $common-text;
-      margin: 22px 0 0 24px;
+      padding: 31px 0 33px 24px;
+      font-size: 32px;
+      line-height: 32px;
+      font-weight: 500;
     }
 
-    &-switch{
+    &-titleLine{
+      background-color: $divider-color;
+      height: 1px;
+      width: 100%;
+    }
+
+    &-info{
       display: flex;
-      align-items: center;
+      width: 100%;
+      flex-direction: column;
+      &-title{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        margin: 32px 24px 0 24px;
+        &-text{
+          font-size: 30px;
+          line-height: 30px;
+          font-weight: 500;
+          color: $common-text;
+        }
+        &-time{
+          color: $label-color;
+          font-size: 22px;
+          line-height: 22px;
+          vertical-align: middle;
+        }
+      }
+
+      &-text{
+        color: $text-color;
+        font-size: 28px;
+        line-height: 42px;
+        display: flex;
+        margin: 17px 24px 25px 24px;
+      }
+
+      &-line{
+        background-color: $divider-color;
+        height: 1px;
+        margin: 0 24px;
+      }
     }
   }
+
+  &-bottom{
+    margin: 24px 0 25px 0;
+    position: relative;
+    padding-bottom: 120px;
+    &-left{
+      position: absolute;
+      background-color: $divider-color;
+      height: 1px;
+      width: 48px;
+      left: 240px;
+      top: 11px;
+    }
+    &-right{
+      position: absolute;
+      background-color: $divider-color;
+      height: 1px;
+      width: 48px;
+      right: 240px;
+      top: 11px;
+    }
+    &-text{
+      text-align: center;
+      color: $light-text-color;
+      height: 22px;
+      line-height: 22px;
+      font-size: 22px;
+    }
+  }
+
+  &-noBusiness{
+    text-align: center;
+    margin-top: 40px;
+    &-box{
+      text-align: center;
+      &-pic{
+        width: 660px;
+        height: 396px;
+      }
+    }
+
+    &-prompt{
+      font-size: 30px;
+      line-height: 30px;
+      margin: 30px 0 48px 0;
+      color: $text-color;
+    }
+    &-btn{
+      display: flex;
+      justify-content: center;
+      &-text{
+        background-color: $primary-color;
+        width: 574px;
+        height: 98px;
+        color: white;
+        border-radius: 8px;
+        font-size: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+  }
+
 }

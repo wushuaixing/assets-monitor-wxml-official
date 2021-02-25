@@ -1,7 +1,7 @@
 import request from '../request/index';
 
-// jsSessionUrl
-export async function getJsSessionUrl(payload) {
-  return request.getNoToken('/api/auth/open/wechat/jsSession',  { jsCode: payload.jsCode}, false);
+// 当前机构统计信息
+export async function currentOrganizationApi() {
+  return request.get('/yc/index/information/overview/currentOrganization');
 }
 
