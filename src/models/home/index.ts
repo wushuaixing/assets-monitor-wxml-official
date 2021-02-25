@@ -1,24 +1,23 @@
-import { getJsSessionUrl } from '../../services/home';
+import { currentOrganizationApi } from '../../services/home';
 
 export default {
   namespace: 'home',
   state: {
-    count: 12,
+    businessCount: 0,
   },
   effects: {
-    *getJsSession({ payload }, {all, call, put }) {
-      console.log('getJsSession payload === ', payload);
-      const res = yield call(getJsSessionUrl, payload);
-      console.log('getJsSession res === ', res);
-      // yield put({type: 'saveCatalog', payload: res});
+    *getCurrentOrganization({ payload }, {all, call, put }) {
+      const res = yield call(currentOrganizationApi, payload);
+      yield put({ type: 'updateState', payload: {businessCount: res.data.businessCount} });
+      console.log('res === ', res);
     },
   },
   reducers: {
-    // updateState(state, { payload }) {
-    //   return {
-    //     ...state,
-    //     ...payload,
-    //   }
-    // },
+    updateState(state, { payload }) {
+      return {
+        ...state,
+        ...payload,
+      }
+    },
   }
 }

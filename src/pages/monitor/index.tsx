@@ -433,7 +433,7 @@ export default class Monitor extends Component <IProps, IState>{
     console.log('page props === ', this.props);
     return (
       <View className='monitor'>
-        <NavigationBar title={'源诚资产监控'} type={'blue'}/>
+        <NavigationBar title={'源诚资产监控'} type={'blue'} color='white'/>
         <Tab config={tabList} onClick={this.handleClick}/>
         <TagSelected
           type={currentId === 1 ? 'assets' : 'risk' }
