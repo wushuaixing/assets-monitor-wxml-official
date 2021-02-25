@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import {View, Button, Text, Image, ScrollView} from '@tarojs/components';
+import {View, Text, Image, ScrollView} from '@tarojs/components';
 import Taro from '@tarojs/taro';
-import { AtSwitch, AtTabs }  from 'taro-ui'
 import { connect } from 'react-redux';
 import NavigationBar from '../../components/navigation-bar';
 import Tab from "../../components/tab";
-import {getGlobalData, setGlobalData} from "../../utils/const/global";
+import { setGlobalData} from "../../utils/const/global";
 import addBus from '../../assets/img/page/add-bus.png';
 import portrait from '../../assets/img/page/portrait-search.png';
 import auction from '../../assets/img/page/auction.png';
@@ -41,7 +40,10 @@ interface caseItem{
 type IProps = {
   count: number,
   businessCount: number
-  dispatch: ({type: string, payload: object}) => {},
+  dispatch: ({type: string, payload: object}) => {}
+  assetsArray: dataItem[]
+  riskArray: dataItem[]
+  starLevel: { [propName: string]: number}
 };
 
 type IState = {
@@ -49,29 +51,17 @@ type IState = {
   current: number
   type: string
   scrollViewHeight: number
-  assetsArray: dataItem[]
-  riskArray: dataItem[]
   caseArray: caseItem[]
 };
 
 @connect(({ home }) => ({ ...home }))
 class Index extends Component <IProps, IState>{
-
   constructor(props) {
     super(props);
     this.state = {
       animation: '',
       current: 1,
       type: 'assets',
-      assetsArray: [
-        { id: 1, name: '资产拍卖', num: 99, isRule: false, icon: 'icon-auction'},
-        { id: 2, name: '代位权', num: 199, isRule: false, icon: 'icon-subrogation'},
-      ],
-      // assetsArray: [],
-      riskArray: [
-        { id: 1, name: '破产重整', num: 34, isRule: false, icon: 'icon-bankruptcy'},
-        { id: 2, name: '涉诉', num: 66, isRule: false, icon: 'icon-litigation'},
-      ],
       caseArray: [
         {title: '排污权处置案例', time: '2020-10-10', text: '山东某分行通过“排污权”信息成功收回100万元山东某分行通过“排污权”信息成功收回100万元！'},
         {title: '排污权处置案例', time: '2020-10-10', text: '山东某分行通过“排污权”信息成功收回100万元山东某分行通过“排污权”信息成功收回100万元！'},
@@ -95,8 +85,11 @@ class Index extends Component <IProps, IState>{
     dispatch({
       type: 'home/getCurrentOrganization',
       payload: {}
+    });
+    dispatch({
+      type: 'home/getAssets',
+      payload: {}
     })
-
   }
 
   componentDidMount () {
@@ -109,15 +102,20 @@ class Index extends Component <IProps, IState>{
     });
   }
 
-  componentWillUnmount () { }
-
-  componentDidShow () {
-  }
-
-  componentDidHide () { }
-
-
   handleClick = (value) => {
+    const { dispatch } = this.props;
+    if(value.id === 1){
+      dispatch({
+        type: 'home/getAssets',
+        payload: {}
+      });
+    }
+    else {
+      dispatch({
+        type: 'home/getRisk',
+        payload: {}
+      });
+    }
     this.setState({
       current: value.id
     })
@@ -132,16 +130,16 @@ class Index extends Component <IProps, IState>{
       { title: '资产', id: 1 },
       { title: '风险', id: 2 },
     ];
-    const { current, assetsArray, riskArray, caseArray, scrollViewHeight} = this.state;
-    const { businessCount } = this.props;
-    console.log('scrollViewHeight === ', businessCount, scrollViewHeight);
+    const { current, caseArray, scrollViewHeight} = this.state;
+    const { assetsArray, riskArray, businessCount, starLevel } = this.props;
+    console.log('data === ', starLevel, businessCount, assetsArray, riskArray);
     return (
       <View className='home'>
         <View className='home-title'>
           <NavigationBar  title='源诚资产监控' type='gradient' color='white'/>
         </View>
         {
-          businessCount > 0 ? <ScrollView scrollY style={{ height: scrollViewHeight }}>
+          businessCount > 0 && <ScrollView scrollY style={{ height: scrollViewHeight }}>
             <View className='home-bg'>
               <View className='home-header'>
                 <View className='home-header-tab'>
@@ -207,7 +205,7 @@ class Index extends Component <IProps, IState>{
                         <View className='home-data-box-star-three-text'>
                           <View className='home-data-box-star-three-text-left'>
                             <View className='home-data-box-star-three-text-left-title'>三星</View>
-                            <View className='home-data-box-star-three-text-left-title'>245</View>
+                            <View className='home-data-box-star-three-text-left-title'>{starLevel.threeStar}</View>
                           </View>
                           <Text className='iconfont icon-right-arrow home-data-box-star-three-text-right' />
                         </View>
@@ -217,7 +215,7 @@ class Index extends Component <IProps, IState>{
                         <View className='home-data-box-star-two-text'>
                           <View className='home-data-box-star-two-text-left'>
                             <View className='home-data-box-star-two-text-left-title'>二星</View>
-                            <View className='home-data-box-star-two-text-left-title'>245</View>
+                            <View className='home-data-box-star-two-text-left-title'>{starLevel.twoStar}</View>
                           </View>
                           <Text className='iconfont icon-right-arrow home-data-box-star-three-text-right' />
                         </View>
@@ -227,7 +225,7 @@ class Index extends Component <IProps, IState>{
                         <View className='home-data-box-star-one-text'>
                           <View className='home-data-box-star-one-text-left'>
                             <View className='home-data-box-star-one-text-left-title'>一星</View>
-                            <View className='home-data-box-star-one-text-left-title'>245</View>
+                            <View className='home-data-box-star-one-text-left-title'>{starLevel.oneStar}</View>
                           </View>
                           <Text className='iconfont icon-right-arrow home-data-box-star-three-text-right' />
                         </View>
@@ -277,7 +275,7 @@ class Index extends Component <IProps, IState>{
                         <View className='home-data-box-star-high-text'>
                           <View className='home-data-box-star-high-text-left'>
                             <View className='home-data-box-star-high-text-left-title'>高风险</View>
-                            <View className='home-data-box-star-high-text-left-title'>245</View>
+                            <View className='home-data-box-star-high-text-left-title'>{starLevel.high}</View>
                           </View>
                           <Text className='iconfont icon-right-arrow home-data-box-star-three-text-right' />
                         </View>
@@ -287,7 +285,7 @@ class Index extends Component <IProps, IState>{
                         <View className='home-data-box-star-warn-text'>
                           <View className='home-data-box-star-warn-text-left'>
                             <View className='home-data-box-star-warn-text-left-title'>警示</View>
-                            <View className='home-data-box-star-warn-text-left-title'>245</View>
+                            <View className='home-data-box-star-warn-text-left-title'>{starLevel.warn}</View>
                           </View>
                           <Text className='iconfont icon-right-arrow home-data-box-star-three-text-right' />
                         </View>
@@ -297,7 +295,7 @@ class Index extends Component <IProps, IState>{
                         <View className='home-data-box-star-tip-text'>
                           <View className='home-data-box-star-tip-text-left'>
                             <View className='home-data-box-star-tip-text-left-title'>提示</View>
-                            <View className='home-data-box-star-tip-text-left-title'>245</View>
+                            <View className='home-data-box-star-tip-text-left-title'>{starLevel.tip}</View>
                           </View>
                           <Text className='iconfont icon-right-arrow home-data-box-star-three-text-right' />
                         </View>
@@ -307,7 +305,7 @@ class Index extends Component <IProps, IState>{
                         <View className='home-data-box-star-good-text'>
                           <View className='home-data-box-star-good-text-left'>
                             <View className='home-data-box-star-good-text-left-title'>利好</View>
-                            <View className='home-data-box-star-good-text-left-title'>245</View>
+                            <View className='home-data-box-star-good-text-left-title'>{starLevel.good}</View>
                           </View>
                           <Text className='iconfont icon-right-arrow home-data-box-star-three-text-right' />
                         </View>
@@ -378,17 +376,19 @@ class Index extends Component <IProps, IState>{
 							</View>
             }
 
-          </ScrollView> : <ScrollView style={{ height: scrollViewHeight }} className='home-noBusiness'>
-            <View className='home-noBusiness-box'>
-              <Image className='home-noBusiness-box-pic' src={noData} />
-            </View>
-            <View className='home-noBusiness-prompt'>您还未添加监控的业务</View>
-            <View className='home-noBusiness-btn'>
-              <View className='home-noBusiness-btn-text'>添加业务</View>
-            </View>
           </ScrollView>
         }
-
+        {
+          businessCount <= 0 && <ScrollView style={{ height: scrollViewHeight }} className='home-noBusiness'>
+						<View className='home-noBusiness-box'>
+							<Image className='home-noBusiness-box-pic' src={noData} />
+						</View>
+						<View className='home-noBusiness-prompt'>您还未添加监控的业务</View>
+						<View className='home-noBusiness-btn'>
+							<View className='home-noBusiness-btn-text'>添加业务</View>
+						</View>
+					</ScrollView>
+        }
       </View>
     )
   }
