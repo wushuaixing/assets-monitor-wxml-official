@@ -1,25 +1,71 @@
+@mixin starBox{
+  width: 202px;
+  height: 106px;
+  position: relative;
+  box-shadow: -4px 4px 20px 0px rgba(185, 185, 185, 0.3);
+  border-radius: 8px;
+  z-index: 1;
+  margin:  0 12px;
+  &-icon{
+    position: absolute;
+    z-index: 2;
+    width: 99px;
+    height: 95px;
+    right: 0;
+    bottom: 0;
+  }
+  &-text{
+    color: white;
+    font-size: 30px;
+    line-height: 30px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    &-left{
+      font-size: 24px;
+      padding: 5px 0 16px 24px;
+      &-title{
+        margin-top: 12px;
+      }
+    }
+    &-right{
+      font-size: 24px;
+      padding-right: 22px;
+      line-height: 106px;
+    }
+  }
+}
+
 .home{
   background-color: $page-bg-color;
   &-header{
     display: flex;
     flex-direction: row;
     align-content: center;
-    margin: 42px 24px 0 24px;
-    padding: 24px 68px;
+    margin: 32px 24px 0 24px;
+    padding: 24px 0;
     background: white;
-    box-shadow: 0 2px 34px 0 rgba(55, 131, 254, 0.16);
+    //box-shadow: 0 2px 34px 0 rgba(55, 131, 254, 0.16);
     border-radius: 24px;
     justify-content: space-between;
     &-tab{
       display: flex;
       flex-direction: column;
+      justify-content: center;
       text-align: center;
-      &-img{
-        width: 116px;
-        height: 116px;
+      margin: 0 auto;
+      width: 234px;
+      &-logo{
+        text-align: center;
+        &-pic{
+          width: 88px;
+          height: 88px;
+        }
       }
       &-text{
-        margin-top: 16px;
+        margin-top: 12px;
+        font-size: 28px;
+        color: $common-text;
       }
     }
   }
@@ -30,32 +76,61 @@
     align-content: center;
     background: white;
     justify-content: space-between;
-    padding: 28px 50px;
-    margin-top: 24px;
+    padding: 28px 40px;
+    margin: 24px;
+    border-radius: 24px;
     &-tab{
       display: flex;
       flex-direction: column;
       text-align: center;
       align-items: center;
-      &-img{
-        width: 48px;
-        height: 48px;
+      &-logo{
+        text-align: center;
+        &-img{
+          width: 80px;
+          height: 80px;
+        }
       }
       &-text{
-        margin-top: 20px;
+        margin-top: 12px;
+        font-size: 24px;
+        color: $common-text;
       }
     }
   }
 
   &-data{
-    margin-top: 24px;
+    margin: 24px;
+    border-radius: 24px;
     background-color: white;
-    &-tab{
-      display: flex;
-      flex-direction: row;
-      font-size: 34px;
-      padding: 20px 178px;
-      justify-content: space-between;
+    &-box{
+      margin: 0 12px;
+      background-color: white;
+      border-bottom-left-radius: 24px;
+      border-bottom-right-radius: 24px;
+      &-level{
+        color: $common-text;
+        font-size: 30px;
+        line-height: 30px;
+        margin-top: 9px;
+        font-weight: 500;
+      }
+      &-star{
+        display: flex;
+        margin-top: 25px;
+        &-three{
+          background-image: linear-gradient(to right, #0CBC47 , #00DF7E);
+          @include starBox;
+        }
+        &-two{
+          background-image: linear-gradient(to right, #00B5C1 , #00DAFF);
+          @include starBox;
+        }
+        &-one{
+          background-image: linear-gradient(to right, #3078FE , #5EB0FF);
+          @include starBox;
+        }
+      }
     }
   }
 

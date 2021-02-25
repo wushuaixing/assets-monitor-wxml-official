@@ -4,6 +4,15 @@ import { connect } from 'react-redux';
 import Taro from '@tarojs/taro';
 import { setGlobalData } from '../../utils/const/global';
 
+
+function handleDealAuthRule(authRule){
+  let ruleArray: string[] = [];
+  authRule.forEach(item => {
+    ruleArray.push(item.rule)
+  });
+  return ruleArray;
+}
+
 type isState ={}
 
 type IProps = {
@@ -29,7 +38,9 @@ export default class DefaultPage extends Component<IProps,isState>{
         const {code,data} = res || {};
         if (code === 200){
           let searchUser = data.orgPageGroups.filter(item => item.groupName === 'menu_sy');
-          setGlobalData('systemAuthRule',data.orgPageGroups)
+          setGlobalData('systemAuthRule', data.orgPageGroups);
+          let ruleArray = handleDealAuthRule(data.orgPageGroups);
+          setGlobalData('ruleArray', ruleArray);
           if (searchUser && searchUser.length === 0) {
             setGlobalData('systemRoleType','search')
             // 查询账号

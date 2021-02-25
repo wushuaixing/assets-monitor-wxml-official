@@ -13,6 +13,21 @@
   background-size: cover;
 }
 
+@mixin homeTabItem{
+  width: 702px;
+  height: 112px;
+  background-size: cover;
+}
+
+@mixin homeTabTextItem{
+  font-size: 34px;
+  line-height: 34px;
+  padding: 27px 120px;
+  display: inline-block;
+  position: absolute;
+  top: 0;
+}
+
 .tab{
   position: relative;
   &-bg{
@@ -42,5 +57,37 @@
   }
   &-item-right{
     right: 120px;
+  }
+}
+
+.homeTab{
+  position: relative;
+  &-bg{
+    width: 100%;
+    &-leftActive{
+      background-image: url("../../assets/img/components/home-left.png");
+      @include homeTabItem;
+    }
+    &-rightActive{
+      background-image: url("../../assets/img/components/home-right.png");
+      @include homeTabItem;
+    }
+  }
+  &-item-active{
+    @include homeTabTextItem;
+    color: $primary-color;
+    font-weight: 500;
+  }
+  &-item-normal{
+    @include homeTabTextItem;
+    color: $common-text;
+    font-weight: 400;
+  }
+
+  //&-item-left{
+  //  left: 120px;
+  //}
+  &-item-right{
+    left: 351px;
   }
 }

@@ -13,24 +13,31 @@ interface rightArrayType{
   isSelected: boolean
 }
 
+interface showConfigType {
+  id: number
+  isSelected: boolean,
+  title: string
+}
+
 
 function activeShowConfig(config, id, title) {
-  let newConfig = [];
+  let newConfig: showConfigType[] = [];
   config.forEach(item => {
     if(item.id === id){
-      newConfig.push({...item, isSelected: true, title: title || item.title})
+      newConfig.push({id: item.id, isSelected: true, title: title || item.title})
     }
     else {
-      newConfig.push({...item})
+      newConfig.push({id: item.id, isSelected: item.isSelected, title: item.title})
     }
   });
+  newConfig.sort( (a: {id: number}, b: {id: number}) => a.id - b.id);
   return newConfig
 }
 
 
 // 聚合获取线性选择的左边框
 function getLeftArray(conditions) {
-  let leftArray: leftArrayType[] = conditions.field.map(it => { return {id: it.id, name: it.name, isSelected: it.isSelected}});
+  let leftArray: leftArrayType[] = conditions.field.map(it => { return {id: it.id, name: it.name, isSelected: it.isSelected, isRule: it.isRule }});
   return leftArray;
 }
 
@@ -52,119 +59,7 @@ export default {
     rightArray: [],
     config: [],
     showConfig: [],
-//     queryAssetsConfig: [
-//       {
-//         id: 1,
-//         title: '是否已读',
-//         isSelected: false,
-//         conditions: {
-//           type: 'selected',
-//           field: [
-//             {name: '全部', id: 1, value: '', isSelected: true},
-//             {name: '已读', id: 2, value: true, isSelected: false},
-//             {name: '未读', id: 3, value: false, isSelected: false},
-//           ],
-//         }
-//       },
-//       {
-//         id: 2,
-//         title: '线索类型',
-//         isSelected: false,
-//         conditions:   {
-//           type: 'line-choose',
-//           field: [
-//             {
-//               id: 1,
-//               name: '全部',
-//               isSelected: true,
-//               childrenName: [
-//                 {name: '全部', value: ['1', '2', '3', '4', '5', '6', '7', '8', '9'], id: 1, isSelected: true},
-//               ]
-//             },
-//             {
-//               id: 2,
-//               name: '涉诉资产',
-//               isSelected: false,
-//               childrenName: [
-//                 {name: '全部', value: ['1', '2', '3', '4'], id: 1, isSelected: false},
-//                 {name: '司法拍卖', value: ['1'], id: 2, isSelected: false},
-//                 {name: '代位权-立案信息', value: ['2'], id: 3, isSelected: false},
-//                 {name: '代位权-开庭公告', value: ['3'], id: 4, isSelected: false},
-//                 {name: '代位权-裁判文书', value: ['4'], id: 5, isSelected: false},
-//               ]
-//             }
-//           ],
-//         },
-//       },
-//       {
-//         id: 3,
-//         title: '更多筛选',
-//         isSelected: false,
-//         conditions: {
-//           type: 'time',
-//           field: ['startTime', 'endTime'],
-//         },
-//       },
-//     ],
-//     queryRiskConfig: [
-//   {
-//     id: 1,
-//     title: '是否已读',
-//     isSelected: false,
-//     conditions: {
-//       type: 'selected',
-//       field: [
-//         {name: '全部', id: 1, value: '', isSelected: true},
-//         {name: '已读', id: 2, value: true, isSelected: false},
-//         {name: '未读', id: 3, value: false, isSelected: false},
-//       ],
-//       requird: true,
-//     }
-//   },
-//   {
-//     id: 2,
-//     title: '风险类型',
-//     isSelected: false,
-//     conditions:   {
-//       type: 'line-choose',
-//       field: [
-//         {
-//           id: 1,
-//           name: '全部',
-//           isSelected: true,
-//           childrenName: [
-//             {name: '全部', value: ['1', '2', '3', '4', '5', '6', '7', '8', '9'], id: 1, isSelected: true},
-//           ]
-//         },
-//         {
-//           id: 2,
-//           name: '司法风险',
-//           isSelected: false,
-//           childrenName: [
-//             {name: '全部', value: ['1', '2', '3', '4'], id: 1, isSelected: true},
-//             {name: '破产重整', value: ['5', '6'], id: 2, isSelected: false},
-//             {name: '涉诉-立案信息', value: ['7'], id: 3, isSelected: false},
-//             {name: '涉诉-开庭公告', value: ['8'], id: 4, isSelected: false},
-//             {name: '涉诉-裁判文书', value: ['9'], id: 5, isSelected: false},
-//           ]
-//         }
-//       ],
-//       requird: true,
-//       value: '',
-//     },
-//   },
-//   {
-//     id: 3,
-//     title: '更多筛选',
-//     isSelected: false,
-//     conditions: {
-//       type: 'time',
-//       field: ['startTime', 'endTime'],
-//       requird: true,
-//       value: '',
-//     },
-//   },
-// ]
+    dropParams: {},
   },
   effects: {
     *updateassetsConfig({ payload }, { put }) {
@@ -211,13 +106,13 @@ export default {
         leftArray: [...leftArray],
         rightArray: [...rightArray],
         config: newConfig,
-        showConfig: newShowConfig
+        showConfig: newShowConfig,
       }
     },
 
     updateSelect: (state, { payload }) => {
       let field = state.config.filter(item => item.id === payload.currentId)[0].conditions.field;
-      let newField = [];
+      let newField: {isSelected: boolean}[] = [];
       field.forEach(item => {
         if(item.id === payload.id){
           newField.push({...item, isSelected: true })
@@ -227,20 +122,22 @@ export default {
         }
       });
       let newConfig = [];
+      let paramName = '';
       state.config.forEach(item => {
         if(item.id === payload.currentId){
+          paramName = item.paramName;
           newConfig.push({...item, conditions: {field: newField, type: 'selected'}})
         }
         else{
           newConfig.push({...item})
         }
       });
-      let newShowConfig = activeShowConfig(newConfig, payload.currentId, payload.info.name);
-      console.log('updateSelect === ', newConfig, newShowConfig);
+      let newShowConfig = activeShowConfig(state.showConfig, payload.currentId, payload.info.name);
       return {
         ...state,
         config: newConfig,
-        showConfig: newShowConfig
+        showConfig: newShowConfig,
+        dropParams: { 'isRead': payload.info.value}
       }
     },
 

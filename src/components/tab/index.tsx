@@ -11,6 +11,7 @@ interface configType{
 type IProps = {
   onClick: (item: configType) => void
   config: configType[]
+  type?: string
 }
 
 type IState = {
@@ -38,17 +39,18 @@ class Tab extends Component<IProps, IState>{
 
   render(){
     const { selected } = this.state;
-    const { config } = this.props;
+    const { config, type } = this.props;
+    const typeName = type || 'tab';
     return (
-      <View className='tab' >
-        <View className={`tab-bg-${selected === 1 ? 'leftActive' : 'rightActive'}`}/>
+      <View className={`${typeName}`} >
+        <View className={`${typeName}-bg-${selected === 1 ? 'leftActive' : 'rightActive'}`}/>
         {
           config.map((item, index) => {
             const active = selected === item.id;
             return (
               <View
                 onClick={() => this.onClickTab(item)}
-                className={`tab-item-${active ? `active` : `normal`} tab-item-${index === 0 ? 'left' : 'right'}`}
+                className={`${typeName}-item-${active ? `active` : `normal`} ${typeName}-item-${index === 0 ? 'left' : 'right'}`}
               >
                 {item.title}
               </View>
