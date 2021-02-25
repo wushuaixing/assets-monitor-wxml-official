@@ -7,7 +7,8 @@ import ListItem from '../list-item/index';
 import './index.scss';
 
 interface IProps{
-  count?: number
+  count: number
+  data: any
   listLength?: number
   dispatch?: ({type: string, payload: object}) => {}
   children?: React.ElementType
@@ -16,7 +17,6 @@ interface IProps{
 }
 
 interface IState{
-  readState: number
 }
 
 @connect(({ home }) => ({ ...home }))
@@ -24,27 +24,15 @@ class List extends Component <IProps, IState>{
   constructor(props: IProps) {
     super(props);
     this.state = {
-      readState: 0,
+      loading: false
     };
-    this.loading = false;
     this.params = {};
   }
 
 
-  componentWillMount () { }
-
-  componentDidMount () {
-    // const { dispatch } = this.props;
-    // dispatch({type: 'home/getJsSession', payload: {
-    //   jsCode: '001exAFa12PDoA03K2Ga1hUlK72exAFX',
-    //   }})
+  componentDidMount(): void {
+    const { data } = this.props;
   }
-
-  componentWillUnmount () { }
-
-  componentDidShow () { }
-
-  componentDidHide () { }
 
   listReachBottom = () => {
     // Taro.showLoading();
@@ -70,15 +58,17 @@ class List extends Component <IProps, IState>{
 
 
   render () {
-    const { data, listLength } = this.props;
+    const { data } = this.props;
     console.log('VirtualList data === ', data);
-    const dataLen: number = listLength || 1400;
-    const height: number = 1211;
+    // const dataLen: number = data.length || 10;
+    const height: number = 800;
     const itemSize: number = 285;
+    // const newData = [...data, ...data, ...data, ...data];
     return (
-      <View className='list'>
+      <View className='list-box'>
         {
           data.length > 0 && <VirtualList
+            /** 解开高度列表单项大小限制，默认值使用: itemSize (请注意，初始高度与实际高度差异过大会导致隐患)。 */
 						useIsScrolling={true}
 						className='List'
 						unlimitedSize={true}
@@ -86,22 +76,22 @@ class List extends Component <IProps, IState>{
 						height={height}
 						width={'100%'}
 						itemData={data}
-						itemCount={dataLen}
+						itemCount={data.length}
 						itemSize={itemSize}
-						onScroll={({scrollDirection, scrollOffset }) => {
-              console.log('scrollDirection === ', scrollDirection);
-              console.log('scrollOffset === ', scrollOffset);
-              if(!this.loading && scrollDirection === 'forward' && scrollOffset > ((dataLen - 9) * itemSize + 100)){
-                this.listReachBottom()
-              }
-            }}
+						// onScroll={({scrollDirection, scrollOffset }) => {
+            //   // console.log('scrollDirection === ', scrollDirection);
+            //   // console.log('scrollOffset === ', scrollOffset);
+            //   // if(!this.loading && scrollDirection === 'forward' && scrollOffset > ((count - 9) * itemSize + 100)){
+            //   //   this.listReachBottom()
+            //   // }
+            // }}
 					>
             {
               ListItem
             }
 					</VirtualList>
         }
-        <View className='list-top' onClick={this.backToTop}>
+        <View className='list-box-top' onClick={this.backToTop}>
           up
           {/*<Image className='monitor-top-arrow' />*/}
         </View>

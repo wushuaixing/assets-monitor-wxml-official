@@ -25,9 +25,11 @@ export interface configType{
 type IProps = {
   type: string
   initConfig: configType[]
-  config: configType[]
   onsetParams: (params?: any) => void
   dispatch: (payload: any) => void
+  onhandleQueryAssets: (payload?: any) => void
+  onhandleQueryRisk: (payload?: any) => void
+  dropParams: {}
 }
 
 type IState = {
@@ -55,9 +57,13 @@ class QueryDrop extends Component<IProps, IState>{
   }
 
   componentWillMount(): void {
+    const { dispatch, initConfig} = this.props;
+    dispatch({
+      type:'common/initConfig',
+      payload: initConfig
+    });
     const onReadyEventId = this.$instance.router.onReady;
     const onShowEventId = this.$instance.router.onShow;
-
     eventCenter.once(onReadyEventId, () => {
       let height = 0;
       Taro.getSystemInfo({
@@ -79,53 +85,27 @@ class QueryDrop extends Component<IProps, IState>{
     });
     // 监听
     eventCenter.on(onShowEventId, this.onShow);
-    const { dispatch, initConfig} = this.props;
-    dispatch({
-      type:'common/initConfig',
-      payload: initConfig
-    });
+
   }
 
-
-  // componentWillUpdate(nextProps: Readonly<IProps>): void {
-  //   const { config, type, queryAssetsConfig} = this.props;
-  //   console.log('props queryAssetsConfig === ', queryAssetsConfig);
-  //   console.log('nextProps queryAssetsConfig === ', nextProps.queryAssetsConfig);
-  //   if(JSON.stringify(config) !== JSON.stringify(nextProps.config)){
-  //     this.setState({
-  //       config: nextProps.config
-  //     })
-  //   }
-  //   if(JSON.stringify(queryAssetsConfig) !== JSON.stringify(nextProps.queryAssetsConfig)){
-  //     this.setState({
-  //       queryAssetsConfig: nextProps.queryAssetsConfig
-  //     })
-  //   }
-  //   // 每次资产/风险切换的时候，会重新选择条件
-  //   if(type !== nextProps.type){
-  //     this.setState({
-  //       isMask: false,
-  //       activeId: -1
-  //     })
-  //   }
-  // }
+  componentWillUpdate(nextProps: Readonly<IProps>): void {
+    const { type } = this.props;
+    if(type !== nextProps.type){
+      const { dispatch, initConfig} = this.props;
+      dispatch({
+        type:'common/initConfig',
+        payload: initConfig
+      });
+      this.setState({
+        activeId: -1,
+        isMask: false
+      })
+    }
+  }
 
   onShow = () => {
     // console.log('onShow')
   };
-
-  // packUp = () => {
-  //   let animation = Taro.createAnimation({
-  //     transformOrigin: "50% 50%",
-  //     duration: 1000,
-  //     timingFunction: "ease",
-  //     delay: 0
-  //   });
-  //   animation.translateY(200).step();
-  //   this.setState({
-  //     animation: animation.export()
-  //   })
-  // };
 
   // 点击切换筛选条件
   handleClick = (info) => {
@@ -141,30 +121,21 @@ class QueryDrop extends Component<IProps, IState>{
       activeId: info.id,
       isMask: true,
     });
-    // let newConfig: configType[] = [];
-    // if(config.length > 0){
-    //   config.forEach((item) => {
-    //     if(info.id === item.id){
-    //       newConfig.push({
-    //         ...info,
-    //         isSelected: !info.isSelected
-    //       });
-    //     }
-    //     else {
-    //       newConfig.push({...item, });
-    //     }
-    //   });
-    // }
-    // this.setState({
-    //   activeId: info.id,
-    //   config: newConfig,
-    //   isMask: true,
-    //   conditions: info.conditions
-    // })
   };
 
   // 点击关闭筛选条件
   handleClosePanel = () => {
+    const { type, dropParams, onhandleQueryAssets, onhandleQueryRisk } = this.props;
+    console.log('handleClosePanel props === ', this.props);
+    const { activeId } = this.state;
+    if(type === 'assets'){
+      if(activeId === 1){
+        onhandleQueryAssets({...dropParams})
+      }
+      else {
+        onhandleQueryRisk({...dropParams})
+      }
+    }
     this.setState({
       activeId: -1,
       isMask: false
@@ -177,27 +148,9 @@ class QueryDrop extends Component<IProps, IState>{
     onsetParams(params);
   };
 
-  // 控制父组件的title展示
-  // handleEditConfig = (id, title, conditions) => {
-  //   let newConfig: configType[] = [];
-  //   const { config } = this.state;
-  //   config.forEach((item) => {
-  //     if(item.id === id){
-  //       newConfig.push({...item, title: title || item.title, isSelected: true, conditions: conditions})
-  //     }
-  //     else {
-  //       newConfig.push({...item })
-  //     }
-  //   });
-  //   this.setState({
-  //     config: [...newConfig]
-  //   });
-  // };
-
-
   render(){
     const { activeId, animation, isMask, maskHeight } = this.state;
-    const { config, showConfig} = this.props;
+    const { config, showConfig, onhandleQueryAssets, onhandleQueryRisk } = this.props;
     // const config = queryAssetsConfig : queryRiskConfig
     console.log('props render=== ', this.props);
     // const conditions = activeId >= 0 && config.filter(i => i.isSelectd)[0].conditions;
@@ -220,7 +173,7 @@ class QueryDrop extends Component<IProps, IState>{
                     }
                   </View>
                   {
-                    index < config.length - 1 && <View className='drop-box-tab-divider'/>
+                    index < showConfig.length - 1 && <View className='drop-box-tab-divider'/>
                   }
                 </View>
               )
@@ -232,10 +185,10 @@ class QueryDrop extends Component<IProps, IState>{
             {
               <Conditions
                 currentId={activeId}
-                // conditions={conditions}
                 onCancel={this.handleClosePanel}
                 onsetParams={this.handleParmas}
-                // onEditConfig={this.handleEditConfig}
+                onhandleQueryAssets={onhandleQueryAssets}
+                onhandleQueryRisk={onhandleQueryRisk}
               />
             }
 					</View>

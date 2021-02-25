@@ -7,6 +7,14 @@ import loginFooterImg from "../../../assets/img/login/logo_bottom_black.png";
 import {connect} from 'react-redux';
 import {getGlobalData, setGlobalData} from '../../../utils/const/global';
 
+function handleDealAuthRule(authRule){
+  let ruleArray: string[] = [];
+  authRule.forEach(item => {
+    ruleArray.push(item.rule)
+  });
+  return ruleArray;
+}
+
 type isState = {
   captcha: string,
   focus: boolean,
@@ -95,7 +103,9 @@ export default class AuthCode extends Component<IProps, isState> {
             Taro.setStorageSync('token', token);
             Taro.setStorageSync('loginNumber', phone);
             let auth_Rule = rules;
-            setGlobalData('systemAuthRule', auth_Rule)
+            setGlobalData('systemAuthRule', auth_Rule);
+            let ruleArray = handleDealAuthRule(auth_Rule);
+            setGlobalData('ruleArray', ruleArray);
             let searchUser = auth_Rule.filter(item => {
               return item.groupName === 'menu_sy';
             });

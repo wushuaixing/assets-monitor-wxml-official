@@ -3,7 +3,7 @@
   position: relative;
   &-tips{
     background-color: white;
-    padding: 24px;
+    padding: 0 24px 24px 24px;
     &-notice{
       background-color: $warning-bg-color;
       border-radius: 4px;
@@ -26,6 +26,22 @@
           font-weight: bold;
         }
       }
+    }
+  }
+  &-blank{
+    text-align: center;
+    &-segmentation{
+      height: 24px;
+      background-color: #F5F5F5;
+    }
+    &-pic{
+      margin-top: 162px;
+      width: 660px;
+      height: 396px;
+    }
+    &-text{
+      color: #666666;
+      font-size: 30px;
     }
   }
 }

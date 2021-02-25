@@ -1,56 +1,77 @@
 import { assetListApi, assetListCountApi, riskListApi, riskListCountApi} from '../../services/monitor';
-import {getUserInfoUrl} from "../../services/user";
 
 export default {
   namespace: 'monitor',
   state: {
     count: 0,
-    list: [],
+    params : {},
     assetsList: [],
-    riskList: [],
+    riskList: []
   },
   effects: {
     *assetList({ payload }, { call, put}) {
+      yield put({ type: 'paramsUpdate', payload, });
       const res = yield call(assetListApi, payload);
       if(res.code === 200){
-        yield put({ type: 'updateList', payload: res.data.list });
+        yield put({ type: 'updateAssetsList', payload: res.data.list });
       }
     },
-    *assetListCount({ }, { call, put }) {
-      const res = yield call(assetListCountApi, );
+    *assetListCount({ payload }, { call, put }) {
+      const res = yield call(assetListCountApi, payload );
       if(res.code === 200){
         yield put({ type: 'updateCount', payload: res.data });
       }
     },
 
-    *riskList({}, {all, call, put }) {
-      const res = yield call(riskListApi, );
-      return res;
+    *riskList({payload}, {all, call, put }) {
+      yield put({ type: 'paramsUpdate', payload, });
+      const res = yield call(riskListApi, payload);
+      if(res.code === 200){
+        yield put({ type: 'updateRiskList', payload: res.data.list });
+      }
+      if(payload.score){
+        yield put({ type: 'paramsUpdate', payload });
+      }
     },
 
-    *riskListCount({}, {all, call, put }) {
-      const res = yield call(riskListCountApi, );
-      return res;
+    *riskListCount({ payload }, {all, call, put }) {
+      const res = yield call(riskListCountApi, payload);
+      if(res.code === 200){
+        yield put({ type: 'updateCount', payload: res.data });
+      }
     },
   },
   reducers: {
     updateState(state, { payload }) {
-      console.log('payload === ', payload);
       return {
         ...state,
         ...payload,
       }
     },
-    updateList(state, { payload }) {
+    updateAssetsList(state, { payload }) {
       return {
         ...state,
-        list: [...payload],
+        assetsList: [...payload]
+      }
+    },
+    updateRiskList(state, { payload }) {
+      return {
+        ...state,
+        riskList: [...payload]
       }
     },
     updateCount(state, { payload }) {
       return {
         ...state,
         count: payload,
+      }
+    },
+
+    // 更新请求参数的集合
+    paramsUpdate(state, { payload }) {
+      return {
+        ...state,
+        params: {...state.params, ...payload}
       }
     },
   },
