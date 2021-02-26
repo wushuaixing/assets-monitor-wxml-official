@@ -7,6 +7,7 @@ interface globalType {
   systemRoleType?: any,
   weChatCode?: string,
   ruleArray?: string[]
+  serviceWeChat?: string
 }
 
 const globalData: globalType = {};

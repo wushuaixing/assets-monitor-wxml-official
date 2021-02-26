@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import {View, Text, Image, ScrollView} from '@tarojs/components';
 import Taro from '@tarojs/taro';
+import {View, Text, Image, ScrollView} from '@tarojs/components';
 import { connect } from 'react-redux';
 import NavigationBar from '../../components/navigation-bar';
 import Tab from "../../components/tab";
@@ -125,6 +125,10 @@ class Index extends Component <IProps, IState>{
     Taro.navigateTo({url:`/subpackage/pages/monitorManage/index?type=${type}`})
   };
 
+  navigateToRule = () => {
+    Taro.navigateTo({url:'/subpackage/pages/rule-description/index'})
+  };
+
   render () {
     const tabList = [
       { title: '资产', id: 1 },
@@ -164,13 +168,13 @@ class Index extends Component <IProps, IState>{
             </View>
 
             <View className='home-middle'>
-              <View className='home-middle-tab' onClick={()=>{this.navigateToPage('obligor')}}>
+              <View className='home-middle-tab' onClick={()=>{this.navigateToPage('business')}}>
                 <View className='home-middle-tab-logo'>
                   <Image className='home-middle-tab-logo-img' src={businessMan}/>
                 </View>
                 <Text className='home-middle-tab-text'>业务管理</Text>
               </View>
-              <View className='home-middle-tab' onClick={()=>{this.navigateToPage('business')}}>
+              <View className='home-middle-tab' onClick={()=>{this.navigateToPage('obligor')}}>
                 <View className='home-middle-tab-logo'>
                   <Image className='home-middle-tab-logo-img' src={debtor}/>
                 </View>
@@ -197,7 +201,7 @@ class Index extends Component <IProps, IState>{
                   assetsArray.length > 0 ? <View className='home-data-box'>
                     <View className='home-data-box-level'>
                       <Text>线索等级</Text>
-                      <Text className='iconfont icon-question home-data-box-level-icon'/>
+                      <Text className='iconfont icon-question home-data-box-level-icon' onClick={this.navigateToRule}/>
                     </View>
                     <View className='home-data-box-star'>
                       <View className='home-data-box-star-three'>
@@ -267,7 +271,7 @@ class Index extends Component <IProps, IState>{
                   riskArray.length > 0 ? <View className='home-data-box'>
                     <View className='home-data-box-level'>
                       <Text>风险等级</Text>
-                      <Text className='iconfont icon-question home-data-box-level-icon'/>
+                      <Text className='iconfont icon-question home-data-box-level-icon' onClick={this.navigateToRule} />
                     </View>
                     <View className='home-data-box-star'>
                       <View className='home-data-box-star-high'>
@@ -346,7 +350,7 @@ class Index extends Component <IProps, IState>{
 
             {/*目前线索使用案例只和资产有关*/}
             {
-              assetsArray.length !== 0 && <View className='home-case'>
+              assetsArray.length === 0 && <View className='home-case'>
 								<View className='home-case-title'>线索使用案例</View>
 								<View className='home-case-titleLine'/>
                 {
@@ -369,7 +373,7 @@ class Index extends Component <IProps, IState>{
             }
 
             {
-              assetsArray.length !== 0 && <View className='home-bottom'>
+              assetsArray.length === 0 && <View className='home-bottom'>
 								<View className='home-bottom-left'/>
 								<View className='home-bottom-text'>我也是有底线的</View>
 								<View className='home-bottom-right'/>

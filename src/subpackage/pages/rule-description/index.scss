@@ -1,0 +1,28 @@
+.rule{
+  background-color: #F5F5F5;
+  &-card{
+    background-color: white;
+    margin-top: 25px;
+    &-title{
+      color: $common-text;
+      font-weight: 500;
+      padding: 24px 0 0 24px;
+      font-size: 30px;
+      line-height: 30px;
+    }
+
+    &-text{
+      color: $common-text;
+      font-size: 30px;
+      line-height: 45px;
+      margin: 12px 24px 0 24px;
+    }
+
+    &-prompt{
+      font-size: 26px;
+      color: $label-color;
+      line-height: 26px;
+      margin: 20px 0 24px 24px;
+    }
+  }
+}

@@ -1,0 +1,52 @@
+.auction{
+  background-color: $page-bg-color;
+  &-clues{
+    margin-top: 23px;
+    &-title{
+      background-color: white;
+      font-size: 32px;
+      line-height: 32px;
+      padding: 28px 0 29px 24px;
+    }
+
+    &-line{
+      background-color: $divider-color;
+      height: 1px;
+    }
+
+    &-content{
+      background-color: white;
+      padding: 4px 24px;
+      &-info{
+        font-size: 28px;
+        line-height: 28px;
+        margin-top: 20px;
+        display: flex;
+        &-label{
+          color: $label-color;
+          word-break: keep-all;
+        }
+        &-value{
+          color: $text-color;
+          &-link{
+            color: $primary-color;
+          }
+        }
+        &-text{
+          color: $text-color;
+          line-height: 42px;
+          &-link{
+            color: $primary-color;
+          }
+        }
+        .blod{
+          font-weight: 500;
+        }
+        .link{
+          color: $primary-color;
+        }
+      }
+    }
+  }
+
+}

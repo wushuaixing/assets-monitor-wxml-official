@@ -17,11 +17,16 @@ const NavigationBar: FC<IProps> = ({border, title, type = 'white', color = 'blac
     paddingTop : `${statusBarHeight}px`,
   };
   const backStates = Taro.getCurrentPages().length > 1;
+
+  const goback = () => {
+    Taro.navigateBack();
+  };
+
   return(
     <View className={`navigation-wrapper${border ? ' navigation-wrapper-border' : ''} navigation-${type}`} style={style}>
       {
         backStates ? (
-          <View className='navigator-chevron' onClick={this.onClick}>
+          <View className='navigator-chevron' onClick={() => goback()}>
             <View className='at-icon at-icon-chevron-left' />
           </View>
         ) : null
