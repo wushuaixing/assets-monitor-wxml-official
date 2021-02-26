@@ -20,13 +20,13 @@ export default {
     starLevel: {},
   },
   effects: {
-    *getCurrentOrganization({ payload }, {all, call, put }) {
+    *getCurrentOrganization({ payload }, { call, put }) {
       const res = yield call(currentOrganizationApi, payload);
       yield put({ type: 'updateState', payload: {businessCount: res.data.businessCount} });
     },
 
     *getAssets({ payload }, {all, call, put }) {
-      const res = yield call(assetApi, payload);
+      // const res = yield call(assetApi, payload);
       yield put({ type: 'updateAssets', payload: {
         auctionCount: 22,
         subrogationCount: 22,
@@ -41,7 +41,7 @@ export default {
     },
 
     *getRisk({ payload }, {all, call, put }) {
-      const res = yield call(riskApi, payload);
+      // const res = yield call(riskApi, payload);
       yield put({ type: 'updateRisk', payload: {
           bankruptcyCount: 22,
           lawsuitCount: 22,

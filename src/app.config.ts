@@ -13,6 +13,8 @@ export default {
       root:'subpackage/pages/',
       pages:[
         "monitor/asset-auction/index",
+        "monitor/asset-auction/detail/index",
+        "rule-description/index",
       ]
     },
     {
