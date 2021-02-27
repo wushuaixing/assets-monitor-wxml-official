@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import {View, Text, Image} from '@tarojs/components'
+import Taro from '@tarojs/taro';
+import {View, Text} from '@tarojs/components'
 import NavigationBar from "../../../../components/navigation-bar";
 import './index.scss'
 
@@ -15,10 +16,18 @@ type IState = {
 
 export default class AssetsAuction extends Component <IProps, IState>{
 
+  navigateToDetail = () => {
+    Taro.navigateTo({
+      url: '/subpackage/pages/monitor/asset-auction/detail/index'
+    })
+  };
+
   render () {
     return (
       <View className='auction'>
         <NavigationBar border title='资产拍卖'/>
+
+        {/*线索分析*/}
         <View className='auction-clues'>
           <View className='auction-clues-title'>线索分析</View>
           <View className='auction-clues-line'/>
@@ -41,7 +50,74 @@ export default class AssetsAuction extends Component <IProps, IState>{
               </View>
             </View>
           </View>
+          <View className='auction-clues-type'>精准匹配</View>
         </View>
+
+        {/*线索详情*/}
+        <View className='auction-detail' onClick={this.navigateToDetail}>
+          <View className='auction-detail-title'>线索详情</View>
+          <View className='auction-detail-line'/>
+          <View className='auction-detail-content'>
+            <View className='auction-detail-content-title'>【二拍】(破) 浙AD6U68的别克小型普通客车的别克小型普通客车</View>
+            <View className='auction-detail-content-info'>
+              <View className='auction-detail-content-info-justifylabel'>当前状态</View>
+              <View className='auction-detail-content-info-colon'>：</View>
+              <View className='auction-detail-content-info-value'>即将开始</View>
+            </View>
+            <View className='auction-detail-content-info'>
+              <View className='auction-detail-content-info-justifylabel'>评估价</View>
+              <View className='auction-detail-content-info-colon'>：</View>
+              <View className='auction-detail-content-info-value'>100,000元</View>
+            </View>
+            <View className='auction-clues-content-info'>
+              <View className='auction-detail-content-info-justifylabel'>起拍价</View>
+              <View className='auction-detail-content-info-colon'>：</View>
+              <View className='auction-detail-content-info-value'>500,000元</View>
+            </View>
+            <View className='auction-clues-content-info'>
+              <View className='auction-detail-content-info-justifylabel'>开拍时间</View>
+              <View className='auction-detail-content-info-colon'>：</View>
+              <View className='auction-detail-content-info-value'>2020-03-25 10:00</View>
+            </View>
+          </View>
+          <View className='auction-detail-arrow' >
+            <Text className='iconfont icon-right-arrow auction-detail-arrow-icon'/>
+          </View>
+        </View>
+
+
+        {/*历史拍卖*/}
+        <View className='auction-history'>
+          <View className='auction-history-title'>
+            <View className='auction-history-title-left'>历史拍卖</View>
+            <View className='auction-history-title-right'>1次</View>
+          </View>
+          <View className='auction-history-line'/>
+          <View className='auction-history-content'>
+            <View className='auction-history-content-title'>【二拍】(破) 浙AD6U68的别克小型普通客车的别克小型普通客车</View>
+            <View className='auction-history-content-info'>
+              <View className='auction-history-content-info-justifylabel'>当前状态</View>
+              <View className='auction-history-content-info-colon'>：</View>
+              <View className='auction-history-content-info-value'>已流拍</View>
+            </View>
+            <View className='auction-history-content-info'>
+              <View className='auction-history-content-info-justifylabel'>评估价</View>
+              <View className='auction-history-content-info-colon'>：</View>
+              <View className='auction-history-content-info-value'>100,000元</View>
+            </View>
+            <View className='auction-history-content-info'>
+              <View className='auction-history-content-info-justifylabel'>起拍价</View>
+              <View className='auction-history-content-info-colon'>：</View>
+              <View className='auction-history-content-info-value'>500,000元</View>
+            </View>
+            <View className='auction-history-content-info'>
+              <View className='auction-history-content-info-justifylabel'>开拍时间</View>
+              <View className='auction-history-content-info-colon'>：</View>
+              <View className='auction-history-content-info-value'>2020-03-25 10:00</View>
+            </View>
+          </View>
+        </View>
+
       </View>
     )
   }
