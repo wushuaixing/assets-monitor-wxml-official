@@ -1,0 +1,41 @@
+@mixin selectedText{
+  font-weight: 400;
+  font-size: 28px;
+  line-height: 96px;
+}
+
+.conditions{
+  padding-top: 24px;
+  &-line{
+    background-color: $border-color;
+    height: 1px;
+  }
+
+  &-selected{
+    &-item{
+      height: 96px;
+      margin: 0 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      &-name-active{
+        @include selectedText;
+        color: $primary-color;
+      }
+
+      &-name-normal{
+        @include selectedText;
+        color: #4E5566;
+      }
+
+      &-icon{
+        color: $primary-color;
+        font-size: 32px;
+      }
+    }
+    &-item:not(:last-child){
+      border-bottom: 1px solid $divider-color;
+    }
+  }
+
+}

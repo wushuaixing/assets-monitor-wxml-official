@@ -1,0 +1,92 @@
+@mixin leftItem{
+  font-size: 26px;
+  width: 250px;
+  height: 88px;
+  line-height: 88px;
+  text-align: center;
+}
+
+@mixin rightItem{
+  display: inline-block;
+  font-size: 26px;
+  width: 476px;
+  height: 88px;
+  line-height: 88px;
+  padding-left: 24px;
+  border-bottom: 1px solid white;
+}
+
+@mixin btnStyle{
+  font-size: 30px;
+  height: 80px;
+  line-height: 80px;
+  border-radius: 4px;
+}
+
+.conditions{
+  padding-top: 24px;
+  &-line{
+    background-color: $border-color;
+    height: 1px;
+  }
+  &-line-choose{
+    background-color: white;
+    display: flex;
+    &-left{
+      display: flex;
+      flex-direction: column;
+      &-active{
+       @include leftItem;
+        color: $primary-color;
+        background-color: #F5F5F5;
+        font-weight: 500;
+      }
+      &-normal{
+        @include leftItem;
+        color: $common-text;
+        background-color: white;
+        font-weight: 400;
+      }
+    }
+
+    &-right{
+      background-color: #F5F5F5;
+      &-active{
+        @include rightItem;
+        color: $primary-color;
+        font-weight: 500;
+      }
+      &-normal{
+        @include rightItem;
+        color: $common-text;
+        font-weight: 400;
+      }
+      &-icon{
+        font-size: 32px;
+        margin-left: 12px;
+        line-height: 32px;
+      }
+    }
+  }
+
+  &-btn{
+    display: flex;
+    flex-direction: row;
+    border-top: 1px solid $border-color;
+    padding: 24px 32px;
+    &-reset{
+      @include btnStyle;
+      width: 246px;
+      border: 2px solid #D5D5D5;
+      background-color: white;
+      color: $common-text;
+    }
+    &-confirm{
+      @include btnStyle;
+      width: 390px;
+      background-color: $primary-color;
+      border-color: $primary-color;
+    }
+  }
+
+}
