@@ -75,28 +75,8 @@ class QueryDrop extends Component<IProps, IState>{
     });
     const onReadyEventId = this.$instance.router.onReady;
     const onShowEventId = this.$instance.router.onShow;
-    eventCenter.once(onReadyEventId, () => {
-      let height = 0;
-      Taro.getSystemInfo({
-        success: (info) => {
-          // console.log('info === ', info);
-          height = info.windowHeight;
-          // onReady 触发后才能获取小程序渲染层的节点
-          Taro.createSelectorQuery().select('#drop-box')
-            .boundingClientRect()
-            .exec(res => {
-              // console.log('res === ', res, height);
-              this.setState({
-                maskHeight: height - res[0].top
-              })
-            })
-        }
-      });
-
-    });
-    // 监听
+    eventCenter.once(onReadyEventId, this.onRady);
     eventCenter.on(onShowEventId, this.onShow);
-
   }
 
 
@@ -108,7 +88,7 @@ class QueryDrop extends Component<IProps, IState>{
 
   componentWillUpdate(nextProps: Readonly<IProps>,  nextState: Readonly<IState>): void {
     const { dispatch, type} = this.props;
-    console.log('state === ', this.state, nextState);
+    // console.log('state === ', this.state, nextState);
     if(type !== nextProps.type){
       dispatch({
         type:'queryDrop/initConfig',
@@ -120,8 +100,34 @@ class QueryDrop extends Component<IProps, IState>{
     }
   }
 
+  componentWillUnmount(): void {
+    const onReadyEventId = this.$instance.router.onReady;
+    const onShowEventId = this.$instance.router.onShow;
+    // 卸载
+    eventCenter.off(onShowEventId, this.onShow);
+    eventCenter.off(onReadyEventId, this.onRady);
+  }
+
+  onRady = () => {
+    let height = 0;
+    Taro.getSystemInfo({
+      success: (info) => {
+        // console.log('info === ', info);
+        height = info.windowHeight;
+        // onReady 触发后才能获取小程序渲染层的节点
+        Taro.createSelectorQuery().select('#drop-box')
+          .boundingClientRect()
+          .exec(res => {
+            // console.log('res === ', res, height);
+            this.setState({
+              maskHeight: height - res[0].top
+            })
+          })
+      }
+    });
+  };
+
   onShow = () => {
-    // console.log('onShow')
   };
 
   // 点击切换筛选条件Tab
@@ -212,8 +218,8 @@ class QueryDrop extends Component<IProps, IState>{
   render(){
     const { currentTab, isMask, maskHeight } = this.state;
     const { config } = this.props;
-    console.log('QueryDrop state === ', this.state);
-    console.log('QueryDrop props === ', this.props);
+    // console.log('QueryDrop state === ', this.state);
+    // console.log('QueryDrop props === ', this.props);
     return (
       <View className='drop'>
         <View className='drop-box' id='drop-box'>

@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { View} from '@tarojs/components';
+import { eventCenter, getCurrentInstance }from '@tarojs/taro';
 import './index.scss';
 
 interface configType{
@@ -10,6 +11,7 @@ interface configType{
 
 type IProps = {
   type: string
+  initId: number
   onClick: (item: configType) => void
 }
 
@@ -32,13 +34,18 @@ const riskConfig: configType[] = [
   { title: '利好', id: 5, value: '40'}
 ];
 class TagSelected extends Component<IProps, IState>{
-
+  $instance = getCurrentInstance();
   constructor(props) {
     super(props);
     this.state = {
       selected: 1,
       config: assetsConfig,
     };
+  }
+
+  componentWillMount(): void {
+    const onShowEventId = this.$instance.router.onShow;
+    eventCenter.on(onShowEventId, this.onShow);
   }
 
   componentWillUpdate(nextProps: Readonly<IProps>): void {
@@ -50,6 +57,21 @@ class TagSelected extends Component<IProps, IState>{
       })
     }
   }
+
+  componentWillUnmount(): void {
+    const onShowEventId = this.$instance.router.onShow;
+    // 卸载
+    eventCenter.off(onShowEventId, this.onShow);
+  }
+
+  onShow = () => {
+    const { initId } = this.props;
+    if(initId > 0){
+      this.setState({
+        selected: initId,
+      });
+    }
+  };
 
   onClickTag = (item) => {
     const { onClick } = this.props;
