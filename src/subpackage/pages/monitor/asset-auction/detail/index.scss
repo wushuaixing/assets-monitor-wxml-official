@@ -1,0 +1,78 @@
+.detail{
+  background-color: $page-bg-color;
+  &-info{
+    background-color: white;
+    padding:0 24px 24px 24px;
+    &-title{
+      font-size: 30px;
+      line-height: 45px;
+      padding-top: 19px;
+    }
+    &-item{
+      display: flex;
+      margin-top: 20px;
+      font-size: 28px;
+      line-height: 28px;
+      height: 28px;
+      &-label{
+        color: $label-color;
+        word-break: keep-all;
+        width: 122px;
+        text-align-last: justify;
+        text-align: justify;
+        text-justify: distribute-all-lines;
+        &:after{
+          display: inline-block;
+          height: 0;
+          width: 100%;
+          content: ' ';
+        }
+      }
+
+      &-colon{
+        color: $label-color;
+      }
+      &-value{
+        color: $text-color;
+      }
+      .link{
+        color: $primary-color;
+      }
+    }
+  }
+
+  &-other{
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    margin-top: 24px;
+    &-line{
+      background-color: $divider-color;
+      height: 1px;
+      margin-left: 24px;
+    }
+    &-item{
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      &-text{
+        color: $common-text;
+        font-size: 32px;
+        line-height: 32px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        margin-left: 36px;
+      }
+      &-icon{
+        color: $light-text-color;
+        padding: 41px 28px 41px 0;
+        &-logo{
+          font-size: 32px;
+        }
+      }
+    }
+  }
+
+}

@@ -14,6 +14,7 @@ export default {
       pages:[
         "monitor/asset-auction/index",
         "monitor/asset-auction/detail/index",
+        "monitor/asset-auction/confirmation/index",
         "rule-description/index",
       ]
     },

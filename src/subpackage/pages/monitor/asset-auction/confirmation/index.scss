@@ -1,0 +1,45 @@
+.confirmation{
+  background-color: $page-bg-color;
+  &-content{
+    background-color: white;
+    padding: 0 24px;
+    &-title{
+      font-size: 36px;
+      color: $common-text;
+      font-weight: 500;
+      padding-top: 18px;
+    }
+    &-info{
+      display: flex;
+      margin-top: 6px;
+      font-size: 28px;
+      line-height: 42px;
+      &-label{
+        display: inline-block;
+        color: $label-color;
+        word-break: keep-all;
+        width: 230px;
+        max-width: 230px;
+        text-align-last: justify;
+        text-align: justify;
+        text-justify: distribute-all-lines;
+        height: 42px;
+        &:after{
+          display: inline-block;
+          height: 0;
+          width: 100%;
+          content: ' ';
+        }
+      }
+      &-colon{
+        color: $label-color;
+      }
+      &-text{
+        color: $text-color;
+        max-width: 430px;
+        word-break: break-all;
+      }
+    }
+
+  }
+}

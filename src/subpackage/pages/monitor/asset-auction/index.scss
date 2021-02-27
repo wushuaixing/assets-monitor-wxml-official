@@ -1,7 +1,69 @@
+@mixin contentStyle{
+  background-color: white;
+  padding: 4px 24px 24px 24px;
+  &-title{
+    color: $common-text;
+    font-size: 30px;
+    line-height: 45px;
+    margin-top: 16px;
+  }
+  &-info{
+    font-size: 28px;
+    line-height: 28px;
+    margin-top: 20px;
+    display: flex;
+    &-label{
+      color: $label-color;
+      word-break: keep-all;
+      height: 28px;
+    }
+    &-colon{
+      color: $label-color;
+      word-break: keep-all;
+    }
+    &-justifylabel{
+      height: 28px;
+      color: $label-color;
+      word-break: keep-all;
+      max-width: 110px;
+      width: 110px;
+      text-align-last: justify;
+      text-align: justify;
+      text-justify: distribute-all-lines;
+      &:after{
+        display: inline-block;
+        height: 0;
+        width: 100%;
+        content: ' ';
+      }
+    }
+    &-value{
+      color: $text-color;
+      &-link{
+        color: $primary-color;
+      }
+    }
+    &-text{
+      color: $text-color;
+      line-height: 42px;
+      &-link{
+        color: $primary-color;
+      }
+    }
+    .blod{
+      font-weight: 500;
+    }
+    .link{
+      color: $primary-color;
+    }
+  }
+}
+
 .auction{
   background-color: $page-bg-color;
   &-clues{
     margin-top: 23px;
+    position: relative;
     &-title{
       background-color: white;
       font-size: 32px;
@@ -15,37 +77,82 @@
     }
 
     &-content{
+      @include contentStyle;
+    }
+
+    &-type{
+      display: inline-block;
+      position: absolute;
+      right: 0;
+      top: 114px;
+      color: #FF3B30;
+      background-color: #FFE7E6;
+      font-size: 24px;
+      line-height: 24px;
+      padding: 8px 12px;
+      border-radius: 20px 0 0 20px;
+      font-weight: 400;
+    }
+  }
+
+  &-detail{
+    margin-top: 23px;
+    position: relative;
+    &-title{
       background-color: white;
-      padding: 4px 24px;
-      &-info{
-        font-size: 28px;
-        line-height: 28px;
-        margin-top: 20px;
-        display: flex;
-        &-label{
-          color: $label-color;
-          word-break: keep-all;
-        }
-        &-value{
-          color: $text-color;
-          &-link{
-            color: $primary-color;
-          }
-        }
-        &-text{
-          color: $text-color;
-          line-height: 42px;
-          &-link{
-            color: $primary-color;
-          }
-        }
-        .blod{
-          font-weight: 500;
-        }
-        .link{
-          color: $primary-color;
-        }
+      font-size: 32px;
+      line-height: 32px;
+      padding: 28px 0 29px 24px;
+    }
+
+    &-line{
+      background-color: $divider-color;
+      height: 1px;
+    }
+
+    &-content{
+      @include contentStyle;
+    }
+
+    &-arrow{
+      padding: 50px;
+      position: absolute;
+      right: -20px;
+      top: 175px;
+      &-icon{
+        color: $light-text-color;
+        font-size: 33px;
       }
+    }
+  }
+
+  &-history{
+    margin-top: 23px;
+    &-title{
+      background-color: white;
+      display: flex;
+      justify-content: space-between;
+      &-left{
+        color: $common-text;
+        font-size: 32px;
+        line-height: 32px;
+        padding: 28px 0 29px 24px;
+      }
+      &-right{
+        color: $text-color;
+        font-size: 30px;
+        line-height: 30px;
+        padding: 30px 25px 29px 0;
+      }
+    }
+
+    &-line{
+      background-color: $divider-color;
+      height: 1px;
+    }
+
+    &-content{
+      @include contentStyle;
     }
   }
 
