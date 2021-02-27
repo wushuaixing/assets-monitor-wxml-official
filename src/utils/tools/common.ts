@@ -91,3 +91,5 @@ export const filterArray = (ruleArray) => {
   });
   return array;
 };
+
+export const Message = title => Taro.showToast({title, icon: 'none'});

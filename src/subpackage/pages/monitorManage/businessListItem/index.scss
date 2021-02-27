@@ -1,0 +1,100 @@
+.yc-businessListItem{
+  &-content{
+    padding:0 24px;
+    font-family: PingFangSC-Regular, PingFang SC;
+    &-logo{
+      display: inline-block;
+      margin-top:38px;
+      width: 64px;
+      height: 64px;
+      background: #FF5454;
+      border-radius: 4px;
+      text-align: center;
+      vertical-align: top;
+      &-text{
+        display: inline-block;
+        width: 45px;
+        height: 52px;
+        font-size: 22px;
+        font-weight: 400;
+        color: #FFFFFF;
+      }
+    }
+    &-middleRight{
+      padding-left:16px;
+      display: inline-block;
+      &-middle{
+        display: inline-block;
+        margin:32px 0 0 0;
+        width:455px;
+        &-caseNumber{
+          font-size: 28px;
+          font-weight: 400;
+          color: #333333;
+          line-height: 28px;
+        }
+        &-obligorDetail{
+          margin-top:20px;
+          font-size: 28px;
+          font-weight: 400;
+          color: #333333;
+          line-height: 28px;
+          &-obligorName{
+            display: inline-block;
+          }
+          &-obligorValue{
+            display: inline-block;
+          }
+        }
+
+      }
+      &-right{
+        display: inline-block;
+        float: right;
+        text-align: right;
+        &-circle{
+          margin-top:45px;
+          display: inline-block;
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          background-color: #666666;
+          border: solid 1px #666666;
+        }
+        &-date{
+          margin-top:32px;
+          font-size: 22px;
+          font-weight: 400;
+          color: #999999;
+          line-height: 22px;
+        }
+      }
+      &-guarantor{
+        &-contentLine{
+          margin-top:17px;
+          height: 1px;
+          background: #E5E5E5;
+        }
+        &-detail{
+          margin-top: 17px;
+          font-size: 28px;
+          font-weight: 400;
+          color: #333333;
+          line-height: 28px;
+          &-label{
+            display: inline-block;
+            vertical-align: top;
+          }
+          &-content{
+            display: inline-block;
+          }
+        }
+      }
+    }
+  }
+  &-line{
+    margin-top: 32px;
+    height: 1px;
+    background: #E5E5E5;
+  }
+}
