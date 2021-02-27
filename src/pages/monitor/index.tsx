@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import Taro, { getCurrentInstance } from '@tarojs/taro';
+import { eventCenter, getCurrentInstance } from '@tarojs/taro';
 import {View, Text, Image} from '@tarojs/components'
 import { connect } from 'react-redux';
 import NavigationBar from '../../components/navigation-bar';
@@ -34,6 +34,7 @@ type IState = {
   queryAssetsConfig: any
   queryRiskConfig: any
   params: any
+  starId?: number
 };
 
 const tabList = [
@@ -98,6 +99,7 @@ function filterArray(rule, initValue) {
 
 @connect(({ monitor, queryDrop}) => ({ ...monitor, ...queryDrop }))
 export default class Monitor extends Component <IProps, IState>{
+  $instance = getCurrentInstance()
   constructor(props) {
     super(props);
     this.state = {
@@ -228,15 +230,31 @@ export default class Monitor extends Component <IProps, IState>{
           ],
         },
       ],
-      params: {}
+      params: {},
+      starId: 0,
     };
   }
 
   componentWillMount(): void {
-    this.handleRequestList({});
+    const onShowEventId = this.$instance.router.onShow;
+    // 监听
+    eventCenter.on(onShowEventId, this.onShow);
+    this.handleRequestList({assetAndRiskType: [1]});
   }
 
+  componentWillUnmount () {
+    const onShowEventId = this.$instance.router.onShow;
+    // 卸载
+    eventCenter.off(onShowEventId, this.onShow)
+  }
 
+  onShow = () => {
+    console.log('tabid === ', getGlobalData('tabId'));
+    this.setState({
+      currentId: getGlobalData('tabId'),
+      starId: getGlobalData('starId')
+    });
+  };
 
 
   handleRequestList = (payload) => {
@@ -244,24 +262,24 @@ export default class Monitor extends Component <IProps, IState>{
     const { currentId } = this.state;
     const { dispatch } = this.props;
     if(currentId === 1){
-      // dispatch({
-      //   type:'monitor/assetList',
-      //   payload: payload
-      // });
-      // dispatch({
-      //   type:'monitor/assetListCount',
-      //   payload: payload
-      // });
+      dispatch({
+        type:'monitor/assetList',
+        payload: payload
+      });
+      dispatch({
+        type:'monitor/assetListCount',
+        payload: payload
+      });
     }
     else {
-      // dispatch({
-      //   type:'monitor/riskList',
-      //   payload: payload
-      // });
-      // dispatch({
-      //   type:'monitor/riskListCount',
-      //   payload: payload
-      // });
+      dispatch({
+        type:'monitor/riskList',
+        payload: payload
+      });
+      dispatch({
+        type:'monitor/riskListCount',
+        payload: payload
+      });
     }
   };
 
@@ -275,7 +293,7 @@ export default class Monitor extends Component <IProps, IState>{
 
   // 资产里面切换星级，风险里面切风险程度
   handleChangeTab = (info) => {
-    const { currentId, params} = this.state;
+    const { params} = this.state;
     let newParams = {...params, score: info.value};
     this.setState({
       params: newParams,
@@ -284,7 +302,7 @@ export default class Monitor extends Component <IProps, IState>{
   };
 
   handleSetParams = (queryParams) => {
-    const { currentId, params} = this.state;
+    const { params} = this.state;
     let newParams = {...params, ...queryParams};
     this.setState({
       params: newParams,
@@ -296,14 +314,15 @@ export default class Monitor extends Component <IProps, IState>{
   };
 
   render () {
-    const { currentId, isScroll, queryAssetsConfig, queryRiskConfig} = this.state;
+    const { currentId, isScroll, queryAssetsConfig, queryRiskConfig, starId } = this.state;
     const { count } = this.props;
-    // console.log('monitor state === ',this.state);
+    console.log('monitor state === ',this.state);
     return (
       <View className='monitor'>
         <NavigationBar title={'源诚资产监控'} type={'blue'} color='white'/>
-        <Tab config={tabList} onClick={this.handleClick}/>
+        <Tab config={tabList} onClick={this.handleClick} initId={currentId}/>
         <TagSelected
+          initId={starId}
           type={currentId === 1 ? 'assets' : 'risk' }
           onClick={this.handleChangeTab}
         />

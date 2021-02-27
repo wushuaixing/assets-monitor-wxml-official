@@ -1,6 +1,6 @@
 import React, { Component } from "react";
+import { eventCenter, getCurrentInstance }from '@tarojs/taro';
 import { View} from '@tarojs/components';
-
 import './index.scss';
 
 interface configType{
@@ -9,6 +9,7 @@ interface configType{
 }
 
 type IProps = {
+  initId?: number
   onClick: (item: configType) => void
   config: configType[]
   type?: string
@@ -19,13 +20,35 @@ type IState = {
 };
 
 class Tab extends Component<IProps, IState>{
-
+  $instance = getCurrentInstance();
   constructor(props) {
     super(props);
     this.state = {
       selected: 1,
     };
   }
+
+
+
+  componentWillMount(): void {
+    const onShowEventId = this.$instance.router.onShow;
+    eventCenter.on(onShowEventId, this.onShow);
+  }
+
+  componentWillUnmount(): void {
+    const onShowEventId = this.$instance.router.onShow;
+    // 卸载
+    eventCenter.off(onShowEventId, this.onShow);
+  }
+
+  onShow = () => {
+    const { initId } = this.props;
+    if(initId > 0){
+      this.setState({
+        selected: initId,
+      })
+    }
+  };
 
   onClickTab = (item) => {
     const { onClick } = this.props;
@@ -41,6 +64,7 @@ class Tab extends Component<IProps, IState>{
     const { selected } = this.state;
     const { config, type } = this.props;
     const typeName = type || 'tab';
+    // console.log('selected state === ', this.state);
     return (
       <View className={`${typeName}`} >
         <View className={`${typeName}-bg-${selected === 1 ? 'leftActive' : 'rightActive'}`}/>

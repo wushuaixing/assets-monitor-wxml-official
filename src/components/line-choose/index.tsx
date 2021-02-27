@@ -116,8 +116,6 @@ export default class LineChoose extends Component <IProps, IState>{
       info,
       childrenName: [...newChildrenName],
       conditions: [...newConditions],
-    }, () => {
-      console.log('conditions === ', this.state.conditions);
     })
   };
 
@@ -133,7 +131,7 @@ export default class LineChoose extends Component <IProps, IState>{
   // 确认按钮
   onConfirm = () => {
     const { info, conditions } = this.state;
-    console.log('info === ', info);
+    // console.log('info === ', info);
     const { onConfirmLineChoose } = this.props;
     onConfirmLineChoose(info, conditions);
   };

@@ -43,7 +43,7 @@ type IProps = {
   dispatch: ({type: string, payload: object}) => {}
   assetsArray: dataItem[]
   riskArray: dataItem[]
-  starLevel: { [propName: string]: number}
+  starLevelCounts: {starLevel: number, starLevelCount: number}[]
 };
 
 type IState = {
@@ -102,6 +102,11 @@ class Index extends Component <IProps, IState>{
     });
   }
 
+  shouldComponentUpdate(nextProps: Readonly<IProps>, nextState: Readonly<IState>, nextContext: any): boolean {
+    const { businessCount, starLevelCounts} = this.props;
+    return businessCount !== nextProps.businessCount || JSON.stringify(starLevelCounts) !== JSON.stringify(nextProps.starLevelCounts);
+  }
+
   handleClick = (value) => {
     const { dispatch } = this.props;
     if(value.id === 1){
@@ -129,14 +134,20 @@ class Index extends Component <IProps, IState>{
     Taro.navigateTo({url:'/subpackage/pages/rule-description/index'})
   };
 
+  navigateToMonitor = (tabId, star) => {
+    setGlobalData('tabId', tabId);
+    setGlobalData('starId', star);
+    Taro.switchTab({url:'/pages/monitor/index'});
+  };
+
   render () {
     const tabList = [
       { title: '资产', id: 1 },
       { title: '风险', id: 2 },
     ];
     const { current, caseArray, scrollViewHeight} = this.state;
-    const { assetsArray, riskArray, businessCount, starLevel } = this.props;
-    console.log('data === ', starLevel, businessCount, assetsArray, riskArray);
+    const { assetsArray, riskArray, businessCount, starLevelCounts } = this.props;
+    // console.log('index props === ', this.props, this.state);
     return (
       <View className='home'>
         <View className='home-title'>
@@ -168,7 +179,7 @@ class Index extends Component <IProps, IState>{
             </View>
 
             <View className='home-middle'>
-              <View className='home-middle-tab' onClick={()=>{this.navigateToPage('business')}}>
+              <View className='home-middle-tab' onClick={() =>{this.navigateToPage('business')}}>
                 <View className='home-middle-tab-logo'>
                   <Image className='home-middle-tab-logo-img' src={businessMan}/>
                 </View>
@@ -204,32 +215,32 @@ class Index extends Component <IProps, IState>{
                       <Text className='iconfont icon-question home-data-box-level-icon' onClick={this.navigateToRule}/>
                     </View>
                     <View className='home-data-box-star'>
-                      <View className='home-data-box-star-three'>
+                      <View className='home-data-box-star-three' onClick={() => this.navigateToMonitor(1, 2)}>
                         <Image className='home-data-box-star-three-icon' src={star}/>
                         <View className='home-data-box-star-three-text'>
                           <View className='home-data-box-star-three-text-left'>
                             <View className='home-data-box-star-three-text-left-title'>三星</View>
-                            <View className='home-data-box-star-three-text-left-title'>{starLevel.threeStar}</View>
+                            <View className='home-data-box-star-three-text-left-title'>{starLevelCounts[0].starLevelCount}</View>
                           </View>
                           <Text className='iconfont icon-right-arrow home-data-box-star-three-text-right' />
                         </View>
                       </View>
-                      <View className='home-data-box-star-two'>
+                      <View className='home-data-box-star-two' onClick={() => this.navigateToMonitor(1, 3)}>
                         <Image className='home-data-box-star-two-icon' src={star}/>
                         <View className='home-data-box-star-two-text'>
                           <View className='home-data-box-star-two-text-left'>
                             <View className='home-data-box-star-two-text-left-title'>二星</View>
-                            <View className='home-data-box-star-two-text-left-title'>{starLevel.twoStar}</View>
+                            <View className='home-data-box-star-two-text-left-title'>{starLevelCounts[1].starLevelCount}</View>
                           </View>
                           <Text className='iconfont icon-right-arrow home-data-box-star-three-text-right' />
                         </View>
                       </View>
-                      <View className='home-data-box-star-one'>
+                      <View className='home-data-box-star-one' onClick={() => this.navigateToMonitor(1, 4)}>
                         <Image className='home-data-box-star-one-icon' src={star}/>
                         <View className='home-data-box-star-one-text'>
                           <View className='home-data-box-star-one-text-left'>
                             <View className='home-data-box-star-one-text-left-title'>一星</View>
-                            <View className='home-data-box-star-one-text-left-title'>{starLevel.oneStar}</View>
+                            <View className='home-data-box-star-one-text-left-title'>{starLevelCounts[2].starLevelCount}</View>
                           </View>
                           <Text className='iconfont icon-right-arrow home-data-box-star-three-text-right' />
                         </View>
@@ -241,7 +252,7 @@ class Index extends Component <IProps, IState>{
                       {
                         assetsArray.map((item, index) => {
                           return(
-                            <View className='home-data-box-type-logo'>
+                            <View className={`home-data-box-type-logo${assetsArray.length === 1 ? '-noBottom' : ''}`}>
                               <View className='home-data-box-type-logo-left'>
                                 <Text className={`iconfont ${item.icon} home-data-box-type-logo-left-icon`}/>
                               </View>
@@ -250,7 +261,10 @@ class Index extends Component <IProps, IState>{
                                 <View className='home-data-box-type-logo-right-num'>{item.num}</View>
                               </View>
                               {
-                                index % 2 === 0 && <View className='home-data-box-type-logo-divider'/>
+                                index % 2 === 0 && assetsArray.length !== 1 && <View className='home-data-box-type-logo-divider'/>
+                              }
+                              {
+                                assetsArray.length === 1 && <View className='home-data-box-type-logo-bottom'/>
                               }
                             </View>
                           )
@@ -274,42 +288,42 @@ class Index extends Component <IProps, IState>{
                       <Text className='iconfont icon-question home-data-box-level-icon' onClick={this.navigateToRule} />
                     </View>
                     <View className='home-data-box-star'>
-                      <View className='home-data-box-star-high'>
+                      <View className='home-data-box-star-high' onClick={() => this.navigateToMonitor(2, 2)}>
                         <Image className='home-data-box-star-high-icon' src={high}/>
                         <View className='home-data-box-star-high-text'>
                           <View className='home-data-box-star-high-text-left'>
                             <View className='home-data-box-star-high-text-left-title'>高风险</View>
-                            <View className='home-data-box-star-high-text-left-title'>{starLevel.high}</View>
+                            <View className='home-data-box-star-high-text-left-title'>{starLevelCounts[0].starLevelCount}</View>
                           </View>
                           <Text className='iconfont icon-right-arrow home-data-box-star-three-text-right' />
                         </View>
                       </View>
-                      <View className='home-data-box-star-warn'>
+                      <View className='home-data-box-star-warn' onClick={() => this.navigateToMonitor(2, 3)}>
                         <Image className='home-data-box-star-warn-icon' src={warn}/>
                         <View className='home-data-box-star-warn-text'>
                           <View className='home-data-box-star-warn-text-left'>
                             <View className='home-data-box-star-warn-text-left-title'>警示</View>
-                            <View className='home-data-box-star-warn-text-left-title'>{starLevel.warn}</View>
+                            <View className='home-data-box-star-warn-text-left-title'>{starLevelCounts[1].starLevelCount}</View>
                           </View>
                           <Text className='iconfont icon-right-arrow home-data-box-star-three-text-right' />
                         </View>
                       </View>
-                      <View className='home-data-box-star-tip'>
+                      <View className='home-data-box-star-tip' onClick={() => this.navigateToMonitor(2, 4)}>
                         <Image className='home-data-box-star-tip-icon' src={tip}/>
                         <View className='home-data-box-star-tip-text'>
                           <View className='home-data-box-star-tip-text-left'>
                             <View className='home-data-box-star-tip-text-left-title'>提示</View>
-                            <View className='home-data-box-star-tip-text-left-title'>{starLevel.tip}</View>
+                            <View className='home-data-box-star-tip-text-left-title'>{starLevelCounts[2].starLevelCount}</View>
                           </View>
                           <Text className='iconfont icon-right-arrow home-data-box-star-three-text-right' />
                         </View>
                       </View>
-                      <View className='home-data-box-star-good'>
+                      <View className='home-data-box-star-good' onClick={() => this.navigateToMonitor(2, 5)}>
                         <Image className='home-data-box-star-good-icon' src={good}/>
                         <View className='home-data-box-star-good-text'>
                           <View className='home-data-box-star-good-text-left'>
                             <View className='home-data-box-star-good-text-left-title'>利好</View>
-                            <View className='home-data-box-star-good-text-left-title'>{starLevel.good}</View>
+                            <View className='home-data-box-star-good-text-left-title'>{starLevelCounts[3].starLevelCount}</View>
                           </View>
                           <Text className='iconfont icon-right-arrow home-data-box-star-three-text-right' />
                         </View>
@@ -321,16 +335,19 @@ class Index extends Component <IProps, IState>{
                       {
                         riskArray.map((item, index) => {
                           return(
-                            <View className='home-data-box-type-logo'>
-                              <View className='home-data-box-type-logo-left'>
+                            <View className={`home-data-box-type-logo${riskArray.length === 1 ? '-noBottom' : ''}`}>
+                            <View className='home-data-box-type-logo-left'>
                                 <Text className={`iconfont ${item.icon} home-data-box-type-logo-left-icon`}/>
                               </View>
                               <View className='home-data-box-type-logo-right'>
                                 <View className='home-data-box-type-logo-right-name'>{item.name}</View>
-                                <View className='home-data-box-type-logo-right-num'>{item.num}</View>
+                                <View className='home-data-box-type-logo-right-num'>{item.num || 0}</View>
                               </View>
                               {
-                                index % 2 === 0 && <View className='home-data-box-type-logo-divider'/>
+                                index % 2 === 0 && riskArray.length !== 1 && <View className='home-data-box-type-logo-divider'/>
+                              }
+                              {
+                                riskArray.length === 1 && <View className='home-data-box-type-logo-bottom'/>
                               }
                             </View>
                           )
