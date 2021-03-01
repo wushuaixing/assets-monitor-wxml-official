@@ -4,7 +4,7 @@ import {View, Text, Image, ScrollView} from '@tarojs/components';
 import { connect } from 'react-redux';
 import NavigationBar from '../../components/navigation-bar';
 import Tab from "../../components/tab";
-import {getGlobalData, setGlobalData} from "../../utils/const/global";
+import { setGlobalData} from "../../utils/const/global";
 import { handleDealAuthRule} from "../../utils/tools/common";
 import addBus from '../../assets/img/page/add-bus.png';
 import portrait from '../../assets/img/page/portrait-search.png';
@@ -28,6 +28,7 @@ interface dataItem{
   icon: string
   num: number
   isRule: boolean
+  value: string[]
 }
 
 interface caseItem{
@@ -100,7 +101,7 @@ class Index extends Component <IProps, IState>{
       if(res.code=== 200){
         let ruleArray = handleDealAuthRule(res.data.orgPageGroups);
         setGlobalData('ruleArray', ruleArray);
-        console.log('getGlobalData', getGlobalData('ruleArray'));
+        // console.log('getGlobalData', getGlobalData('ruleArray'));
         dispatch({
           type: 'home/getAssets',
           payload: {}
@@ -211,7 +212,7 @@ class Index extends Component <IProps, IState>{
   };
 
   // 跳转到监控页
-  navigateToMonitor = (tabId: number, star: number, id: number) => {
+  navigateToMonitor = (tabId: number, star: number, value: string[]) => {
     const { dispatch  } = this.props;
     dispatch({
       type: 'home/updateMonitorParams',
@@ -219,7 +220,7 @@ class Index extends Component <IProps, IState>{
         params: {
           tabId: tabId,
           starId: star,
-          typeId: id
+          value,
         }
       }
     });
@@ -233,7 +234,7 @@ class Index extends Component <IProps, IState>{
     ];
     const { current, caseArray, scrollViewHeight} = this.state;
     const { assetsArray, riskArray, businessCount, assetsStarLevelCounts,  riskStarLevelCounts} = this.props;
-    console.log('home === ', this.props, this.state,);
+    // console.log('home === ', this.props, this.state);
     return (
       <View className='home'>
         <View className='home-title'>
@@ -249,17 +250,19 @@ class Index extends Component <IProps, IState>{
                   </View>
                   <View className='home-header-tab-text'>添加业务</View>
                 </View>
-                <View className='home-header-tab' onClick={this.navigateToPortrait}>
+                <View className='home-header-tab'>
                   <View className='home-header-tab-logo'>
                     <Image className='home-header-tab-logo-pic' src={portrait}/>
+                    <View className='home-header-tab-logo-tag'>敬请期待</View>
                   </View>
-                  <View className='home-header-tab-text'>画像查询</View>
+                  <View className='home-header-tab-noText'>画像查询</View>
                 </View>
-                <View className='home-header-tab' onClick={this.navigateToAuction}>
+                <View className='home-header-tab'>
                   <View className='home-header-tab-logo'>
                     <Image className='home-header-tab-logo-pic' src={auction}/>
+	                  <View className='home-header-tab-logo-tag'>敬请期待</View>
                   </View>
-                  <View className='home-header-tab-text'>拍卖查询</View>
+                  <View className='home-header-tab-noText'>拍卖查询</View>
                 </View>
               </View>
             </View>
@@ -301,7 +304,7 @@ class Index extends Component <IProps, IState>{
                       <Text className='iconfont icon-question home-data-box-level-icon' onClick={this.navigateToRule}/>
                     </View>
                     <View className='home-data-box-star'>
-                      <View className='home-data-box-star-three' onClick={() => this.navigateToMonitor(1, 2, -1)}>
+                      <View className='home-data-box-star-three' onClick={() => this.navigateToMonitor(1, 2, ['zcwjzcpm', 'zcwjdwq'])}>
                         <Image className='home-data-box-star-three-icon' src={star}/>
                         <View className='home-data-box-star-three-text'>
                           <View className='home-data-box-star-three-text-left'>
@@ -311,7 +314,7 @@ class Index extends Component <IProps, IState>{
                           <Text className='iconfont icon-right-arrow home-data-box-star-three-text-right' />
                         </View>
                       </View>
-                      <View className='home-data-box-star-two' onClick={() => this.navigateToMonitor(1, 3, -1)}>
+                      <View className='home-data-box-star-two' onClick={() => this.navigateToMonitor(1, 3, ['zcwjzcpm', 'zcwjdwq'])}>
                         <Image className='home-data-box-star-two-icon' src={star}/>
                         <View className='home-data-box-star-two-text'>
                           <View className='home-data-box-star-two-text-left'>
@@ -321,7 +324,7 @@ class Index extends Component <IProps, IState>{
                           <Text className='iconfont icon-right-arrow home-data-box-star-three-text-right' />
                         </View>
                       </View>
-                      <View className='home-data-box-star-one' onClick={() => this.navigateToMonitor(1, 4, -1)}>
+                      <View className='home-data-box-star-one' onClick={() => this.navigateToMonitor(1, 4, ['zcwjzcpm', 'zcwjdwq'])}>
                         <Image className='home-data-box-star-one-icon' src={star}/>
                         <View className='home-data-box-star-one-text'>
                           <View className='home-data-box-star-one-text-left'>
@@ -340,7 +343,7 @@ class Index extends Component <IProps, IState>{
                           return(
                             <View
                               className={`home-data-box-type-logo${assetsArray.length === 1 ? '-noBottom' : ''}`}
-                              onClick={() => this.navigateToMonitor(1, 1 , item.id)}
+                              onClick={() => this.navigateToMonitor(1, 1 , item.value)}
                             >
                               <View className='home-data-box-type-logo-left'>
                                 <Text className={`iconfont ${item.icon} home-data-box-type-logo-left-icon`}/>
@@ -377,7 +380,7 @@ class Index extends Component <IProps, IState>{
                       <Text className='iconfont icon-question home-data-box-level-icon' onClick={this.navigateToRule} />
                     </View>
                     <View className='home-data-box-star'>
-                      <View className='home-data-box-star-high' onClick={() => this.navigateToMonitor(2, 2, -1)}>
+                      <View className='home-data-box-star-high' onClick={() => this.navigateToMonitor(2, 2, ['fxjkqypccz', 'fxjkssjk'])}>
                         <Image className='home-data-box-star-high-icon' src={high}/>
                         <View className='home-data-box-star-high-text'>
                           <View className='home-data-box-star-high-text-left'>
@@ -387,7 +390,7 @@ class Index extends Component <IProps, IState>{
                           <Text className='iconfont icon-right-arrow home-data-box-star-three-text-right' />
                         </View>
                       </View>
-                      <View className='home-data-box-star-warn' onClick={() => this.navigateToMonitor(2, 3, -1)}>
+                      <View className='home-data-box-star-warn' onClick={() => this.navigateToMonitor(2, 3, ['fxjkqypccz', 'fxjkssjk'])}>
                         <Image className='home-data-box-star-warn-icon' src={warn}/>
                         <View className='home-data-box-star-warn-text'>
                           <View className='home-data-box-star-warn-text-left'>
@@ -397,7 +400,7 @@ class Index extends Component <IProps, IState>{
                           <Text className='iconfont icon-right-arrow home-data-box-star-three-text-right' />
                         </View>
                       </View>
-                      <View className='home-data-box-star-tip' onClick={() => this.navigateToMonitor(2, 4, -1)}>
+                      <View className='home-data-box-star-tip' onClick={() => this.navigateToMonitor(2, 4, ['fxjkqypccz', 'fxjkssjk'])}>
                         <Image className='home-data-box-star-tip-icon' src={tip}/>
                         <View className='home-data-box-star-tip-text'>
                           <View className='home-data-box-star-tip-text-left'>
@@ -407,7 +410,7 @@ class Index extends Component <IProps, IState>{
                           <Text className='iconfont icon-right-arrow home-data-box-star-three-text-right' />
                         </View>
                       </View>
-                      <View className='home-data-box-star-good' onClick={() => this.navigateToMonitor(2, 5, -1)}>
+                      <View className='home-data-box-star-good' onClick={() => this.navigateToMonitor(2, 5, ['fxjkqypccz', 'fxjkssjk'])}>
                         <Image className='home-data-box-star-good-icon' src={good}/>
                         <View className='home-data-box-star-good-text'>
                           <View className='home-data-box-star-good-text-left'>
@@ -426,7 +429,7 @@ class Index extends Component <IProps, IState>{
                           return(
                             <View
                               className={`home-data-box-type-logo${riskArray.length === 1 ? '-noBottom' : ''}`}
-                              onClick={() => this.navigateToMonitor(2, 1, item.id)}
+                              onClick={() => this.navigateToMonitor(2, 1, item.value)}
                             >
                             <View className='home-data-box-type-logo-left'>
                                 <Text className={`iconfont ${item.icon} home-data-box-type-logo-left-icon`}/>

@@ -36,7 +36,7 @@ type IProps = {
   config: configType[]
   initConfig: configType[]
   onsetParams: (params?: any) => void
-  dispatch: (payload: any) => void
+  dispatch: any
   dropParams: {}
 }
 
@@ -218,8 +218,6 @@ class QueryDrop extends Component<IProps, IState>{
   render(){
     const { currentTab, isMask, maskHeight } = this.state;
     const { config } = this.props;
-    // console.log('QueryDrop state === ', this.state);
-    // console.log('QueryDrop props === ', this.props);
     return (
       <View className='drop'>
         <View className='drop-box' id='drop-box'>
