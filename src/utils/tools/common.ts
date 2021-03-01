@@ -79,15 +79,28 @@ export const isRule = (rule) =>  {
 };
 
 /**
- *
+ * 过滤掉权限为false的数据
  * @param ruleArray
  */
 export const filterArray = (ruleArray) => {
-  let array: {isRule: boolean}[] = [];
+  let array: any[] = [];
   ruleArray.forEach(item => {
     if(item.isRule){
       array.push(item);
     }
   });
   return array;
+};
+
+
+/**
+ * 压缩权限数组
+ * @param authRule
+ */
+export const handleDealAuthRule = (authRule) => {
+  let ruleArray: string[] = [];
+  authRule.forEach(item => {
+    ruleArray.push(item.rule)
+  });
+  return ruleArray;
 };
