@@ -1,4 +1,5 @@
 import {getGlobalData} from "../const/global";
+import Taro from '@tarojs/taro';
 // 按需加载，里面的函数用到的时候再加进去
 
 // 标准时间转年月日
@@ -91,3 +92,5 @@ export const filterArray = (ruleArray) => {
   });
   return array;
 };
+
+export const Message = title => Taro.showToast({title, icon: 'none'});

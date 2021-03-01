@@ -44,6 +44,7 @@
     "@tarojs/taro": "3.0.24",
     "dva-core": "^2.0.4",
     "dva-loading": "^3.0.22",
+    "moment": "^2.29.1",
     "react": "^16.10.0",
     "react-dom": "^16.10.0",
     "react-redux": "^7.2.2",

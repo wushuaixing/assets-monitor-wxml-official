@@ -1,4 +1,4 @@
 export default {
-  navigationBarTitleText: '监控管理',
+  navigationBarTitleText: '添加业务',
   disableScroll: true,
 }
