@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import Taro, { getCurrentInstance } from '@tarojs/taro';
+import { eventCenter, getCurrentInstance } from '@tarojs/taro';
 import {View, Text, Image} from '@tarojs/components'
 import { connect } from 'react-redux';
 import NavigationBar from '../../components/navigation-bar';
@@ -19,11 +19,6 @@ interface dataItem{
   star: number
 }
 
-interface configType{
-  id: number,
-  title: string,
-  value: string
-}
 
 type IProps = {
   dispatch: (params: any) => void
@@ -38,13 +33,14 @@ type IState = {
   count: number
   queryAssetsConfig: any
   queryRiskConfig: any
+  params: any
+  starId?: number
 };
 
 const tabList = [
   { title: '资产线索', id: 1 },
   { title: '风险信息', id: 2 },
 ];
-
 
 // 资产/风险类型 1：资产拍卖 2：代位权-立案 3：代位权-开庭 4：代位权-裁判文书 5：破产重组 6：涉诉-立案 7：涉诉-开庭 8：涉诉-裁判文书
 function getRuleValue(rule) {
@@ -100,127 +96,10 @@ function filterArray(rule, initValue) {
   }
 }
 
-// const queryAssetsConfig = [
-//   {
-//     id: 1,
-//     title: '是否已读',
-//     isSelected: false,
-//     paramName: 'isRead',
-//     conditions: {
-//       type: 'selected',
-//       field: [
-//         {name: '全部', id: 1, value: '', isSelected: true},
-//         {name: '已读', id: 2, value: true, isSelected: false},
-//         {name: '未读', id: 3, value: false, isSelected: false},
-//       ],
-//     }
-//   },
-//   {
-//     id: 2,
-//     title: '线索类型',
-//     isSelected: false,
-//     paramName: 'assetAndRiskType',
-//     conditions: {
-//       type: 'line-choose',
-//       field: [
-//         {
-//           id: 1,
-//           name: '全部',
-//           isSelected: true,
-//           childrenName: [
-//             {name: '全部', value: filterArray(['zcwjzcpm', 'zcwjdwq'], ''), id: 1, isSelected: true},
-//           ]
-//         },
-//         {
-//           id: 2,
-//           name: '涉诉资产',
-//           isSelected: false,
-//           isRule: isRule(['zcwjzcpm', 'zcwjdwq']),
-//           childrenName: [
-//             {name: '全部', value: filterArray(['zcwjzcpm', 'zcwjdwq'], ''), id: 1, isSelected: false, isRule: true},
-//             {name: '司法拍卖', value: filterArray('zcwjzcpm', '1'), id: 2, isSelected: false, isRule: isRule('zcwjzcpm')},
-//             {name: '代位权-立案信息', value: filterArray('zcwjdwq', '2'), id: 3, isSelected: false, isRule: isRule('zcwjdwq')},
-//             {name: '代位权-开庭公告', value: filterArray('zcwjdwq', '3'), id: 4, isSelected: false, isRule: isRule('zcwjdwq')},
-//             {name: '代位权-裁判文书', value: filterArray('zcwjdwq', '4'), id: 5, isSelected: false, isRule: isRule('zcwjdwq')},
-//           ]
-//         }
-//       ],
-//     },
-//   },
-//   {
-//     id: 3,
-//     title: '更多筛选',
-//     isSelected: false,
-//     paramName: 'updateTime',
-//     conditions: {
-//       type: 'time',
-//       field: ['startTime', 'endTime'],
-//     },
-//   },
-// ];
-// const queryRiskConfig = [
-//   {
-//     id: 1,
-//     title: '是否已读',
-//     isSelected: false,
-//     paramName: 'isRead',
-//     conditions: {
-//       type: 'selected',
-//       field: [
-//         {name: '全部', id: 1, value: '', isSelected: true},
-//         {name: '已读', id: 2, value: true, isSelected: false},
-//         {name: '未读', id: 3, value: false, isSelected: false},
-//       ],
-//       requird: true,
-//     }
-//   },
-//   {
-//     id: 2,
-//     title: '风险类型',
-//     isSelected: false,
-//     conditions:   {
-//       type: 'line-choose',
-//       field: [
-//         {
-//           id: 1,
-//           name: '全部',
-//           isSelected: true,
-//           childrenName: [
-//             {name: '全部', value: ['1', '2', '3', '4', '5', '6', '7', '8', '9'], id: 1, isSelected: true},
-//           ]
-//         },
-//         {
-//           id: 2,
-//           name: '司法风险',
-//           isSelected: false,
-//           childrenName: [
-//             {name: '全部', value: ['1', '2', '3', '4'], id: 1, isSelected: true},
-//             {name: '破产重整', value: ['5', '6'], id: 2, isSelected: false},
-//             {name: '涉诉-立案信息', value: ['7'], id: 3, isSelected: false},
-//             {name: '涉诉-开庭公告', value: ['8'], id: 4, isSelected: false},
-//             {name: '涉诉-裁判文书', value: ['9'], id: 5, isSelected: false},
-//           ]
-//         }
-//       ],
-//       requird: true,
-//       value: '',
-//     },
-//   },
-//   {
-//     id: 3,
-//     title: '更多筛选',
-//     isSelected: false,
-//     conditions: {
-//       type: 'time',
-//       field: ['startTime', 'endTime'],
-//       requird: true,
-//       value: '',
-//     },
-//   },
-// ];
 
-@connect(({ monitor, common}) => ({ ...monitor, ...common }))
+@connect(({ monitor, queryDrop}) => ({ ...monitor, ...queryDrop }))
 export default class Monitor extends Component <IProps, IState>{
+  $instance = getCurrentInstance()
   constructor(props) {
     super(props);
     this.state = {
@@ -234,58 +113,60 @@ export default class Monitor extends Component <IProps, IState>{
           id: 1,
           title: '是否已读',
           isSelected: false,
-          paramName: 'isRead',
-          conditions: {
-            type: 'selected',
-            field: [
-              {name: '全部', id: 1, value: '', isSelected: true},
-              {name: '已读', id: 2, value: true, isSelected: false},
-              {name: '未读', id: 3, value: false, isSelected: false},
-            ],
-          }
+          field: 'isRead',
+          type: 'singelSelected',
+          initValue: '',
+          conditions: [
+            {name: '全部', id: 1, value: '', isSelected: true},
+            {name: '已读', id: 2, value: true, isSelected: false},
+            {name: '未读', id: 3, value: false, isSelected: false},
+          ]
         },
         {
           id: 2,
           title: '线索类型',
           isSelected: false,
-          paramName: 'assetAndRiskType',
-          conditions: {
-            type: 'line-choose',
-            field: [
-              {
-                id: 1,
-                name: '全部',
-                isSelected: true,
-                isRule: true,
-                childrenName: [
-                  {name: '全部', value: filterArray(['zcwjzcpm', 'zcwjdwq'], ''), id: 1, isSelected: true, isRule: true},
-                ]
-              },
-              {
-                id: 2,
-                name: '涉诉资产',
-                isSelected: false,
-                isRule: isRule(['zcwjzcpm', 'zcwjdwq']),
-                childrenName: [
-                  {name: '全部', value: filterArray(['zcwjzcpm', 'zcwjdwq'], ''), id: 1, isSelected: false, isRule: true},
-                  {name: '司法拍卖', value: filterArray('zcwjzcpm', '1'), id: 2, isSelected: false, isRule: isRule('zcwjzcpm')},
-                  {name: '代位权-立案信息', value: filterArray('zcwjdwq', '2'), id: 3, isSelected: false, isRule: isRule('zcwjdwq')},
-                  {name: '代位权-开庭公告', value: filterArray('zcwjdwq', '3'), id: 4, isSelected: false, isRule: isRule('zcwjdwq')},
-                  {name: '代位权-裁判文书', value: filterArray('zcwjdwq', '4'), id: 5, isSelected: false, isRule: isRule('zcwjdwq')},
-                ]
-              }
-            ],
-          },
+          field: 'assetAndRiskType',
+          type: 'lineChoose',
+          initValue: '',
+          conditions: [
+            {
+              id: 1,
+              name: '全部',
+              isSelected: true,
+              isRule: true,
+              childrenName: [
+                {name: '全部', value: ['zcwjzcpm', 'zcwjdwq'], id: 1, isSelected: true, isRule: true},
+              ]
+            },
+            {
+              id: 2,
+              name: '涉诉资产',
+              isSelected: false,
+              isRule: true,
+              childrenName: [
+                {name: '全部', value: ['zcwjzcpm', 'zcwjdwq'], id: 1, isSelected: true, isRule: true},
+                {name: '司法拍卖', value: ['zcwjzcpm'], id: 2, isSelected: false, isRule: true },
+                {name: '代位权-立案信息', value: ['zcwjdwq'], id: 3, isSelected: false, isRule: true},
+                {name: '代位权-开庭公告', value: ['zcwjdwq'], id: 4, isSelected: false, isRule: true},
+                {name: '代位权-裁判文书', value: ['zcwjdwq'], id: 5, isSelected: false, isRule: true},
+              ]
+            }
+          ],
         },
         {
           id: 3,
           title: '更多筛选',
           isSelected: false,
-          paramName: 'updateTime',
-          conditions: {
-            type: 'time',
-            field: ['startTime', 'endTime'],
-          },
+          type: 'multipleForm',
+          conditions: [
+            {
+              name: '推送日期',
+              type: 'time',
+              field: ['startTime', 'endTime'],
+              value: [],
+            }
+          ],
         },
       ],
       queryRiskConfig: [
@@ -293,149 +174,155 @@ export default class Monitor extends Component <IProps, IState>{
           id: 1,
           title: '是否已读',
           isSelected: false,
-          paramName: 'isRead',
-          conditions: {
-            type: 'selected',
-            field: [
-              {name: '全部', id: 1, value: '', isSelected: true},
-              {name: '已读', id: 2, value: true, isSelected: false},
-              {name: '未读', id: 3, value: false, isSelected: false},
-            ],
-            requird: true,
-          }
+          field: 'isRead',
+          type: 'singelSelected',
+          initValue: '',
+          conditions: [
+            {name: '全部', id: 1, value: '', isSelected: true},
+            {name: '已读', id: 2, value: true, isSelected: false},
+            {name: '未读', id: 3, value: false, isSelected: false},
+          ]
         },
         {
           id: 2,
-          title: '风险类型',
+          title: '线索类型',
           isSelected: false,
-          conditions:   {
-            type: 'line-choose',
-            field: [
-              {
-                id: 1,
-                name: '全部',
-                isSelected: true,
-                childrenName: [
-                  {name: '全部', value: filterArray(['fxjkqypccz', 'fxjkssjk'], ''), id: 1, isSelected: true},
-                ]
-              },
-              {
-                id: 2,
-                name: '司法风险',
-                isSelected: false,
-                isRule: isRule(['fxjkqypccz', 'fxjkssjk']),
-                childrenName: [
-                  {name: '全部', value: filterArray(['fxjkqypccz', 'fxjkssjk'], ''), id: 1, isSelected: true, isRule: true },
-                  {name: '破产重整', value: filterArray('fxjkqypccz', '5'), id: 2, isSelected: false, isRule: isRule('fxjkqypccz') },
-                  {name: '涉诉-立案信息', value: filterArray('fxjkssjk', '6'), id: 3, isSelected: false, isRule: isRule('fxjkssjk') },
-                  {name: '涉诉-开庭公告', value: filterArray('fxjkssjk', '7'), id: 4, isSelected: false, isRule: isRule('fxjkssjk') },
-                  {name: '涉诉-裁判文书', value: filterArray('fxjkssjk', '8'), id: 5, isSelected: false, isRule: isRule('fxjkssjk') },
-                ]
-              }
-            ],
-            requird: true,
-            value: '',
-          },
+          field: 'assetAndRiskType',
+          type: 'lineChoose',
+          initValue: '',
+          conditions: [
+            {
+              id: 1,
+              name: '全部',
+              isSelected: true,
+              isRule: true,
+              childrenName: [
+                {name: '全部', value: filterArray(['fxjkqypccz', 'fxjkssjk'], ''), id: 1, isSelected: true, isRule: true,},
+              ]
+            },
+            {
+              id: 2,
+              name: '司法风险',
+              isSelected: false,
+              isRule: isRule(['fxjkqypccz', 'fxjkssjk']),
+              childrenName: [
+                {name: '全部', value: filterArray(['fxjkqypccz', 'fxjkssjk'], ''), id: 1, isSelected: true, isRule: true },
+                {name: '破产重整', value: filterArray('fxjkqypccz', '5'), id: 2, isSelected: false, isRule: isRule('fxjkqypccz') },
+                {name: '涉诉-立案信息', value: filterArray('fxjkssjk', '6'), id: 3, isSelected: false, isRule: isRule('fxjkssjk') },
+                {name: '涉诉-开庭公告', value: filterArray('fxjkssjk', '7'), id: 4, isSelected: false, isRule: isRule('fxjkssjk') },
+                {name: '涉诉-裁判文书', value: filterArray('fxjkssjk', '8'), id: 5, isSelected: false, isRule: isRule('fxjkssjk') },
+              ]
+            }
+          ],
         },
         {
           id: 3,
           title: '更多筛选',
           isSelected: false,
-          conditions: {
-            type: 'time',
-            field: ['startTime', 'endTime'],
-            requird: true,
-            value: '',
-          },
+          type: 'multipleForm',
+          conditions: [
+            {
+              name: '推送日期',
+              type: 'time',
+              field: ['startTime', 'endTime'],
+              value: [],
+            }
+          ],
         },
-      ]
+      ],
+      params: {},
+      starId: 0,
     };
-    this.params = {};
   }
 
   componentWillMount(): void {
-    isRule('zcwjdwq');
-    this.handleQueryAssets({});
+    const onShowEventId = this.$instance.router.onShow;
+    // 监听
+    eventCenter.on(onShowEventId, this.onShow);
+    this.handleRequestList({assetAndRiskType: [1]});
   }
 
-  // 请求资产列表数据
-  handleQueryAssets = (payload) => {
-    const { dispatch } = this.props;
-    dispatch({
-      type:'monitor/assetList',
-      payload: payload
-    });
-    dispatch({
-      type:'monitor/assetListCount',
-      payload: payload
+  componentWillUnmount () {
+    const onShowEventId = this.$instance.router.onShow;
+    // 卸载
+    eventCenter.off(onShowEventId, this.onShow)
+  }
+
+  onShow = () => {
+    console.log('tabid === ', getGlobalData('tabId'));
+    this.setState({
+      currentId: getGlobalData('tabId'),
+      starId: getGlobalData('starId')
     });
   };
 
-  // 请求资产列表数据
-  handleQueryRisk = (payload) => {
+
+  handleRequestList = (payload) => {
+    console.log('new payload === ', payload);
+    const { currentId } = this.state;
     const { dispatch } = this.props;
-    dispatch({
-      type:'monitor/riskList',
-      payload: payload
-    });
-    dispatch({
-      type:'monitor/riskListCount',
-      payload: payload
-    });
+    if(currentId === 1){
+      dispatch({
+        type:'monitor/assetList',
+        payload: payload
+      });
+      dispatch({
+        type:'monitor/assetListCount',
+        payload: payload
+      });
+    }
+    else {
+      dispatch({
+        type:'monitor/riskList',
+        payload: payload
+      });
+      dispatch({
+        type:'monitor/riskListCount',
+        payload: payload
+      });
+    }
   };
 
   // 资产/ 风险tab的切换
   handleClick = (info) => {
-    const params = {...this.params};
-    this.params = {...params, type: info.id};
     this.setState({
       currentId: info.id
     });
-    if(info.id === 1){
-      this.handleQueryAssets({})
-    }
-    else {
-     this.handleQueryRisk({});
-    }
+    this.handleRequestList({})
   };
 
   // 资产里面切换星级，风险里面切风险程度
   handleChangeTab = (info) => {
-    console.log('handleChangeTab info === ', info);
-    const { currentId } = this.state;
-    const params = {...this.params};
-    this.params = {...params, score: info.value};
-    if(currentId === 1){
-      this.handleQueryAssets({
-        score: info.value
-      })
-    }
-    else {
-      this.handleQueryRisk({
-        score: info.value
-      });
-    }
-
+    const { params} = this.state;
+    let newParams = {...params, score: info.value};
+    this.setState({
+      params: newParams,
+    });
+    this.handleRequestList({...newParams});
   };
 
   handleSetParams = (queryParams) => {
-    const params = {...this.params};
-    this.params = {...params, ...queryParams};
+    const { params} = this.state;
+    let newParams = {...params, ...queryParams};
+    this.setState({
+      params: newParams,
+    });
+    this.handleRequestList({...newParams})
   };
 
   handleChangeScroll = (isScroll) => {
   };
 
   render () {
-    const { currentId, isScroll, queryAssetsConfig, queryRiskConfig} = this.state;
-    const { count, assetsList, riskList } = this.props;
-    console.log('queryAssetsConfig === ', queryAssetsConfig, queryRiskConfig);
-    console.log('page props === ', this.props);
+    const { currentId, isScroll, queryAssetsConfig, queryRiskConfig, starId } = this.state;
+    const { count } = this.props;
+    console.log('monitor state === ',this.state);
     return (
       <View className='monitor'>
         <NavigationBar title={'源诚资产监控'} type={'blue'} color='white'/>
-        <Tab config={tabList} onClick={this.handleClick}/>
+        <Tab config={tabList} onClick={this.handleClick} initId={currentId}/>
         <TagSelected
+          initId={starId}
           type={currentId === 1 ? 'assets' : 'risk' }
           onClick={this.handleChangeTab}
         />
@@ -443,8 +330,6 @@ export default class Monitor extends Component <IProps, IState>{
           type={currentId === 1 ? 'assets' : 'risk' }
           initConfig={currentId === 1 ? queryAssetsConfig : queryRiskConfig}
           onsetParams={this.handleSetParams}
-          onhandleQueryAssets={this.handleQueryAssets}
-          onhandleQueryRisk={this.handleQueryRisk}
         />
         {
           count === 0 ? <View className='monitor-blank'>
@@ -466,14 +351,14 @@ export default class Monitor extends Component <IProps, IState>{
 						</View>
 					</View>
         }
-        {
-          count > 0 && <List
-						data={currentId === 1 ? [...assetsList] : [...riskList]}
-						count={count}
-						params={this.params}
-						onChangeScroll={this.handleChangeScroll}
-					/>
-        }
+        {/*{*/}
+        {/*  count > 0 && <List*/}
+				{/*		data={currentId === 1 ? [...assetsList] : [...riskList]}*/}
+				{/*		count={count}*/}
+				{/*		params={this.params}*/}
+				{/*		onChangeScroll={this.handleChangeScroll}*/}
+				{/*	/>*/}
+        {/*}*/}
       </View>
     )
   }

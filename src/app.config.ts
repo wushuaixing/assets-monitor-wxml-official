@@ -17,6 +17,7 @@ export default {
         "monitor/asset-auction/confirmation/index",
         "monitorManage/index",
         "monitorManage/businessDetail/index",
+        "monitorManage/addBusiness/index",
         "rule-description/index",
       ]
     },

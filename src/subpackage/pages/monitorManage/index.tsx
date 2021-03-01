@@ -153,7 +153,8 @@ export default class MonitorManage extends Component<IProps, isState> {
     }).then((res) => {
       const {data: {list, page, total, hasNext}} = res;
       this.setState({
-        dataSource: isScroll ? this.state.dataSource.concat(list) : list,
+        // dataSource: isScroll ? this.state.dataSource.concat(list) : list,
+        dataSource:[],
         curPage: page + 1,
         total,
         hasNext
@@ -161,12 +162,16 @@ export default class MonitorManage extends Component<IProps, isState> {
     })
   }
 
+  onAddBusinessClick = () =>{
+    Taro.navigateTo({url:'/subpackage/pages/monitorManage/addBusiness/index'});
+  }
+
   render() {
     const tabList = [
       {title: '业务', id: 1},
       {title: '债务人', id: 2},
     ];
-    const {current, searchValue, total, dataSource} = this.state;
+    const {current, searchValue, total,dataSource} = this.state;
     const totalNumerText = current ? '个债务人' : '笔监控业务';
     const emptyText = current ? '暂无监控的债务人' : '您还未添加监控业务';
     return (
@@ -211,7 +216,7 @@ export default class MonitorManage extends Component<IProps, isState> {
                       <Image src={busEmptyImg} className='yc-monitorManage-businessEmpty-content-img'/>
                       <View className='yc-monitorManage-businessEmpty-content-text'>{emptyText}</View>
                       {
-                        !current ? <View className='yc-monitorManage-businessEmpty-content-addBus'>添加业务</View> : null
+                        !current ? <View className='yc-monitorManage-businessEmpty-content-addBus' onClick={this.onAddBusinessClick}>添加业务</View> : null
                       }
                     </View>
                   </View> :

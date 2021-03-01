@@ -1,23 +1,24 @@
 import { currentOrganizationApi, assetApi, riskApi } from '../../services/home';
 import { isRule, filterArray } from '../../utils/tools/common';
 
-interface starLevelType{
-  [propName: string]: number
-}
-
 export default {
   namespace: 'home',
   state: {
     businessCount: 0,
     assetsArray: [
-      { id: 1, name: '资产拍卖', num: 11, isRule: false, icon: 'icon-auction'},
-      { id: 2, name: '代位权', num: 11, isRule: false, icon: 'icon-subrogation'},
+      { id: 1, name: '资产拍卖', num: 0, isRule: false, icon: 'icon-auction'},
+      { id: 2, name: '代位权', num: 0, isRule: false, icon: 'icon-subrogation'},
     ],
     riskArray: [
-      { id: 1, name: '破产重整', num: 34, isRule: false, icon: 'icon-bankruptcy'},
-      { id: 2, name: '涉诉', num: 66, isRule: false, icon: 'icon-litigation'},
+      { id: 1, name: '破产重整', num: 0, isRule: false, icon: 'icon-bankruptcy'},
+      { id: 2, name: '涉诉', num: 0, isRule: false, icon: 'icon-litigation'},
     ],
-    starLevel: {},
+    starLevelCounts: [
+      {starLevel: 90, starLevelCount: 0},
+      {starLevel: 80, starLevelCount: 0},
+      {starLevel: 60, starLevelCount: 0},
+      {starLevel: 40, starLevelCount: 0},
+    ],
   },
   effects: {
     *getCurrentOrganization({ payload }, { call, put }) {
@@ -26,33 +27,24 @@ export default {
     },
 
     *getAssets({ payload }, {all, call, put }) {
-      // const res = yield call(assetApi, payload);
+      const res = yield call(assetApi, payload);
       yield put({ type: 'updateAssets', payload: {
-        auctionCount: 22,
-        subrogationCount: 22,
+        auctionCount: res.data.auctionCount,
+        subrogationCount: res.data.subrogationCount,
       }});
       yield put({ type: 'updateAssetsStarLevel', payload: {
-          starLevelCounts: [
-            {starLevel: 3, starLevelCount: 121},
-            {starLevel: 2, starLevelCount: 121},
-            {starLevel: 1, starLevelCount: 121},
-          ]
+          starLevelCounts: res.data.starLevelCounts
         }});
     },
 
     *getRisk({ payload }, {all, call, put }) {
-      // const res = yield call(riskApi, payload);
+      const res = yield call(riskApi, payload);
       yield put({ type: 'updateRisk', payload: {
-          bankruptcyCount: 22,
-          lawsuitCount: 22,
+          bankruptcyCount: res.data.bankruptcyCount,
+          lawsuitCount: res.data.lawsuitCount,
       }});
       yield put({ type: 'updateRiskStarLevel', payload: {
-          starLevelCounts: [
-            {starLevel: 90, starLevelCount: 311},
-            {starLevel: 80, starLevelCount: 311},
-            {starLevel: 60, starLevelCount: 311},
-            {starLevel: 40, starLevelCount: 311},
-          ]
+          starLevelCounts: res.data.starLevelCounts,
         }});
 
     },
@@ -79,7 +71,7 @@ export default {
 
     updateRisk(state, { payload }) {
       let newRiskArrary = [...state.riskArray];
-      newRiskArrary[0].num = payload.bankruptcyCount;
+      newRiskArrary[0].num = payload.bankruptcyCount ;
       newRiskArrary[0].isRule = isRule('fxjkqypccz');
       newRiskArrary[1].num = payload.lawsuitCount;
       newRiskArrary[1].isRule = isRule('fxjkssjk');
@@ -90,43 +82,52 @@ export default {
     },
 
     updateAssetsStarLevel(state, {payload}: { payload: any }): any {
-      let newStarLevel: starLevelType = {};
-      payload.starLevelCounts.forEach((item) => {
-        if(item.starLevel === 3){
-          newStarLevel.threeStar = item.starLevelCount
+      let assetsStar = [
+        {starLevel: 90, starLevelCount: 0},
+        {starLevel: 80, starLevelCount: 0},
+        {starLevel: 60, starLevelCount: 0},
+      ];
+      payload.starLevelCounts.forEach(item => {
+        if(item.starLevel === 90){
+          assetsStar[0].starLevelCount = item.starLevelCount;
         }
-        else if(item.starLevel === 2){
-          newStarLevel.twoStar = item.starLevelCount
+        else if(item.starLevel === 80){
+          assetsStar[1].starLevelCount = item.starLevelCount;
         }
-        else {
-          newStarLevel.oneStar = item.starLevelCount
+        else if(item.starLevel === 60){
+          assetsStar[2].starLevelCount = item.starLevelCount;
         }
       });
       return {
         ...state,
-        starLevel: {...newStarLevel},
+        starLevelCounts: [...assetsStar],
       }
     },
 
     updateRiskStarLevel(state, {payload}: { payload: any }): any {
-      let newStarLevel: starLevelType = {};
-      payload.starLevelCounts.forEach((item) => {
+      let riskStar = [
+        {starLevel: 90, starLevelCount: 0},
+        {starLevel: 80, starLevelCount: 0},
+        {starLevel: 60, starLevelCount: 0},
+        {starLevel: 40, starLevelCount: 0},
+      ];
+      payload.starLevelCounts.forEach(item => {
         if(item.starLevel === 90){
-          newStarLevel.high = item.starLevelCount
+          riskStar[0].starLevelCount = item.starLevelCount;
         }
         else if(item.starLevel === 80){
-          newStarLevel.warn = item.starLevelCount
+          riskStar[1].starLevelCount = item.starLevelCount;
         }
         else if(item.starLevel === 60){
-          newStarLevel.tip = item.starLevelCount
+          riskStar[2].starLevelCount = item.starLevelCount;
         }
-        else {
-          newStarLevel.good = item.starLevelCount
+        else{
+          riskStar[3].starLevelCount = item.starLevelCount;
         }
       });
       return {
         ...state,
-        starLevel: {...newStarLevel},
+        starLevelCounts: [...riskStar],
       }
     },
   }

@@ -72,6 +72,54 @@
   }
 }
 
+@mixin logoItem{
+  width: 327px;
+  height: 124px;
+  text-align: center;
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  &-left{
+    margin: 40px 0 0 48px;
+    &-icon{
+      font-size: 44px;
+      line-height: 44px;
+      color: #808080;
+    }
+  }
+  &-right{
+    margin: 24px 0 0 48px;
+    &-name{
+      font-size: 28px;
+      line-height: 28px;
+      color: #666666;
+    }
+    &-num{
+      margin-top: 16px;
+      font-size: 32px;
+      line-height: 32px;
+      font-weight: 500;
+      text-align: left;
+    }
+  }
+  &-divider{
+    position: absolute;
+    right: 0;
+    background-color: $divider-color;
+    width: 1px;
+    height: 62px;
+    top: 30px;
+  }
+  &-bottom{
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    background-color: $divider-color;
+    width: 654px;
+    height: 1px;
+  }
+}
+
 .home{
   background-color: $page-bg-color;
   &-bg{
@@ -228,45 +276,11 @@
         flex-wrap: wrap;
         padding-bottom: 96px;
         &-logo{
-          width: 327px;
-          height: 124px;
-          text-align: center;
-          position: relative;
-          display: flex;
-          flex-direction: row;
+          @include logoItem;
           border-bottom: 1px solid $divider-color;
-          &-left{
-            margin: 40px 0 0 48px;
-            &-icon{
-              font-size: 44px;
-              line-height: 44px;
-              color: #808080;
-            }
-          }
-          &-right{
-            margin: 24px 0 0 48px;
-            &-name{
-              font-size: 28px;
-              line-height: 28px;
-              color: #666666;
-            }
-            &-num{
-              margin-top: 16px;
-              font-size: 32px;
-              line-height: 32px;
-              font-weight: 500;
-              text-align: left;
-            }
-          }
-          &-divider{
-            position: absolute;
-            right: 0;
-            background-color: $divider-color;
-            width: 1px;
-            height: 62px;
-            top: 30px;
-          }
-
+        }
+        &-logo-noBottom{
+          @include logoItem;
         }
       }
     }

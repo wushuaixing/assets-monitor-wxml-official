@@ -8,6 +8,13 @@
   background-color: white;
   position: relative;
   padding-bottom: 24px;
+  &-content{
+    background-color: white;
+    z-index: 10; // mask的层级是10
+    position: absolute;
+    width: 100%;
+  }
+
   &-query-mask{
     position: absolute;
     opacity: 0.5;
@@ -15,20 +22,21 @@
     height: 100%;
     width: 100%;
     top: 28px;
-    z-index: 10;
+    z-index: 5;
   }
 
   &-box{
     display: flex;
+    flex-direction: row;
     justify-content: space-around;
     width: 100%;
     &-tab{
       display: flex;
+      flex: 1;
       font-size: 28px;
       line-height: 28px;
       font-weight: 400;
       color: $common-text;
-      width: 33%;
       position: relative;
       justify-content: center;
       &-text{
@@ -74,10 +82,4 @@
     position: absolute;
   }
 
-  &-content{
-    background-color: white;
-    z-index: 20; // mask的层级是10
-    position: absolute;
-    width: 100%;
-  }
 }

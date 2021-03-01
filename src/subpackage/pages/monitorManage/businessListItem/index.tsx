@@ -6,7 +6,8 @@ import './index.scss'
 import moment from 'moment';
 
 type isState = {
-  curData: any
+  curData: any,
+  curClickItem:string,
 }
 @connect(({monitorManage}) => ({monitorManage}))
 export default class BusinessListItem extends Component<any, isState> {
@@ -16,6 +17,7 @@ export default class BusinessListItem extends Component<any, isState> {
     console.log('super', this.props)
     this.state = {
       curData: [],
+      curClickItem:''
     };
   }
 
@@ -39,9 +41,15 @@ export default class BusinessListItem extends Component<any, isState> {
     Taro.navigateTo({url: `/subpackage/pages/monitorManage/businessDetail/index?id=${id}`});
   }
 
+  onClickMore = (e,i) =>{
+    const {curClickItem} = this.state;
+    this.setState({curClickItem:(curClickItem!==i.id && i.id)})
+  }
+
 
   render() {
     const {data, searchValue} = this.props;
+    const {curClickItem} = this.state;
     const reg = new RegExp(searchValue, 'gi')
     const bgRandomColor = {
       0: '#FF5454',
@@ -84,12 +92,46 @@ export default class BusinessListItem extends Component<any, isState> {
                       </View>
                     </View>
                     <View className='yc-businessListItem-content-middleRight-right'>
-                      {
-                        [0, 1, 2].map((_i, indexTemp) => {
-                          return (<View className='yc-businessListItem-content-middleRight-right-circle'
-                                        style={{marginRight: indexTemp !== 2 ? '6rpx' : '0'}}/>)
-                        })
-                      }
+                      {/*{*/}
+                      {/*  [0, 1, 2].map((_i, indexTemp) => {*/}
+                      {/*    return (<View className='yc-businessListItem-content-middleRight-right-circle'*/}
+                      {/*                  style={{marginRight: indexTemp !== 2 ? '6rpx' : '0'}}/>)*/}
+                      {/*  })*/}
+                      {/*}*/}
+
+
+                      <View>
+                        <View onClick={(e)=>{e.stopPropagation();}}>
+                          <View onClick={(e)=>this.onClickMore(e,i)}>
+                            {
+                              [0, 1, 2].map((_i, indexTemp) => {
+                                return (<View className='yc-businessListItem-content-middleRight-right-circle'
+                                              style={{marginRight: indexTemp !== 2 ? '6rpx' : '0'}}/>)
+                              })
+                            }
+                          </View>
+                        </View>
+                        <View className="popover_body" style={{display:curClickItem === i.id?"block":"none"}}>
+                          <View>
+                            <View>
+                              <View className="ant-popover ant-popover-placement-bottomRight "
+                                    style={{left:"0rpx",top:'20rpx',transformOrigin:'50% 91.6rpx'}}
+                              >
+                                <View className="ant-popover-content">
+                                  <View className="ant-popover-arrow"><span className="ant-popover-arrow-content"></span></View>
+                                  <View className="ant-popover-inner" >
+                                    <View className="ant-popover-title">Title</View>
+                                    <View className="ant-popover-inner-content"><a>Close</a></View>
+                                  </View>
+                                </View>
+                              </View>
+                            </View>
+                          </View>
+                        </View>
+
+                      </View>
+
+
                       <View className='yc-businessListItem-content-middleRight-right-date'>
                         {moment(i.uploadTime).format('YYYY-MM-DD')}添加
                       </View>

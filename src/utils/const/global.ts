@@ -8,6 +8,8 @@ interface globalType {
   weChatCode?: string,
   ruleArray?: string[]
   serviceWeChat?: string
+  starId: number
+  tabId?: number
 }
 
 const globalData: globalType = {};
