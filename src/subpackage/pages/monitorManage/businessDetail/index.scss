@@ -1,0 +1,52 @@
+.yc-businessDetail{
+  background: #F5F5F5;
+  height:100vh;
+  font-family: PingFangSC-Medium, PingFang SC;
+  &-line{
+    height:24px;
+  }
+  &-top{
+    background:#fff;
+    &-topInfo{
+      height:89px;
+      line-height: 89px;
+      padding: 0 24px;
+      &-busText{
+        font-size: 32px;
+        font-weight: 500;
+        color: #333333;
+      }
+      &-removeBusText{
+        float: right;
+        font-size: 32px;
+        font-weight: 400;
+        color: #0979E6;
+      }
+    }
+    &-line{
+      height:1px;
+      background: #E5E5E5;
+    }
+    &-topContent{
+      height:76px;
+      padding:24px 0 24px 24px;
+      &-text{
+        height: 28px;
+        font-size: 28px;
+        font-weight: 400;
+        color: #999999;
+        line-height: 28px;
+      }
+      &-number{
+        height: 28px;
+        font-size: 28px;
+        font-weight: 400;
+        color: #666666;
+        line-height: 28px;
+      }
+    }
+  }
+  &-bottom{
+    background:#fff;
+  }
+}

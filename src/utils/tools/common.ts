@@ -1,4 +1,5 @@
 import {getGlobalData} from "../const/global";
+import Taro from '@tarojs/taro';
 // 按需加载，里面的函数用到的时候再加进去
 
 // 标准时间转年月日
@@ -92,15 +93,4 @@ export const filterArray = (ruleArray) => {
   return array;
 };
 
-
-/**
- * 压缩权限数组
- * @param authRule
- */
-export const handleDealAuthRule = (authRule) => {
-  let ruleArray: string[] = [];
-  authRule.forEach(item => {
-    ruleArray.push(item.rule)
-  });
-  return ruleArray;
-};
+export const Message = title => Taro.showToast({title, icon: 'none'});
