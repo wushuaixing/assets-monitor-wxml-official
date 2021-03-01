@@ -1,4 +1,5 @@
 import { assetListApi, assetListCountApi, riskListApi, riskListCountApi} from '../../services/monitor';
+import { clearEmpty } from '../../utils/tools/common';
 
 export default {
   namespace: 'monitor',
@@ -7,21 +8,21 @@ export default {
   },
   effects: {
     *assetList({ payload }, { call }) {
-      const res = yield call(assetListApi, {...payload, num: 10});
+      const res = yield call(assetListApi, { ...clearEmpty(payload), num: 10});
       return res;
     },
     *assetListCount({ payload }, { call }) {
-      const res = yield call(assetListCountApi, payload );
+      const res = yield call(assetListCountApi, {...clearEmpty(payload)} );
       return res;
     },
 
     *riskList({payload}, { call, put }) {
-      const res = yield call(riskListApi, {...payload, num: 10});
+      const res = yield call(riskListApi, {...clearEmpty(payload), num: 10});
       return res;
     },
 
     *riskListCount({ payload }, {all, call, put }) {
-      const res = yield call(riskListCountApi, payload);
+      const res = yield call(riskListCountApi, {...clearEmpty(payload)});
       return res;
     },
   },

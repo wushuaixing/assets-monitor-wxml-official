@@ -74,21 +74,20 @@ class QueryDrop extends Component<IProps, IState>{
       payload: initConfig
     });
     const onReadyEventId = this.$instance.router.onReady;
-    const onShowEventId = this.$instance.router.onShow;
     eventCenter.once(onReadyEventId, this.onRady);
-    eventCenter.on(onShowEventId, this.onShow);
   }
 
 
   shouldComponentUpdate(nextProps: Readonly<IProps>, nextState: Readonly<IState>): boolean {
+    // console.log('drop should === ',this.props, nextProps);
     const { isMask } = this.state;
     const { config, type} = this.props;
     return JSON.stringify(config) !== JSON.stringify(nextProps.config) || type !== nextProps.type || isMask !== nextState.isMask
   }
 
-  componentWillUpdate(nextProps: Readonly<IProps>,  nextState: Readonly<IState>): void {
+  componentWillUpdate(nextProps: Readonly<IProps>, nextState: Readonly<IState>): void {
+    // console.log('drop component  === ',this.props, nextProps);
     const { dispatch, type} = this.props;
-    // console.log('state === ', this.state, nextState);
     if(type !== nextProps.type){
       dispatch({
         type:'queryDrop/initConfig',
@@ -102,9 +101,7 @@ class QueryDrop extends Component<IProps, IState>{
 
   componentWillUnmount(): void {
     const onReadyEventId = this.$instance.router.onReady;
-    const onShowEventId = this.$instance.router.onShow;
     // 卸载
-    eventCenter.off(onShowEventId, this.onShow);
     eventCenter.off(onReadyEventId, this.onRady);
   }
 
@@ -125,9 +122,6 @@ class QueryDrop extends Component<IProps, IState>{
           })
       }
     });
-  };
-
-  onShow = () => {
   };
 
   // 点击切换筛选条件Tab
@@ -175,7 +169,7 @@ class QueryDrop extends Component<IProps, IState>{
         info,
       }
     });
-    let newParams = {...params, [currentTab.field] : info.value, };
+    let newParams = {...params, [currentTab.field] : info.value.join(), };
     this.handleRequestParmas(newParams);
     this.setState({
       params: newParams,
@@ -218,6 +212,7 @@ class QueryDrop extends Component<IProps, IState>{
   render(){
     const { currentTab, isMask, maskHeight } = this.state;
     const { config } = this.props;
+    // console.log('drop-box config === ', config);
     return (
       <View className='drop'>
         <View className='drop-box' id='drop-box'>

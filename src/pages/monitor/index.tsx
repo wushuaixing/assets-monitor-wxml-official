@@ -68,6 +68,17 @@ function getRuleValue(rule) {
   return array;
 }
 
+function getRuleName(rule) {
+  let title: string = '资产拍卖';
+  switch (rule) {
+    case 'zcwjzcpm': title = '资产拍卖'; break;
+    case 'zcwjdwq': title = '代位权'; break;
+    case 'fxjkqypccz': title = '破产重整'; break;
+    case 'fxjkssjk': title = '涉诉监控'; break;
+  }
+  return title;
+}
+
 function isRule(rule) {
   let ispermission: number = 0;
   let ruleArray: string[] = getGlobalData('ruleArray');
@@ -103,6 +114,11 @@ function filterArray(rule) {
   }
 }
 
+/**
+ * tabId 和starId id分别对应的score值
+ * @param tabId
+ * @param starId
+ */
 function getStarValue(tabId: number, starId: number) {
   let star = 90;
   if(tabId === 1){
@@ -143,7 +159,7 @@ export default class Monitor extends Component <IProps, IState>{
           type: 'singelSelected',
           initValue: '',
           conditions: [
-            {name: '全部', id: 1, value: '', isSelected: true},
+            {name: '全部', id: 1, value: undefined, isSelected: true},
             {name: '已读', id: 2, value: true, isSelected: false},
             {name: '未读', id: 3, value: false, isSelected: false},
           ]
@@ -252,7 +268,7 @@ export default class Monitor extends Component <IProps, IState>{
         },
       ],
       params: {
-        assetAndRiskType: filterArray(assestRuleArray),
+        assetAndRiskType: filterArray(assestRuleArray).join(),
       },
       starId: 1,
       assetsList: [],
@@ -274,7 +290,7 @@ export default class Monitor extends Component <IProps, IState>{
           Taro.createSelectorQuery().select('#drop')
             .boundingClientRect()
             .exec(res => {
-              console.log('res === ', res, height);
+              // console.log('res === ', res, height);
               let scrollHeight = height - res[0].top - res[0].height;
               this.setState({
                 scrollHeight,
@@ -290,12 +306,10 @@ export default class Monitor extends Component <IProps, IState>{
 
   shouldComponentUpdate(nextProps: Readonly<IProps>, nextState: Readonly<IState>): boolean {
     const { listCount, currentId} = this.state;
-
     return listCount !== nextState.listCount || currentId !== nextState.currentId;
   }
 
   componentWillUpdate(nextProps: Readonly<IProps>, nextState: Readonly<IState>, nextContext: any): void {
-    console.log('componentWillUpdate nextProps === ', this.state, nextState);
     const { assetsList, riskList } = this.state;
     if(JSON.stringify(assetsList) !== JSON.stringify(nextState.assetsList)){
       this.setState({
@@ -333,10 +347,13 @@ export default class Monitor extends Component <IProps, IState>{
         assetAndRiskType: assetAndRiskTypeValue,
         score: getStarValue(tabId, newStarId)
       };
+      let config = monitorParams.tabId === 1 ? {queryAssetsConfig: this.handleUpdataConfig(monitorParams)} : {queryRiskConfig: this.handleUpdataConfig(monitorParams)};
+      // @ts-ignore
       this.setState({
+        ...config,
         currentId: tabId,
         starId: newStarId,
-        params: {...newParams}
+        params: {...newParams},
       }, () => {
         console.log('newParams === ', newParams);
         this.handleRequestList({...newParams}, true);
@@ -349,6 +366,25 @@ export default class Monitor extends Component <IProps, IState>{
     }
   };
 
+  // 更新页面的config
+  handleUpdataConfig = (params) => {
+    const { tabId, value} = params;
+    const { queryAssetsConfig, queryRiskConfig } = this.state;
+    if( tabId === 1 && Array.isArray(value) && value.length === 1){
+      let assetsConfig = [...queryAssetsConfig];
+      assetsConfig[1].isSelected = true;
+      assetsConfig[1].title = getRuleName(value);
+      return assetsConfig;
+    }
+    if( tabId === 2 && Array.isArray(value) && value.length === 1){
+      let riskConfig = [...queryRiskConfig];
+      riskConfig[1].isSelected = true;
+      riskConfig[1].title = getRuleName(value);
+      return riskConfig;
+    }
+  };
+
+  // 请求资产或者风险列表
   handleRequestList = (payload, isNew: boolean) => {
     const { loading, currentId, assetsList, riskList, page } = this.state;
     if(!loading){
@@ -362,7 +398,7 @@ export default class Monitor extends Component <IProps, IState>{
         type:'monitor/assetList',
         payload: {
           ...payload,
-          page: page + 1,
+          page: isNew ? 1 : page,
         }
       }).then(res => {
         const {code, data } = res;
@@ -383,7 +419,7 @@ export default class Monitor extends Component <IProps, IState>{
         type:'monitor/riskList',
         payload: {
           ...payload,
-          page: page + 1,
+          page: isNew ? 1 : page,
         }
       }).then(res => {
         const {code, data } = res;
@@ -454,17 +490,21 @@ export default class Monitor extends Component <IProps, IState>{
 
   // 资产/ 风险tab的切换
   handleClick = (info) => {
+    const { params } = this.state;
+    let assetAndRiskTypeParams = filterArray(info.id === 1 ? assestRuleArray : riskRuleArray).join();
+    let newParams = {...params, assetAndRiskType: assetAndRiskTypeParams};
     this.setState({
-      currentId: info.id
+      currentId: info.id,
+      params: newParams,
     }, () => {
-      this.handleRequestList({assetAndRiskType: filterArray(info.id === 1 ? assestRuleArray : riskRuleArray).join()}, true)
+      this.handleRequestList({assetAndRiskType: assetAndRiskTypeParams}, true)
     });
   };
 
   // 资产里面切换星级，风险里面切风险程度
   handleChangeTab = (info) => {
-    const { params} = this.state;
-    let newParams = {...params, score: info.value};
+    const { params, currentId } = this.state;
+    let newParams = {...params, score: getStarValue(currentId, info.id)};
     this.setState({
       params: newParams,
     });
