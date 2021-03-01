@@ -23,6 +23,7 @@ interface dataItem{
 type IProps = {
   dispatch: (params: any) => void
   list: dataItem[]
+  monitorParams: {[propName: string]: string}
 }
 
 type IState = {
@@ -97,7 +98,7 @@ function filterArray(rule, initValue) {
 }
 
 
-@connect(({ monitor, queryDrop}) => ({ ...monitor, ...queryDrop }))
+@connect(({ home, monitor, queryDrop}) => ({ ...home, ...monitor, ...queryDrop }))
 export default class Monitor extends Component <IProps, IState>{
   $instance = getCurrentInstance()
   constructor(props) {
@@ -249,10 +250,10 @@ export default class Monitor extends Component <IProps, IState>{
   }
 
   onShow = () => {
-    console.log('tabid === ', getGlobalData('tabId'));
+    const { monitorParams } = this.props;
     this.setState({
-      currentId: getGlobalData('tabId'),
-      starId: getGlobalData('starId')
+      currentId: monitorParams.tabId,
+      starId:monitorParams.starId
     });
   };
 

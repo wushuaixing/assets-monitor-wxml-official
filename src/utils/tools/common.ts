@@ -80,11 +80,11 @@ export const isRule = (rule) =>  {
 };
 
 /**
- *
+ * 过滤掉权限为false的数据
  * @param ruleArray
  */
 export const filterArray = (ruleArray) => {
-  let array: {isRule: boolean}[] = [];
+  let array: any[] = [];
   ruleArray.forEach(item => {
     if(item.isRule){
       array.push(item);
