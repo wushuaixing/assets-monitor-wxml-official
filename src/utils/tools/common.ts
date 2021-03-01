@@ -93,4 +93,18 @@ export const filterArray = (ruleArray) => {
   return array;
 };
 
+
+/**
+ * 压缩权限数组
+ * @param authRule
+ */
+export const handleDealAuthRule = (authRule) => {
+  let ruleArray: string[] = [];
+  authRule.forEach(item => {
+    ruleArray.push(item.rule)
+  });
+  return ruleArray;
+};
+
+
 export const Message = title => Taro.showToast({title, icon: 'none'});
