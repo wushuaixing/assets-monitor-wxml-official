@@ -1,0 +1,73 @@
+.yc-addBusiness {
+  background: #F5F5F5;
+  height: 100vh;
+  font-family: PingFangSC-Regular, PingFang SC;
+
+  &-baseInfoText {
+    height: 77px;
+    font-size: 30px;
+    font-weight: 400;
+    color: #999999;
+    line-height: 77px;
+    padding-left: 24px;
+  }
+
+  &-baseInfo {
+    background: #fff;
+
+    &-input {
+      &-content {
+        height: 96px;
+
+        &-line {
+          width: 726px;
+          height: 1px;
+          background: #E5E5E5;
+          margin-left: 24px;
+        }
+
+        &-inputText {
+          margin-left:24px;
+          display: inline-block;
+          min-width: 182px;
+          font-size: 34px;
+          font-weight: 400;
+          color: #333333;
+          line-height: 96px;
+        }
+
+        &-selectTemp {
+          display: inline-block;
+          &-selectText {
+            width: 493px;
+            display: inline-block;
+            font-size: 30px;
+            font-weight: 400;
+            color: #CCCCCC;
+            line-height: 96px;
+          }
+
+          &-arrow {
+            display: inline-block;
+            float: right;
+            margin-right: 28px;
+            line-height: 96px;
+            &-text{
+              font-size:23px;
+              color:#CCCCCC;
+            }
+          }
+        }
+
+        &-inputTemp {
+          width: 480px;
+          display: inline-block;
+          font-size: 30px;
+          font-weight: 400;
+          color: #CCCCCC;
+          line-height: 96px;
+        }
+      }
+    }
+  }
+}

@@ -1,6 +1,5 @@
 import React, {Component} from 'react'
-import {Text, View} from '@tarojs/components'
-import {AtInput} from 'taro-ui'
+import {Text, View, Input} from '@tarojs/components'
 import './index.scss'
 
 export default class SearchInput extends Component {
@@ -21,9 +20,10 @@ export default class SearchInput extends Component {
   componentDidHide() {
   }
 
-  handleChange = (value) => {
+  handleChange = (e) => {
+    console.log('value', e)
     const {handleChange} = this.props;
-    if (handleChange) handleChange(value)
+    if (handleChange) handleChange(e.detail.value)
   }
 
   onRemoveClick = () => {
@@ -38,14 +38,11 @@ export default class SearchInput extends Component {
       <View className='yc-monitorManage-top-search'>
         <Text className="iconfont icon-icon-monitorManage-search yc-monitorManage-top-search-icon"/>
         <View className='yc-monitorManage-top-search-input'>
-          <AtInput
-            name='value'
-            title=''
+          <Input
             type='text'
             placeholder={placeholderText}
             value={searchValue}
-            onChange={this.handleChange}
-            border={false}
+            onInput={this.handleChange}
           />
         </View>
         {

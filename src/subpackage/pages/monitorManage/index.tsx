@@ -17,6 +17,7 @@ type isState = {
   curPage: number,
   total: number,
   hasNext: boolean,
+  loading: false,
 }
 
 type IProps = {
@@ -41,10 +42,10 @@ export default class MonitorManage extends Component<IProps, isState> {
 
   componentWillMount() {
     const {curPage} = this.state;
-    const {router: {params: {type}}} = getCurrentInstance();
-    this.setState({current: type === 'business' ? 0 : 1})
+    const {router: {params: {type, searchValue}}} = getCurrentInstance();
+    this.setState({current: type === 'business' ? 0 : 1, searchValue: searchValue ? searchValue : ''})
     if (type === 'business') {
-      this.handleBusinessList(curPage, '', 0)
+      this.handleBusinessList(curPage, searchValue ? searchValue : '', 0)
     } else {
       this.handleObligorList(curPage, '', 0)
     }
@@ -63,7 +64,7 @@ export default class MonitorManage extends Component<IProps, isState> {
   }
 
   handleClick = (value) => {
-    console.log('value', value)
+    this.onMiddleClick();
     this.setState({
       current: value,
       searchValue: ''
@@ -77,10 +78,9 @@ export default class MonitorManage extends Component<IProps, isState> {
   }
 
   handleChange = (value) => {
-    console.log('handleChange')
     const {current} = this.state;
     this.setState({
-      searchValue: value,
+      searchValue: value.slice(0, 40),
       dataSource: []
     }, () => {
       if (value.length <= 40) {
@@ -123,11 +123,17 @@ export default class MonitorManage extends Component<IProps, isState> {
   }
 
   handleObligorList = (pageTemp, searchValue, isScroll) => {
+    this.setState({
+      loading: !isScroll
+    })
     Taro.showLoading({title: '正在加载...'});
     this.props.dispatch({
       type: 'monitorManage/getObligorList',
       payload: {page: pageTemp, obligorName: searchValue}
     }).then(res => {
+      this.setState({
+        loading: false
+      })
       Taro.hideLoading();
       if (res.code === 200) {
         const {data: {list, page, total, hasNext}} = res;
@@ -141,29 +147,58 @@ export default class MonitorManage extends Component<IProps, isState> {
         Message(res.message)
       }
     }).catch(() => {
+      this.setState({
+        loading: false
+      })
       Taro.hideLoading();
       Message('网络异常请稍后再试！')
     })
   }
 
   handleBusinessList = (pageTemp, searchValue, isScroll) => {
+    this.setState({
+      loading: !isScroll
+    })
+    Taro.showLoading({title: '正在加载...'});
     this.props.dispatch({
       type: 'monitorManage/getBusinessList',
       payload: {page: pageTemp, caseNumberOrObligorName: searchValue}
     }).then((res) => {
-      const {data: {list, page, total, hasNext}} = res;
       this.setState({
-        // dataSource: isScroll ? this.state.dataSource.concat(list) : list,
-        dataSource:[],
-        curPage: page + 1,
-        total,
-        hasNext
+        loading: false
       })
+      Taro.hideLoading();
+      if (res.code === 200) {
+        const {data: {list, page, total, hasNext}} = res;
+        this.setState({
+          dataSource: isScroll ? this.state.dataSource.concat(list) : list,
+          // dataSource:[],
+          curPage: page + 1,
+          total,
+          hasNext
+        })
+      } else {
+        Message(res.message)
+      }
+    }).catch(() => {
+      this.setState({
+        loading: false
+      })
+      Taro.hideLoading();
+      Message('网络异常请稍后再试！')
     })
   }
 
-  onAddBusinessClick = () =>{
-    Taro.navigateTo({url:'/subpackage/pages/monitorManage/addBusiness/index'});
+  onAddBusinessClick = () => {
+    this.onMiddleClick();
+    Taro.navigateTo({url: '/subpackage/pages/monitorManage/addBusiness/index'});
+  }
+
+  onMiddleClick = () => {
+    this.props.dispatch({
+      type: 'monitorManage/getCurClickItem',
+      payload: {curClickItem: ''}
+    })
   }
 
   render() {
@@ -171,7 +206,7 @@ export default class MonitorManage extends Component<IProps, isState> {
       {title: '业务', id: 1},
       {title: '债务人', id: 2},
     ];
-    const {current, searchValue, total,dataSource} = this.state;
+    const {current, searchValue, total, dataSource, loading} = this.state;
     const totalNumerText = current ? '个债务人' : '笔监控业务';
     const emptyText = current ? '暂无监控的债务人' : '您还未添加监控业务';
     return (
@@ -183,22 +218,24 @@ export default class MonitorManage extends Component<IProps, isState> {
               <AtTabs current={current} tabList={tabList} onClick={this.handleClick.bind(this)}
                       className='yc-monitorManage-top-tab-atTab'/>
             </View>
-            {
-              dataSource.length > 0 || searchValue !== "" ?
-                <SearchInput searchValue={searchValue} handleChange={this.handleChange}
-                             onRemoveClick={this.onRemoveClick} current={current}/>
-                : null
-            }
-
+            <View onClick={this.onMiddleClick}>
+              {
+                dataSource.length > 0 || searchValue !== "" ?
+                  <SearchInput searchValue={searchValue} handleChange={this.handleChange}
+                               onRemoveClick={this.onRemoveClick} current={current}/>
+                  : null
+              }
+            </View>
           </View>
           {
             dataSource.length > 0 ?
-              <View className='yc-monitorManage-middle'>
+              <View className='yc-monitorManage-middle' onClick={this.onMiddleClick}>
                 <Text className='yc-monitorManage-middle-text'>共有&nbsp;
                   <Text className='yc-monitorManage-middle-text-number'>{total}</Text>
                   &nbsp;{totalNumerText}</Text>
                 {
-                  !current && <View className='yc-monitorManage-addBusinessText'>添加业务</View>
+                  !current &&
+                  <View className='yc-monitorManage-addBusinessText' onClick={this.onAddBusinessClick}>添加业务</View>
                 }
               </View> : null
           }
@@ -206,7 +243,9 @@ export default class MonitorManage extends Component<IProps, isState> {
         {
           dataSource.length > 0 ?
             <ListManage data={dataSource} onScrollToLower={this.handleScrollDown} current={current}
-                        searchValue={searchValue}/>
+                        searchValue={searchValue} handleBusinessList={() => {
+              this.handleBusinessList(1, searchValue, 0)
+            }} loading={loading}/>
             :
             <View>
               {
@@ -216,7 +255,8 @@ export default class MonitorManage extends Component<IProps, isState> {
                       <Image src={busEmptyImg} className='yc-monitorManage-businessEmpty-content-img'/>
                       <View className='yc-monitorManage-businessEmpty-content-text'>{emptyText}</View>
                       {
-                        !current ? <View className='yc-monitorManage-businessEmpty-content-addBus' onClick={this.onAddBusinessClick}>添加业务</View> : null
+                        !current ? <View className='yc-monitorManage-businessEmpty-content-addBus'
+                                         onClick={this.onAddBusinessClick}>添加业务</View> : null
                       }
                     </View>
                   </View> :

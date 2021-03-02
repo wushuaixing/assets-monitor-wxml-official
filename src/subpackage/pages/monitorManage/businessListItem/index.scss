@@ -40,9 +40,11 @@
           color: #333333;
           line-height: 28px;
           &-obligorName{
+            vertical-align: top;
             display: inline-block;
           }
           &-obligorValue{
+            max-width:343px;
             display: inline-block;
           }
         }
@@ -99,7 +101,20 @@
   }
 }
 
+//.yc-circle:active  .popover_body{
+//  display: block;
+//}
+//.yc-circle:visited  .popover_body{
+//  display: block;
+//}
+//.popover_body{
+//  display: none;
+//}
 
+.popover_body{
+  position: absolute;
+  right:24px;
+}
 
 .ant-popover {
   -webkit-box-sizing: border-box;
@@ -181,8 +196,23 @@
 }
 
 .ant-popover-inner-content {
-  padding: 12px 16px;
-  color: rgba(0,0,0,.85)
+  width:198px;
+  height:196px;
+  //padding: 12px 16px;
+  color: rgba(0,0,0,.85);
+  text-align: center;
+  &-text{
+    font-size: 30px;
+    font-weight: 400;
+    color: #333333;
+    line-height: 42px;
+  }
+  &-line{
+    width: 150px;
+    height: 1px;
+    background: #EEEEEE;
+    margin: 24px 0 26px 24px;
+  }
 }
 
 .ant-popover-message {

@@ -4,10 +4,10 @@ import {Text, View, RichText} from '@tarojs/components'
 import Taro from '@tarojs/taro';
 import './index.scss'
 import moment from 'moment';
+import DeleteModal from '../deleteModal/index';
 
 type isState = {
   curData: any,
-  curClickItem:string,
 }
 @connect(({monitorManage}) => ({monitorManage}))
 export default class BusinessListItem extends Component<any, isState> {
@@ -17,7 +17,6 @@ export default class BusinessListItem extends Component<any, isState> {
     console.log('super', this.props)
     this.state = {
       curData: [],
-      curClickItem:''
     };
   }
 
@@ -38,18 +37,49 @@ export default class BusinessListItem extends Component<any, isState> {
 
   onClick = (id) => {
     console.log('onClick', id)
-    Taro.navigateTo({url: `/subpackage/pages/monitorManage/businessDetail/index?id=${id}`});
+    const {searchValue} = this.props;
+    this.props.dispatch({
+      type: 'monitorManage/getCurClickItem',
+      payload: {curClickItem: ''}
+    })
+    Taro.navigateTo({url: `/subpackage/pages/monitorManage/businessDetail/index?id=${id}&searchValue=${searchValue}`});
   }
 
-  onClickMore = (e,i) =>{
-    const {curClickItem} = this.state;
-    this.setState({curClickItem:(curClickItem!==i.id && i.id)})
+  onClickMore = (e, i) => {
+    const {curClickItem} = this.props.monitorManage;
+    this.props.dispatch({
+      type: 'monitorManage/getCurClickItem',
+      payload: {curClickItem: (curClickItem !== i.id && i.id)}
+    })
   }
 
+  onEditBusinessClick = () => {
+    this.props.dispatch({
+      type: 'monitorManage/getCurClickItem',
+      payload: {curClickItem: ''}
+    })
+    Taro.navigateTo({url: '/subpackage/pages/monitorManage/addBusiness/index'});
+  }
+
+  onDeleteClick = (id) =>{
+    this.props.dispatch({
+      type: 'monitorManage/getCurClickItem',
+      payload: {curClickItem: ''}
+    })
+    console.log('onDeleteClick',id)
+    this.props.dispatch({
+      type:'monitorManage/getIsDeleteOpendModal',
+      payload:{deleteId:id,isDeleteOpendModal:true}
+    })
+  }
 
   render() {
-    const {data, searchValue} = this.props;
-    const {curClickItem} = this.state;
+    const {data, searchValue,handleBusinessList} = this.props;
+    console.log('this.props', this.props)
+    const {curClickItem} = this.props.monitorManage;
+    // this.focusComponents = new Set([
+    //   'View',
+    // ])
     const reg = new RegExp(searchValue, 'gi')
     const bgRandomColor = {
       0: '#FF5454',
@@ -100,9 +130,13 @@ export default class BusinessListItem extends Component<any, isState> {
                       {/*}*/}
 
 
-                      <View>
-                        <View onClick={(e)=>{e.stopPropagation();}}>
-                          <View onClick={(e)=>this.onClickMore(e,i)}>
+                      <View className='yc-circle'>
+                        <View onClick={(e) => {
+                          e.stopPropagation();
+                        }}>
+                          <View
+                            onClick={(e) => this.onClickMore(e, i)}
+                          >
                             {
                               [0, 1, 2].map((_i, indexTemp) => {
                                 return (<View className='yc-businessListItem-content-middleRight-right-circle'
@@ -111,24 +145,35 @@ export default class BusinessListItem extends Component<any, isState> {
                             }
                           </View>
                         </View>
-                        <View className="popover_body" style={{display:curClickItem === i.id?"block":"none"}}>
+                        <View className="popover_body"
+                              style={{display: curClickItem === i.id ? "block" : "none"}}
+                        >
                           <View>
                             <View>
                               <View className="ant-popover ant-popover-placement-bottomRight "
-                                    style={{left:"0rpx",top:'20rpx',transformOrigin:'50% 91.6rpx'}}
+                                    style={{left: "0rpx", top: '20rpx', transformOrigin: '50% 91.6rpx'}}
                               >
                                 <View className="ant-popover-content">
-                                  <View className="ant-popover-arrow"><span className="ant-popover-arrow-content"></span></View>
-                                  <View className="ant-popover-inner" >
-                                    <View className="ant-popover-title">Title</View>
-                                    <View className="ant-popover-inner-content"><a>Close</a></View>
+                                  <View className="ant-popover-arrow">
+                                    <Text className="ant-popover-arrow-content"/>
+                                  </View>
+                                  <View className="ant-popover-inner">
+                                    <View className="ant-popover-inner-content">
+                                      <View className='ant-popover-inner-content-text'
+                                            style={{paddingTop: '32rpx'}} onClick={this.onEditBusinessClick}>编辑</View>
+                                      <View className='ant-popover-inner-content-line'/>
+                                      <View className='ant-popover-inner-content-text' onClick={(e)=>{e.stopPropagation();}}>
+                                        <View  onClick={()=>{this.onDeleteClick(i.id)}}>
+                                          删除
+                                        </View>
+                                      </View>
+                                    </View>
                                   </View>
                                 </View>
                               </View>
                             </View>
                           </View>
                         </View>
-
                       </View>
 
 
@@ -167,6 +212,7 @@ export default class BusinessListItem extends Component<any, isState> {
             )
           })
         }
+        <DeleteModal handleBusinessList={handleBusinessList}/>
       </View>
     )
   }

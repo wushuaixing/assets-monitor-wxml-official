@@ -58,13 +58,15 @@
 
       &-input {
         display: inline-block;
-        vertical-align: top;
-        margin-top: 5px;
+        width:580px;
+        margin-left:8px;
+        vertical-align: middle;
+        .input-placeholder{
+          font-size: 26px;
+          font-weight: 400;
+          color: #CCCCCC;
+          line-height: 37px;
 
-        .at-input {
-          margin: 0;
-          padding: 0 0 0 16px;
-          width: 580px;
         }
       }
 
@@ -153,13 +155,21 @@
         display: inline-block;
         border-radius: 4px;
         text-align: center;
+        line-height: 80px;
 
         &-roleText {
-          width: 66px;
           font-size: 22px;
           font-weight: 500;
           color: #FFFFFF;
+        }
+        &-roleTextTemp{
+          font-size: 22px;
+          font-weight: 500;
+          color: #FFFFFF;
+          max-width: 44px;
+          display: inline-block;
           line-height: 30px;
+          vertical-align: middle;
         }
       }
 
