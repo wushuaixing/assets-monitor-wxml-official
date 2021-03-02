@@ -245,7 +245,9 @@ export default class MonitorManage extends Component<IProps, isState> {
             <ListManage data={dataSource} onScrollToLower={this.handleScrollDown} current={current}
                         searchValue={searchValue} handleBusinessList={() => {
               this.handleBusinessList(1, searchValue, 0)
-            }} loading={loading}/>
+            }}
+                        handleObligorList={()=>{this.handleObligorList(1,searchValue,0)}}
+            />
             :
             <View>
               {

@@ -1,17 +1,19 @@
-.yc-businessListItem{
-  &-content{
-    padding:0 24px;
+.yc-businessListItem {
+  &-content {
+    padding: 0 24px;
     font-family: PingFangSC-Regular, PingFang SC;
-    &-logo{
+
+    &-logo {
       display: inline-block;
-      margin-top:38px;
+      margin-top: 38px;
       width: 64px;
       height: 64px;
       background: #FF5454;
       border-radius: 4px;
       text-align: center;
       vertical-align: top;
-      &-text{
+
+      &-text {
         display: inline-block;
         width: 45px;
         height: 52px;
@@ -20,42 +22,79 @@
         color: #FFFFFF;
       }
     }
-    &-middleRight{
-      padding-left:16px;
+
+    &-middleRight {
+      padding-left: 16px;
       display: inline-block;
-      &-middle{
+
+      &-middle {
         display: inline-block;
-        margin:32px 0 0 0;
-        width:455px;
-        &-caseNumber{
+        margin: 32px 0 0 0;
+        width: 499px;
+
+        &-caseNumber {
           font-size: 28px;
           font-weight: 400;
           color: #333333;
           line-height: 28px;
         }
-        &-obligorDetail{
-          margin-top:20px;
+
+        &-obligorDetail {
+          margin-top: 20px;
           font-size: 28px;
           font-weight: 400;
           color: #333333;
           line-height: 28px;
-          &-obligorName{
+
+          &-obligorName {
             vertical-align: top;
             display: inline-block;
           }
-          &-obligorValue{
-            max-width:343px;
+
+          &-obligorValue {
+            max-width: 387px;
             display: inline-block;
           }
         }
 
       }
-      &-right{
-        display: inline-block;
-        float: right;
-        text-align: right;
-        &-circle{
-          margin-top:45px;
+
+      &-guarantor {
+        padding-left:16px;
+        &-contentLine {
+          margin-top: 17px;
+          height: 1px;
+          background: #E5E5E5;
+        }
+
+        &-detail {
+          margin-top: 17px;
+          font-size: 28px;
+          font-weight: 400;
+          color: #333333;
+          line-height: 28px;
+
+          &-label {
+            display: inline-block;
+            vertical-align: top;
+          }
+
+          &-content {
+            width:510px;
+            display: inline-block;
+          }
+        }
+      }
+    }
+
+    &-middleRightContent {
+      display: inline-block;
+      float: right;
+      text-align: right;
+
+      &-circleContent {
+        &-circle {
+          margin-top: 45px;
           display: inline-block;
           width: 6px;
           height: 6px;
@@ -63,44 +102,30 @@
           background-color: #666666;
           border: solid 1px #666666;
         }
-        &-date{
-          margin-top:32px;
-          font-size: 22px;
-          font-weight: 400;
-          color: #999999;
-          line-height: 22px;
-        }
       }
-      &-guarantor{
-        &-contentLine{
-          margin-top:17px;
-          height: 1px;
-          background: #E5E5E5;
-        }
-        &-detail{
-          margin-top: 17px;
-          font-size: 28px;
-          font-weight: 400;
-          color: #333333;
-          line-height: 28px;
-          &-label{
-            display: inline-block;
-            vertical-align: top;
-          }
-          &-content{
-            display: inline-block;
-          }
-        }
+
+      &-date {
+        margin-top: 32px;
+        font-size: 22px;
+        font-weight: 400;
+        color: #999999;
+        line-height: 22px;
       }
+
     }
   }
-  &-line{
+
+  &-line {
     margin-top: 32px;
     height: 1px;
     background: #E5E5E5;
   }
 }
 
+//.yc-circle{
+//  width:32px;
+//  height:32px;
+//}
 //.yc-circle:active  .popover_body{
 //  display: block;
 //}
@@ -111,9 +136,9 @@
 //  display: none;
 //}
 
-.popover_body{
+.popover_body {
   position: absolute;
-  right:24px;
+  right: 24px;
 }
 
 .ant-popover {
@@ -121,7 +146,7 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  color: rgba(0,0,0,.85);
+  color: rgba(0, 0, 0, .85);
   font-size: 14px;
   font-variant: tabular-nums;
   line-height: 1.5715;
@@ -144,7 +169,7 @@
 
 .ant-popover:after {
   position: absolute;
-  background: hsla(0,0%,100%,.01);
+  background: hsla(0, 0%, 100%, .01);
   content: ""
 }
 
@@ -152,19 +177,19 @@
   display: none
 }
 
-.ant-popover-placement-top,.ant-popover-placement-topLeft,.ant-popover-placement-topRight {
+.ant-popover-placement-top, .ant-popover-placement-topLeft, .ant-popover-placement-topRight {
   padding-bottom: 10px
 }
 
-.ant-popover-placement-right,.ant-popover-placement-rightBottom,.ant-popover-placement-rightTop {
+.ant-popover-placement-right, .ant-popover-placement-rightBottom, .ant-popover-placement-rightTop {
   padding-left: 10px
 }
 
-.ant-popover-placement-bottom,.ant-popover-placement-bottomLeft,.ant-popover-placement-bottomRight {
+.ant-popover-placement-bottom, .ant-popover-placement-bottomLeft, .ant-popover-placement-bottomRight {
   padding-top: 10px
 }
 
-.ant-popover-placement-left,.ant-popover-placement-leftBottom,.ant-popover-placement-leftTop {
+.ant-popover-placement-left, .ant-popover-placement-leftBottom, .ant-popover-placement-leftTop {
   padding-right: 10px
 }
 
@@ -172,16 +197,17 @@
   background-color: #fff;
   background-clip: padding-box;
   border-radius: 2px;
-  -webkit-box-shadow: 0 3px 6px -4px rgba(0,0,0,.12),0 6px 16px 0 rgba(0,0,0,.08),0 9px 28px 8px rgba(0,0,0,.05);
-  box-shadow: 0 3px 6px -4px rgba(0,0,0,.12),0 6px 16px 0 rgba(0,0,0,.08),0 9px 28px 8px rgba(0,0,0,.05);
-  -webkit-box-shadow: 0 0 8px rgba(0,0,0,.15)\9;
-  box-shadow: 0 0 8px rgba(0,0,0,.15)\9
+  -webkit-box-shadow: 0 3px 6px -4px rgba(0, 0, 0, .12), 0 6px 16px 0 rgba(0, 0, 0, .08), 0 9px 28px 8px rgba(0, 0, 0, .05);
+  box-shadow: 0 3px 6px -4px rgba(0, 0, 0, .12), 0 6px 16px 0 rgba(0, 0, 0, .08), 0 9px 28px 8px rgba(0, 0, 0, .05);
+  -webkit-box-shadow: 0 0 8px rgba(0, 0, 0, .15) \9
+;
+  box-shadow: 0 0 8px rgba(0, 0, 0, .15) \9
 }
 
-@media(-ms-high-contrast:none),screen and (-ms-high-contrast:active) {
+@media(-ms-high-contrast: none), screen and (-ms-high-contrast: active) {
   .ant-popover-inner {
-    -webkit-box-shadow: 0 3px 6px -4px rgba(0,0,0,.12),0 6px 16px 0 rgba(0,0,0,.08),0 9px 28px 8px rgba(0,0,0,.05);
-    box-shadow: 0 3px 6px -4px rgba(0,0,0,.12),0 6px 16px 0 rgba(0,0,0,.08),0 9px 28px 8px rgba(0,0,0,.05)
+    -webkit-box-shadow: 0 3px 6px -4px rgba(0, 0, 0, .12), 0 6px 16px 0 rgba(0, 0, 0, .08), 0 9px 28px 8px rgba(0, 0, 0, .05);
+    box-shadow: 0 3px 6px -4px rgba(0, 0, 0, .12), 0 6px 16px 0 rgba(0, 0, 0, .08), 0 9px 28px 8px rgba(0, 0, 0, .05)
   }
 }
 
@@ -190,24 +216,26 @@
   min-height: 32px;
   margin: 0;
   padding: 5px 16px 4px;
-  color: rgba(0,0,0,.85);
+  color: rgba(0, 0, 0, .85);
   font-weight: 500;
   border-bottom: 1px solid #f0f0f0
 }
 
 .ant-popover-inner-content {
-  width:198px;
-  height:196px;
+  width: 198px;
+  height: 196px;
   //padding: 12px 16px;
-  color: rgba(0,0,0,.85);
+  color: rgba(0, 0, 0, .85);
   text-align: center;
-  &-text{
+
+  &-text {
     font-size: 30px;
     font-weight: 400;
     color: #333333;
     line-height: 42px;
   }
-  &-line{
+
+  &-line {
     width: 150px;
     height: 1px;
     background: #EEEEEE;
@@ -218,11 +246,11 @@
 .ant-popover-message {
   position: relative;
   padding: 4px 0 12px;
-  color: rgba(0,0,0,.85);
+  color: rgba(0, 0, 0, .85);
   font-size: 14px
 }
 
-.ant-popover-message>.anticon {
+.ant-popover-message > .anticon {
   position: absolute;
   top: 8.0005px;
   color: #faad14;
@@ -254,87 +282,87 @@
   transform: rotate(45deg)
 }
 
-.ant-popover-placement-top>.ant-popover-content>.ant-popover-arrow,.ant-popover-placement-topLeft>.ant-popover-content>.ant-popover-arrow,.ant-popover-placement-topRight>.ant-popover-content>.ant-popover-arrow {
+.ant-popover-placement-top > .ant-popover-content > .ant-popover-arrow, .ant-popover-placement-topLeft > .ant-popover-content > .ant-popover-arrow, .ant-popover-placement-topRight > .ant-popover-content > .ant-popover-arrow {
   bottom: 6.2px;
   border-color: transparent #fff #fff transparent;
-  -webkit-box-shadow: 3px 3px 7px rgba(0,0,0,.07);
-  box-shadow: 3px 3px 7px rgba(0,0,0,.07)
+  -webkit-box-shadow: 3px 3px 7px rgba(0, 0, 0, .07);
+  box-shadow: 3px 3px 7px rgba(0, 0, 0, .07)
 }
 
-.ant-popover-placement-top>.ant-popover-content>.ant-popover-arrow {
+.ant-popover-placement-top > .ant-popover-content > .ant-popover-arrow {
   left: 50%;
   -webkit-transform: translateX(-50%) rotate(45deg);
   transform: translateX(-50%) rotate(45deg)
 }
 
-.ant-popover-placement-topLeft>.ant-popover-content>.ant-popover-arrow {
+.ant-popover-placement-topLeft > .ant-popover-content > .ant-popover-arrow {
   left: 16px
 }
 
-.ant-popover-placement-topRight>.ant-popover-content>.ant-popover-arrow {
+.ant-popover-placement-topRight > .ant-popover-content > .ant-popover-arrow {
   right: 16px
 }
 
-.ant-popover-placement-right>.ant-popover-content>.ant-popover-arrow,.ant-popover-placement-rightBottom>.ant-popover-content>.ant-popover-arrow,.ant-popover-placement-rightTop>.ant-popover-content>.ant-popover-arrow {
+.ant-popover-placement-right > .ant-popover-content > .ant-popover-arrow, .ant-popover-placement-rightBottom > .ant-popover-content > .ant-popover-arrow, .ant-popover-placement-rightTop > .ant-popover-content > .ant-popover-arrow {
   left: 6px;
   border-color: transparent transparent #fff #fff;
-  -webkit-box-shadow: -3px 3px 7px rgba(0,0,0,.07);
-  box-shadow: -3px 3px 7px rgba(0,0,0,.07)
+  -webkit-box-shadow: -3px 3px 7px rgba(0, 0, 0, .07);
+  box-shadow: -3px 3px 7px rgba(0, 0, 0, .07)
 }
 
-.ant-popover-placement-right>.ant-popover-content>.ant-popover-arrow {
+.ant-popover-placement-right > .ant-popover-content > .ant-popover-arrow {
   top: 50%;
   -webkit-transform: translateY(-50%) rotate(45deg);
   transform: translateY(-50%) rotate(45deg)
 }
 
-.ant-popover-placement-rightTop>.ant-popover-content>.ant-popover-arrow {
+.ant-popover-placement-rightTop > .ant-popover-content > .ant-popover-arrow {
   top: 12px
 }
 
-.ant-popover-placement-rightBottom>.ant-popover-content>.ant-popover-arrow {
+.ant-popover-placement-rightBottom > .ant-popover-content > .ant-popover-arrow {
   bottom: 12px
 }
 
-.ant-popover-placement-bottom>.ant-popover-content>.ant-popover-arrow,.ant-popover-placement-bottomLeft>.ant-popover-content>.ant-popover-arrow,.ant-popover-placement-bottomRight>.ant-popover-content>.ant-popover-arrow {
+.ant-popover-placement-bottom > .ant-popover-content > .ant-popover-arrow, .ant-popover-placement-bottomLeft > .ant-popover-content > .ant-popover-arrow, .ant-popover-placement-bottomRight > .ant-popover-content > .ant-popover-arrow {
   top: 6px;
   border-color: #fff transparent transparent #fff;
-  -webkit-box-shadow: -2px -2px 5px rgba(0,0,0,.06);
-  box-shadow: -2px -2px 5px rgba(0,0,0,.06)
+  -webkit-box-shadow: -2px -2px 5px rgba(0, 0, 0, .06);
+  box-shadow: -2px -2px 5px rgba(0, 0, 0, .06)
 }
 
-.ant-popover-placement-bottom>.ant-popover-content>.ant-popover-arrow {
+.ant-popover-placement-bottom > .ant-popover-content > .ant-popover-arrow {
   left: 50%;
   -webkit-transform: translateX(-50%) rotate(45deg);
   transform: translateX(-50%) rotate(45deg)
 }
 
-.ant-popover-placement-bottomLeft>.ant-popover-content>.ant-popover-arrow {
+.ant-popover-placement-bottomLeft > .ant-popover-content > .ant-popover-arrow {
   left: 16px
 }
 
-.ant-popover-placement-bottomRight>.ant-popover-content>.ant-popover-arrow {
+.ant-popover-placement-bottomRight > .ant-popover-content > .ant-popover-arrow {
   right: 16px
 }
 
-.ant-popover-placement-left>.ant-popover-content>.ant-popover-arrow,.ant-popover-placement-leftBottom>.ant-popover-content>.ant-popover-arrow,.ant-popover-placement-leftTop>.ant-popover-content>.ant-popover-arrow {
+.ant-popover-placement-left > .ant-popover-content > .ant-popover-arrow, .ant-popover-placement-leftBottom > .ant-popover-content > .ant-popover-arrow, .ant-popover-placement-leftTop > .ant-popover-content > .ant-popover-arrow {
   right: 6px;
   border-color: #fff #fff transparent transparent;
-  -webkit-box-shadow: 3px -3px 7px rgba(0,0,0,.07);
-  box-shadow: 3px -3px 7px rgba(0,0,0,.07)
+  -webkit-box-shadow: 3px -3px 7px rgba(0, 0, 0, .07);
+  box-shadow: 3px -3px 7px rgba(0, 0, 0, .07)
 }
 
-.ant-popover-placement-left>.ant-popover-content>.ant-popover-arrow {
+.ant-popover-placement-left > .ant-popover-content > .ant-popover-arrow {
   top: 50%;
   -webkit-transform: translateY(-50%) rotate(45deg);
   transform: translateY(-50%) rotate(45deg)
 }
 
-.ant-popover-placement-leftTop>.ant-popover-content>.ant-popover-arrow {
+.ant-popover-placement-leftTop > .ant-popover-content > .ant-popover-arrow {
   top: 12px
 }
 
-.ant-popover-placement-leftBottom>.ant-popover-content>.ant-popover-arrow {
+.ant-popover-placement-leftBottom > .ant-popover-content > .ant-popover-arrow {
   bottom: 12px
 }
 
