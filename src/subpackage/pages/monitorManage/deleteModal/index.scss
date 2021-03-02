@@ -1,0 +1,22 @@
+.yc-deleteModal{
+  font-family: PingFangSC-Regular, PingFang SC;
+  .at-modal__container{
+    width:606px;
+    text-align: center;
+  }
+  .at-modal__content{
+    min-height:0;
+    height:167px;
+    line-height: 167px;
+    padding:0;
+  }
+  .at-modal__content view{
+    font-size: 32px;
+    font-weight: 400;
+    color: #333333;
+  }
+
+  .at-modal__footer{
+    height:97px;
+  }
+}

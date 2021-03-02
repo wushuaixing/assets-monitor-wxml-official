@@ -4,11 +4,13 @@ import {connect} from 'react-redux';
 import moment from 'moment';
 import {Text, View, Image} from '@tarojs/components'
 import ObligorListItem from "../obligorListItem";
+import DeleteModal from "../deleteModal";
 import './index.scss'
 
 type isState = {
   busBaseInfo: object,
-  relationObligorList: any
+  relationObligorList: any,
+  saveSearchValue:string,
 }
 
 type IProps = {
@@ -23,13 +25,17 @@ export default class BusinessDetail extends Component<IProps, isState> {
     super(props);
     this.state = {
       busBaseInfo: {},
-      relationObligorList: []
+      relationObligorList: [],
+      saveSearchValue:''
     };
   }
 
   componentWillMount() {
     console.log("getCurrentInstance()", getCurrentInstance())
-    const {router: {params: {id}}} = getCurrentInstance();
+    const {router: {params: {id,searchValue}}} = getCurrentInstance();
+    this.setState({
+      saveSearchValue:searchValue
+    })
     this.props.dispatch({
       type: 'monitorManage/getBusinessDetail',
       payload: {id}
@@ -71,8 +77,16 @@ export default class BusinessDetail extends Component<IProps, isState> {
     return true;
   }
 
+  onClick = () =>{
+    const {router: {params: {id}}} = getCurrentInstance();
+    this.props.dispatch({
+      type:'monitorManage/getIsDeleteOpendModal',
+      payload:{deleteId:id,isDeleteOpendModal:true}
+    })
+  }
+
   render() {
-    const {busBaseInfo, relationObligorList} = this.state;
+    const {busBaseInfo, relationObligorList,saveSearchValue} = this.state;
     console.log("busBaseInfo===", busBaseInfo,this.isEmpty(busBaseInfo),busBaseInfo.caseNumber,moment(busBaseInfo.uploadTime).format( 'YYYY-MM-DD'))
     return (
       <View className='yc-businessDetail'>
@@ -80,7 +94,7 @@ export default class BusinessDetail extends Component<IProps, isState> {
         <View className='yc-businessDetail-top'>
           <View className='yc-businessDetail-top-topInfo'>
             <Text className='yc-businessDetail-top-topInfo-busText'>业务信息</Text>
-            <Text className='yc-businessDetail-top-topInfo-removeBusText'>删除业务</Text>
+            <Text className='yc-businessDetail-top-topInfo-removeBusText' onClick={this.onClick}>删除业务</Text>
           </View>
           <View className='yc-businessDetail-top-line'/>
           <View className='yc-businessDetail-top-topContent'>
@@ -103,6 +117,7 @@ export default class BusinessDetail extends Component<IProps, isState> {
           <View className='yc-businessDetail-top-line'/>
           <ObligorListItem data={relationObligorList} type='businessRelation'/>
         </View>
+        <DeleteModal searchValue={saveSearchValue} busDetail={true}/>
       </View>
     )
   }

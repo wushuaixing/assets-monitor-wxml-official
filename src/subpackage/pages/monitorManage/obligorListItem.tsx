@@ -89,7 +89,7 @@ export default class ObligorListItem extends Component<any, isState> {
     const {data, type} = this.props;
     const handleRole = {
       1: '借款人',
-      2: '抵质押人',
+      2: '担保人',
       3: '抵质押人',
       4: '共借人'
     }
@@ -109,8 +109,9 @@ export default class ObligorListItem extends Component<any, isState> {
                         background: i.role === 1 ? '#FF3B30' : i.role === 4 ? '#FF8F1F' : '#0979E6',
                         lineHeight: '80rpx'
                       }}>
-                        <Text
-                          className='yc-monitorManage-bottom-content-relationImg-roleText'>{handleRole[i.role] ? handleRole[i.role] : '未知'}</Text>
+                        <View
+                          className={i.role === 3 ? 'yc-monitorManage-bottom-content-relationImg-roleTextTemp' :'yc-monitorManage-bottom-content-relationImg-roleText'}
+                        >{handleRole[i.role] ? handleRole[i.role] : '未知'}</View>
                       </View>
                   }
                   <View className='yc-monitorManage-bottom-content-baseInfo'>
