@@ -80,11 +80,11 @@ export const isRule = (rule) =>  {
 };
 
 /**
- *
+ * 过滤掉权限为false的数据
  * @param ruleArray
  */
 export const filterArray = (ruleArray) => {
-  let array: {isRule: boolean}[] = [];
+  let array: any[] = [];
   ruleArray.forEach(item => {
     if(item.isRule){
       array.push(item);
@@ -92,5 +92,37 @@ export const filterArray = (ruleArray) => {
   });
   return array;
 };
+
+
+/**
+ * 压缩权限数组
+ * @param authRule
+ */
+export const handleDealAuthRule = (authRule) => {
+  let ruleArray: string[] = [];
+  authRule.forEach(item => {
+    ruleArray.push(item.rule)
+  });
+  return ruleArray;
+};
+
+/**
+ * 去除对象中空值
+ * @param obj
+ * @returns {*}
+ */
+export const clearEmpty = (obj) => {
+  if (typeof obj === 'object') {
+    const l = Object.keys(obj);
+    const _obj = Object.assign({}, obj);
+    l.forEach((item) => {
+      if (_obj[item] === '' || _obj[item] === undefined || _obj[item] === null)delete _obj[item];
+      else if (typeof _obj[item] === 'string')_obj[item] = _obj[item].replace(/^\s+|\s+$/g, '');
+    });
+    return _obj;
+  }
+  return obj;
+};
+
 
 export const Message = title => Taro.showToast({title, icon: 'none'});

@@ -49,11 +49,16 @@ class TagSelected extends Component<IProps, IState>{
   }
 
   componentWillUpdate(nextProps: Readonly<IProps>): void {
-    const { type } = this.props;
+    const { type, initId} = this.props;
     if(type !== nextProps.type){
       this.setState({
         config: nextProps.type === 'assets' ? assetsConfig : riskConfig,
-        selected: 1,
+        selected: nextProps.initId,
+      })
+    }
+    if(initId !== nextProps.initId && nextProps.initId > 0){
+      this.setState({
+        selected: nextProps.initId,
       })
     }
   }
@@ -84,6 +89,7 @@ class TagSelected extends Component<IProps, IState>{
 
   render(){
     const { selected, config } = this.state;
+    // console.log('TagSelected ===', this.state);
     return (
       <View className='tag'>
         {

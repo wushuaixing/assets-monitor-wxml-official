@@ -1,37 +1,30 @@
 import React, { Component } from 'react'
-import Taro from '@tarojs/taro';
-import {Text, View} from '@tarojs/components'
+import { View } from '@tarojs/components'
 import VirtualList from '@tarojs/components/virtual-list'
-import { connect } from 'react-redux';
 import ListItem from '../list-item/index';
 import './index.scss';
 
 interface IProps{
-  count: number
   data: any
-  listLength?: number
-  dispatch?: ({type: string, payload: object}) => {}
-  children?: React.ElementType
-  params?: any
-  onChangeScroll?: () => void
+  onChangeScroll?: any
 }
 
 interface IState{
 }
 
-@connect(({ home }) => ({ ...home }))
 class List extends Component <IProps, IState>{
   constructor(props: IProps) {
     super(props);
     this.state = {
       loading: false
     };
-    this.params = {};
   }
 
 
-  componentDidMount(): void {
+  shouldComponentUpdate(nextProps: Readonly<IProps>, nextState: Readonly<IState>, nextContext: any): boolean {
+    console.log('List nextProps === ', nextProps, this.props);
     const { data } = this.props;
+    return JSON.stringify(data) !== JSON.stringify(nextProps.data);
   }
 
   listReachBottom = () => {
@@ -60,37 +53,34 @@ class List extends Component <IProps, IState>{
   render () {
     const { data } = this.props;
     console.log('VirtualList data === ', data);
-    // const dataLen: number = data.length || 10;
+
     const height: number = 800;
     const itemSize: number = 285;
-    // const newData = [...data, ...data, ...data, ...data];
     return (
       <View className='list-box'>
-        {
-          data.length > 0 && <VirtualList
-            /** 解开高度列表单项大小限制，默认值使用: itemSize (请注意，初始高度与实际高度差异过大会导致隐患)。 */
-						useIsScrolling={true}
-						className='List'
-						unlimitedSize={true}
-						position={'relative'}
-						height={height}
-						width={'100%'}
-						itemData={data}
-						itemCount={data.length}
-						itemSize={itemSize}
-						// onScroll={({scrollDirection, scrollOffset }) => {
-            //   // console.log('scrollDirection === ', scrollDirection);
-            //   // console.log('scrollOffset === ', scrollOffset);
-            //   // if(!this.loading && scrollDirection === 'forward' && scrollOffset > ((count - 9) * itemSize + 100)){
-            //   //   this.listReachBottom()
-            //   // }
-            // }}
-					>
-            {
-              ListItem
-            }
-					</VirtualList>
-        }
+        <VirtualList
+          /** 解开高度列表单项大小限制，默认值使用: itemSize (请注意，初始高度与实际高度差异过大会导致隐患)。 */
+          useIsScrolling={true}
+          className='List'
+          unlimitedSize={true}
+          position={'relative'}
+          height={height}
+          width={'100%'}
+          itemData={data}
+          itemCount={data.length}
+          itemSize={itemSize}
+          // onScroll={({scrollDirection, scrollOffset }) => {
+          //   // console.log('scrollDirection === ', scrollDirection);
+          //   // console.log('scrollOffset === ', scrollOffset);
+          //   // if(!this.loading && scrollDirection === 'forward' && scrollOffset > ((count - 9) * itemSize + 100)){
+          //   //   this.listReachBottom()
+          //   // }
+          // }}
+        >
+          {
+            ListItem
+          }
+        </VirtualList>
         <View className='list-box-top' onClick={this.backToTop}>
           up
           {/*<Image className='monitor-top-arrow' />*/}

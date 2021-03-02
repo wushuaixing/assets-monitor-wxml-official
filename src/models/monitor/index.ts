@@ -1,44 +1,29 @@
 import { assetListApi, assetListCountApi, riskListApi, riskListCountApi} from '../../services/monitor';
+import { clearEmpty } from '../../utils/tools/common';
 
 export default {
   namespace: 'monitor',
   state: {
-    count: 0,
-    params : {},
-    assetsList: [],
-    riskList: []
+    num: 10,
   },
   effects: {
-    *assetList({ payload }, { call, put}) {
-      yield put({ type: 'paramsUpdate', payload, });
-      const res = yield call(assetListApi, payload);
-      if(res.code === 200){
-        yield put({ type: 'updateAssetsList', payload: res.data.list });
-      }
+    *assetList({ payload }, { call }) {
+      const res = yield call(assetListApi, { ...clearEmpty(payload), num: 10});
+      return res;
     },
-    *assetListCount({ payload }, { call, put }) {
-      const res = yield call(assetListCountApi, payload );
-      if(res.code === 200){
-        yield put({ type: 'updateCount', payload: res.data });
-      }
+    *assetListCount({ payload }, { call }) {
+      const res = yield call(assetListCountApi, {...clearEmpty(payload)} );
+      return res;
     },
 
-    *riskList({payload}, {all, call, put }) {
-      yield put({ type: 'paramsUpdate', payload, });
-      const res = yield call(riskListApi, payload);
-      if(res.code === 200){
-        yield put({ type: 'updateRiskList', payload: res.data.list });
-      }
-      if(payload.score){
-        yield put({ type: 'paramsUpdate', payload });
-      }
+    *riskList({payload}, { call, put }) {
+      const res = yield call(riskListApi, {...clearEmpty(payload), num: 10});
+      return res;
     },
 
     *riskListCount({ payload }, {all, call, put }) {
-      const res = yield call(riskListCountApi, payload);
-      if(res.code === 200){
-        yield put({ type: 'updateCount', payload: res.data });
-      }
+      const res = yield call(riskListCountApi, {...clearEmpty(payload)});
+      return res;
     },
   },
   reducers: {
@@ -48,12 +33,7 @@ export default {
         ...payload,
       }
     },
-    updateAssetsList(state, { payload }) {
-      return {
-        ...state,
-        assetsList: [...payload]
-      }
-    },
+
     updateRiskList(state, { payload }) {
       return {
         ...state,
@@ -63,7 +43,7 @@ export default {
     updateCount(state, { payload }) {
       return {
         ...state,
-        count: payload,
+        listCount: payload,
       }
     },
 
