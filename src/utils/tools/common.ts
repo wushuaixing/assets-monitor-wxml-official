@@ -124,5 +124,54 @@ export const clearEmpty = (obj) => {
   return obj;
 };
 
+/**
+ * 数组根据某个对象的值去重
+ * @param arr
+ * @param val
+ */
+export const removeDuplicateFields = (arr, val) => {
+  const res = new Map();
+  return arr.filter((item) => !res.has(item[val]) && res.set(item[val], 1))
+};
+
 
 export const Message = title => Taro.showToast({title, icon: 'none'});
+
+/**
+ * 金额转成字符串
+ * @param item
+ */
+export const floatFormat = (item) => {
+  let result: any = null;
+  if (!item && item !== 0) {
+    return '-';
+  }
+  const type: number = Number.parseFloat(item);
+  const bol: boolean = Number.isNaN(type);
+  if (bol) {
+    result = item;
+    return result;
+  }
+  const num1: number = type.toFixed(2);
+  const str: string = `${num1}`;
+  if (str.length <= 3) {
+    return str;
+  }
+  const pointer = str.split('.')[1];
+  const str1 = str.split('.')[0];
+  const arr = str1.split('');
+  const arr1 = arr.slice(0);
+  let i = 1;
+  for (let j = 0; j <= i; j += 1) {
+    if ((i * 3) < arr.length) {
+      arr1.splice(arr.length - (3 * i), 0, ',');
+      i += 1;
+    }
+  }
+  if (pointer) {
+    arr1.push('.');
+    arr1.push(pointer);
+  }
+  result = arr1.join('');
+  return result;
+};

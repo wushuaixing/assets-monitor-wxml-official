@@ -65,20 +65,20 @@ class CustomTabBar extends Component<IProps, IState>{
   componentDidMount () {
   }
 
-  componentWillUpdate(): void {
-    console.log('$instance === 3333333333',this.$instance.router);
-    const { path } = this.$instance.router;
-    if(path === '/pages/monitor/index'){
-      this.setState({
-        selected: 'monitor'
-      });
-    }
-    else if(path === '/pages/search/index'){
-      this.setState({
-        selected: 'search'
-      });
-    }
-  }
+  // componentWillUpdate(): void {
+  //   console.log('$instance === 3333333333',this.$instance.router);
+  //   const { path } = this.$instance.router;
+  //   if(path === '/pages/monitor/index'){
+  //     this.setState({
+  //       selected: 'monitor'
+  //     });
+  //   }
+  //   else if(path === '/pages/search/index'){
+  //     this.setState({
+  //       selected: 'search'
+  //     });
+  //   }
+  // }
 
   switchTab = (item) => {
     if (item.field !== getGlobalData('tabName')){
