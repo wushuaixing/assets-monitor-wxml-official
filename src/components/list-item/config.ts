@@ -16,8 +16,19 @@ const getPlot = (type: number) => {
   }
 };
 
-const getTitleTag = (type: number, bankruptcyType: number) => {
-  let title = '资产拍卖';
+const getRiskTag = (valueLevel: number) => {
+  let title: string = '高风险';
+  switch (valueLevel) {
+    case 90: title = '高风险'; break;
+    case 80: title = '警示'; break;
+    case 60: title = '提示'; break;
+    case 40: title = '利好'; break;
+  }
+  return title
+};
+
+const getTitleTag = (type: number, bankruptcyType?: number) => {
+  let title: string = '资产拍卖';
   switch (type) {
     case 1: title = '资产拍卖'; break;
     case 2: title = '代位权-立案'; break;
@@ -31,5 +42,4 @@ const getTitleTag = (type: number, bankruptcyType: number) => {
   return title
 };
 
-
-export { getPlot, getTitleTag}
+export { getPlot, getTitleTag, getRiskTag }

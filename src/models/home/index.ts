@@ -72,8 +72,8 @@ export default {
 
     updateAssets(state, { payload }) {
       let newAssetsArrary =  [
-        { id: 1, name: '资产拍卖', num: 0, isRule: false, icon: 'icon-auction'},
-        { id: 2, name: '代位权', num: 0, isRule: false, icon: 'icon-subrogation'},
+        { id: 1, name: '资产拍卖', num: 0, isRule: false, icon: 'icon-auction', value: ['zcwjzcpm']},
+        { id: 2, name: '代位权', num: 0, isRule: false, icon: 'icon-subrogation', value: ['zcwjdwq']},
       ];
       newAssetsArrary[0].num = payload.auctionCount || 0;
       newAssetsArrary[0].isRule = isRule('zcwjzcpm');
@@ -87,8 +87,8 @@ export default {
 
     updateRisk(state, { payload }) {
       let newRiskArrary = [
-        { id: 21, name: '破产重整', num: 0, isRule: false, icon: 'icon-bankruptcy'},
-        { id: 22, name: '涉诉', num: 0, isRule: false, icon: 'icon-litigation'},
+        { id: 21, name: '破产重整', num: 0, isRule: false, icon: 'icon-bankruptcy', value:  ['fxjkqypccz']},
+        { id: 22, name: '涉诉', num: 0, isRule: false, icon: 'icon-litigation', value:  ['fxjkssjk']},
       ];
       newRiskArrary[0].num = payload.bankruptcyCount || 0 ;
       newRiskArrary[0].isRule = isRule('fxjkqypccz');

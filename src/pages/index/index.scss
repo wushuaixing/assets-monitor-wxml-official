@@ -146,15 +146,33 @@
         width: 234px;
         &-logo{
           text-align: center;
+          position: relative;
           &-pic{
             width: 88px;
             height: 88px;
+          }
+          &-tag{
+            position: absolute;
+            top: 0;
+            left: 117px;
+            color: white;
+            padding: 5px;
+            font-size: 20px;
+            line-height: 20px;
+            background: #000000;
+            border-radius: 4px;
+            opacity: 0.6;
           }
         }
         &-text{
           margin-top: 12px;
           font-size: 28px;
           color: $common-text;
+        }
+        &-noText{
+          margin-top: 12px;
+          font-size: 28px;
+          color: $light-text-color;
         }
       }
     }
