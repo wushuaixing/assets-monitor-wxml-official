@@ -15,6 +15,8 @@ export default {
         "monitor/asset-auction/index",
         "monitor/asset-auction/detail/index",
         "monitor/asset-auction/confirmation/index",
+        "monitor/subrogation/index",
+        "monitor/involve-info/index",
         "monitorManage/index",
         "monitorManage/businessDetail/index",
         "monitorManage/addBusiness/index",
@@ -68,5 +70,5 @@ export default {
     backgroundColor: "#FFFFFF",
   },
   "usingComponents": {},
-  entryPagePath:'pages/default-page/index', // 指定小程序的默认启动路径
+  entryPagePath:'pages/index/index', // 指定小程序的默认启动路径
 }

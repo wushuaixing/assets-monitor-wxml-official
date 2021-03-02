@@ -10,6 +10,26 @@
     color: #999999;
     line-height: 77px;
     padding-left: 24px;
+    display: inline-block;
+  }
+
+  &-deleteText{
+    display: inline-block;
+    float: right;
+    font-size: 34px;
+    font-weight: 400;
+    color: #0979E6;
+    line-height: 77px;
+    margin-right:24px;
+  }
+
+  &-relationText{
+    margin:24px 0 0 24px;
+    font-size: 34px;
+    font-weight: 400;
+    color: #0979E6;
+    line-height: 34px;
+
   }
 
   &-baseInfo {

@@ -9,6 +9,7 @@ type isState = {
   isRoleOpened: boolean,
   dataSource: any,
   curItem: number,
+  curActionSheetType: number,
 }
 
 type IProps = {
@@ -16,6 +17,13 @@ type IProps = {
     then(param: (result) => void): any;
   },
 };
+const handleRole = {
+  1: '借款人',
+  2: '担保人',
+  3: '抵质押人',
+  4: '共同借款人',
+  5: '未知'
+}
 @connect(({monitorManage}) => ({monitorManage}))
 export default class RelationBusiness extends Component<IProps, isState> {
 
@@ -25,7 +33,8 @@ export default class RelationBusiness extends Component<IProps, isState> {
       isOpened: false,
       isRoleOpened: false,
       dataSource: props.data || [],
-      curItem: 0
+      curItem: 0,
+      curActionSheetType: 0
     };
   }
 
@@ -53,23 +62,27 @@ export default class RelationBusiness extends Component<IProps, isState> {
     this.setState({
       isOpened: !e,
       isRoleOpened: e === 3,
-      curItem: index
+      curItem: index,
+      curActionSheetType: e
     })
   }
 
   onCancel = (value) => {
-    console.log("525252", value)
     this.setState({
       [value]: false
     })
   }
 
   onSheetItemClick = (type, value) => {
-    const {curItem, dataSource} = this.state;
+    const {curItem, dataSource, curActionSheetType} = this.state;
     dataSource[curItem][type] = value;
+    if(type === 'role'){
+      dataSource[curItem].roleText = handleRole[value];
+    }
     this.setState({
       dataSource
     })
+    this.onCancel(curActionSheetType ? 'isRoleOpened' : 'isOpened')
   }
 
   onInput = (e, type, index) => {
@@ -94,7 +107,7 @@ export default class RelationBusiness extends Component<IProps, isState> {
     const obj = {
       "assetTotal": 0,
       "bankruptcy": true,
-      "borrowType": "0-个人，1-企业",
+      "borrowType": "",
       "dishonestStatus": 1,
       "id": 1,
       "isBorrower": true,
@@ -102,14 +115,14 @@ export default class RelationBusiness extends Component<IProps, isState> {
       "limitConsumption": 0,
       "limitHeightStatus": 1,
       "obligorId": 1,
-      "obligorName": "sy",
+      "obligorName": "",
       "obligorNumber": "",
       "obligorPushType": 0,
       "openBusinessCount": 1,
       "regStatus": "",
       "riskTotal": 0,
       "role": 1,
-      "roleText": "担保人"
+      "roleText": ""
     }
     dataSource.push(obj);
     this.setState({
@@ -154,6 +167,10 @@ export default class RelationBusiness extends Component<IProps, isState> {
         type: 'select',
       }
     ]
+    const handleBorrowType = {
+      0: '个人',
+      1: '企业'
+    }
     console.log("isOpened%%isRoleOpened", isOpened, isRoleOpened)
     const {data} = this.props;
     return (
@@ -162,7 +179,11 @@ export default class RelationBusiness extends Component<IProps, isState> {
           dataSource.map((res, index) => {
             return (
               <View>
-                <View className='yc-addBusiness-baseInfoText'>关联债务人{index}</View>
+                <View>
+                  <View className='yc-addBusiness-baseInfoText'>关联债务人{index + 1}</View>
+                  <View className='yc-addBusiness-deleteText' onClick={() => this.delete(index)}>刪除</View>
+                </View>
+
                 <View className='yc-addBusiness-baseInfo'>
                   {
                     relationBusinessConfig.map((i, indexTemp) => {
@@ -185,7 +206,7 @@ export default class RelationBusiness extends Component<IProps, isState> {
                                         this.onOpenActionSheetClick(indexTemp, index)
                                       }}>
                                   <View
-                                    className='yc-addBusiness-baseInfo-input-content-selectTemp-selectText'>{i.placeHolder}</View>
+                                    className='yc-addBusiness-baseInfo-input-content-selectTemp-selectText'>{indexTemp ? handleRole[res.role] ? handleRole[res.role] : i.placeHolder : handleBorrowType[res.borrowType] || i.placeHolder}</View>
                                   <View className='yc-addBusiness-baseInfo-input-content-selectTemp-arrow'>
                                     <Text
                                       className="iconfont icon-right-arrow yc-addBusiness-baseInfo-input-content-selectTemp-arrow-text"/>
@@ -200,34 +221,64 @@ export default class RelationBusiness extends Component<IProps, isState> {
                     })
                   }
                 </View>
-                <View onClick={() => this.delete(index)}>刪除</View>
               </View>
             )
           })
-          }
-          <View onClick={this.addClick}>添加</View>
-          <AtActionSheet isOpened={isOpened} cancelText='取消' onCancel={()=>{this.onCancel('isOpened')}}
-          onClose={()=>{this.onCancel('isOpened')}}
-          >
-          <AtActionSheetItem onClick={()=>{this.onSheetItemClick('borrowType','gr')}}>
-          个人
+        }
+        <View onClick={this.addClick} className='yc-addBusiness-relationText'>添加关联债务人</View>
+        <AtActionSheet isOpened={isOpened} cancelText='取消' onCancel={() => {
+          this.onCancel('isOpened')
+        }}
+                       onClose={() => {
+                         this.onCancel('isOpened')
+                       }}
+        >
+          <AtActionSheetItem onClick={() => {
+            this.onSheetItemClick('borrowType', 0)
+          }}>
+            个人
           </AtActionSheetItem>
-          <AtActionSheetItem onClick={()=>{this.onSheetItemClick('borrowType','qy')}}>
-          企业
+          <AtActionSheetItem onClick={() => {
+            this.onSheetItemClick('borrowType', 1)
+          }}>
+            企业
           </AtActionSheetItem>
-          </AtActionSheet>
-          <AtActionSheet isOpened={isRoleOpened} cancelText='取消' onCancel={()=>{this.onCancel('isRoleOpened')}}
-          onClose={()=>{this.onCancel('isRoleOpened')}}
-          >
+        </AtActionSheet>
+        <AtActionSheet isOpened={isRoleOpened} cancelText='取消' onCancel={() => {
+          this.onCancel('isRoleOpened')
+        }}
+                       onClose={() => {
+                         this.onCancel('isRoleOpened')
+                       }}
+        >
 
-          <AtActionSheetItem onClick={()=>{this.onSheetItemClick('roleText','jkr')}}>
-          借款人
+          <AtActionSheetItem onClick={() => {
+            this.onSheetItemClick('role', 1)
+          }}>
+            借款人
           </AtActionSheetItem>
-          <AtActionSheetItem onClick={()=>{this.onSheetItemClick('roleText','wz')}}>
-          未知
+          <AtActionSheetItem onClick={() => {
+            this.onSheetItemClick('role', 2)
+          }}>
+            担保人
           </AtActionSheetItem>
-          </AtActionSheet>
-          </View>
-          )
-        }
-        }
+          <AtActionSheetItem onClick={() => {
+            this.onSheetItemClick('role', 3)
+          }}>
+            抵质押人
+          </AtActionSheetItem>
+          <AtActionSheetItem onClick={() => {
+            this.onSheetItemClick('role', 4)
+          }}>
+            共同借款人
+          </AtActionSheetItem>
+          <AtActionSheetItem onClick={() => {
+            this.onSheetItemClick('role', 5)
+          }}>
+            未知
+          </AtActionSheetItem>
+        </AtActionSheet>
+      </View>
+    )
+  }
+}

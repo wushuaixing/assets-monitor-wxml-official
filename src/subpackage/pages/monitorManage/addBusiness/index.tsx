@@ -4,9 +4,11 @@ import {Button, View, Input, Form, Text} from '@tarojs/components';
 import {AtActionSheet, AtActionSheetItem} from 'taro-ui';
 import RelationBusiness from './relationBusiness';
 import './index.scss'
+import {Message} from "../../../../utils/tools/common";
 
 type isState = {
-  isBaseOpened: boolean
+  isBaseOpened: boolean,
+  baseObj: object,
 }
 
 type IProps = {
@@ -20,8 +22,26 @@ export default class BusinessDetail extends Component<IProps, isState> {
   constructor(props) {
     super(props);
     this.state = {
-      isBaseOpened: false
+      isBaseOpened: false,
+      baseObj: {
+        "bankruptcyStatus": 0,
+        "borrowType": "", // 借款人类型
+        "businessPushType": 0,
+        "caseNumber": '', // 业务编号
+        "dishonestStatus": 0,
+        "guarantee": 0,
+        "guaranteeString": "担保",
+        "id": 1,
+        "isBorrower": true,
+        "obligorId": 1,
+        "obligorName": "", // 借款人名称
+        "obligorNumber": "", // 证件号
+        "obligorPushType": 0,
+        "orgName": "",
+        "uploadTime": ""
+      }
     };
+    this.obligorList = [];
   }
 
   componentWillMount() {
@@ -45,32 +65,92 @@ export default class BusinessDetail extends Component<IProps, isState> {
     })
   }
 
-  onCancel = ()=>{
+  onCancel = () => {
     this.setState({
-      isBaseOpened:false
+      isBaseOpened: false
     })
   }
 
-  onSubmit = (event) => {
-    console.log('onSubmit====', event)
-    // console.log('this.state',this.state)
+  onSubmit = () => {
+    const {baseObj} = this.state;
+    const params = {
+      'detail':baseObj,
+      'obligorList':this.obligorList
+    }
+    console.log('params===',params)
+    // this.props.dispatch({
+    //   type:'monitorManage/getBusinessSave',
+    //   payload:{...params}
+    // }).then(res=>{
+    //   console.log('onSubmitonSubmitonSubmit',res)
+    // })
   }
 
   onReset = (event) => {
     console.log('onReset====', event)
   }
-  getValue = (value)=>{
-    console.log(636363,value)
+  getValue = (value) => {
+    console.log(636363, value)
+    this.obligorList=value
   }
+
+  onInput = (e, field) => {
+    const {baseObj} = this.state;
+    const {value} = e.detail;
+    if (field === 'caseNumber') {
+      const curValue = value.slice(0,32);
+      if(curValue.length <= 32){
+        baseObj[field] = curValue;
+        this.setState({
+          baseObj
+        })
+      }else{
+        Message('最长输入32个字符');
+      }
+    }
+    if(field === 'obligorName'){
+      const curValue = value.slice(0,40);
+      if(curValue.length <= 40){
+        baseObj[field] = curValue;
+        if(curValue.length > 4){
+          baseObj['borrowType'] = 1;
+        }
+        if(curValue.length <=4){
+          baseObj['borrowType'] = 0;
+        }
+        this.setState({
+          baseObj
+        })
+      }else{
+        Message('最长输入40个字符');
+      }
+    }
+    if(field === 'obligorNumber'){
+      const curValue = value.slice(0,18);
+      if(curValue.length <= 18){
+        baseObj[field] = curValue;
+        this.setState({
+          baseObj
+        })
+      }else{
+        Message('最长输入18个字符');
+      }
+    }
+  }
+
   render() {
-    const {isBaseOpened} = this.state;
-    console.log('isBaseOpened',isBaseOpened)
+    const {isBaseOpened,baseObj} = this.state;
+    console.log('this.state=====',baseObj)
+    const handleBorrowType = {
+      0:'个人',
+      1:'企业'
+    }
     const businessBaseInfoConfig = [
       {
         id: '1',
         title: '业务编号',
         value: '',
-        field: 'caseNumber222',
+        field: 'caseNumber',
         placeHolder: '请填写业务编号',
         type: 'input'
       },
@@ -78,23 +158,23 @@ export default class BusinessDetail extends Component<IProps, isState> {
         id: '2',
         title: '借款人名称',
         value: '',
-        field: 'obligorName333',
-        placeHolder: '个人必填，企业可不填',
+        field: 'obligorName',
+        placeHolder: '请填写借款人名称（必填）',
         type: 'input'
       },
       {
         id: '3',
         title: '证件号',
         value: '',
-        field: 'obligorNumber444',
-        placeHolder: '请填写借款人名称（必填）',
+        field: 'obligorNumber',
+        placeHolder: '个人必填，企业可不填',
         type: 'input'
       },
       {
         id: '4',
         title: '借款人类型',
         value: '',
-        field: 'borrowType555',
+        field: 'borrowType',
         placeHolder: '请选择（必选）',
         type: 'select'
       },
@@ -103,7 +183,7 @@ export default class BusinessDetail extends Component<IProps, isState> {
       {
         "assetTotal": 0,
         "bankruptcy": true,
-        "borrowType": "0-个人，1-企业",
+        "borrowType": "",
         "dishonestStatus": 1,
         "id": 1,
         "isBorrower": true,
@@ -111,7 +191,7 @@ export default class BusinessDetail extends Component<IProps, isState> {
         "limitConsumption": 0,
         "limitHeightStatus": 1,
         "obligorId": 1,
-        "obligorName": "sy",
+        "obligorName": "",
         "obligorNumber": "",
         "obligorPushType": 0,
         "openBusinessCount": 1,
@@ -123,7 +203,7 @@ export default class BusinessDetail extends Component<IProps, isState> {
       {
         "assetTotal": 0,
         "bankruptcy": true,
-        "borrowType": "0-个人，1-企业",
+        "borrowType": "",
         "dishonestStatus": 1,
         "id": 1,
         "isBorrower": true,
@@ -131,7 +211,7 @@ export default class BusinessDetail extends Component<IProps, isState> {
         "limitConsumption": 0,
         "limitHeightStatus": 1,
         "obligorId": 1,
-        "obligorName": "sy",
+        "obligorName": "",
         "obligorNumber": "",
         "obligorPushType": 0,
         "openBusinessCount": 1,
@@ -150,7 +230,7 @@ export default class BusinessDetail extends Component<IProps, isState> {
             onReset={this.onReset}
           >
             {
-              businessBaseInfoConfig.map((i) => {
+              businessBaseInfoConfig.map((i, index) => {
                 return (
                   <View className='yc-addBusiness-baseInfo-input'>
                     <View className='yc-addBusiness-baseInfo-input-content'>
@@ -163,11 +243,15 @@ export default class BusinessDetail extends Component<IProps, isState> {
                             name={i.field}
                             type='text'
                             placeholder={i.placeHolder}
+                            onInput={(e) => {
+                              this.onInput(e, i.field)
+                            }}
+                            value={baseObj[i.field]}
                           /> :
                           <View className='yc-addBusiness-baseInfo-input-content-selectTemp'
                                 onClick={this.onOpenActionSheetClick}>
                             <View
-                              className='yc-addBusiness-baseInfo-input-content-selectTemp-selectText'>{i.placeHolder}</View>
+                              className='yc-addBusiness-baseInfo-input-content-selectTemp-selectText'>{handleBorrowType[baseObj.borrowType] || i.placeHolder}</View>
                             <View className='yc-addBusiness-baseInfo-input-content-selectTemp-arrow'>
                               <Text
                                 className="iconfont icon-right-arrow yc-addBusiness-baseInfo-input-content-selectTemp-arrow-text"/>
@@ -181,7 +265,7 @@ export default class BusinessDetail extends Component<IProps, isState> {
                 )
               })
             }
-            <RelationBusiness data={relationDataSource} value={(value)=>this.getValue(value)}/>
+            <RelationBusiness data={relationDataSource} value={(value) => this.getValue(value)}/>
             <Button form-type='submit'>提交</Button>
             <Button form-type='reset'>重置</Button>
           </Form>
