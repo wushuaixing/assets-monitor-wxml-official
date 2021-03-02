@@ -8,8 +8,7 @@ type IProps = {
 }
 
 type IState = {
-  current: number
-  isScroll?: boolean
+  detail: {}
 };
 
 
@@ -18,24 +17,17 @@ export default class AssetsAuction extends Component <IProps, IState>{
   constructor(props) {
     super(props);
     this.state = {
-
+      detail: {}
     };
   }
 
   onLoad(option){
-    console.log('this ====', this);
-    let detailString = this.$instance.router.params.detail;
-    console.log('getCurrentInstance === ', detailString, JSON.parse(detailString));
-    // const eventChannel = Taro.getOpenerEventChannel();
-    // eventChannel.emit('acceptDataFromOpenedPage', {data: 'test'});
-    // eventChannel.emit('someEvent', {data: 'test'});
-    // // 监听acceptDataFromOpenerPage事件，获取上一页面通过eventChannel传送到当前页面的数据
-    // eventChannel.on('acceptDataFromOpenerPage', (detail) => {
-    //   console.log('detail === ', detail);
-    // })
-    // Taro.getOpenerEventChannel().on('acceptDataFromOpenerPage', (detail) => {
-    //   console.log('detail === ', detail);
-    // });
+    const _this = Taro.getCurrentInstance().page;
+    const eventChannel = _this.getOpenerEventChannel();
+    // 监听acceptDataFromOpenerPage事件，获取上一页面通过eventChannel传送到当前页面的数据
+    eventChannel.on('acceptDataFromOpenerPage', (detail) => {
+        console.log('detail === ', detail);
+    })
   }
 
   navigateToDetail = () => {

@@ -1,6 +1,12 @@
 import assetsAuction from '../../assets/img/components/assets-auction.png'
 import subrogation from '../../assets/img/components/subrogation.png'
-import { auctionMarkReadApi, subrogationTrialMarkReadApi, subrogationCourtMarkReadApi, subrogationJudgmentMarkReadApi } from '../../services/monitor';
+import {
+  auctionMarkReadApi,
+  subrogationTrialMarkReadApi,
+  subrogationCourtMarkReadApi,
+  subrogationJudgmentMarkReadApi,
+  bankruptcyMarkReadApi, lawsuitTrialMarkReadApi, lawsuitCourtMarkReadApi, lawsuitJudgmentMarkReadApi
+} from '../../services/monitor';
 import moment from "moment";
 moment.locale('zh-cn');
 
@@ -83,15 +89,15 @@ const getObligorName = (type: number, detail) => {
     case 2:
     case 3:
     case 4:
-      let subrogationParties = detail.parties.filter(item => item.roleType === 1 && item.obligorId > 0);
-      name = subrogationParties.map(item => { return item.name}).join();
+      let subrogationParties = detail.parties && detail.parties.length > 0 && detail.parties.filter(item => item.roleType === 1 && item.obligorId > 0) || [];
+      name = subrogationParties.length > 0 ? subrogationParties.map(it => { return it.name}).join() : '';
       break;
     case 5: name = detail.obligorName; break;
     case 6:
     case 7:
     case 8:
-      let litigationParties = detail.parties.filter(item => item.roleType === 2 && item.obligorId > 0);
-      name = litigationParties.map(item => { return item.name}).join();
+      let litigationParties = detail.parties && detail.parties.filter(item => item.roleType === 2 && item.obligorId > 0);
+      name = litigationParties.length > 0 ? litigationParties.map(item => { return item.name}).join() : '';
       break;
   }
   console.log('name === ', name);
@@ -106,18 +112,17 @@ const getTime = (type: number, detail) => {
   let long = currentTime.diff(time, 'days');
   let showTime = moment(detail.gmtCreate).format('YYYY-MM-DD');
   switch (type) {
-    case 1: showTime = long > 1 ?  moment(detail.gmtCreate).format('YYYY-MM-DD') : moment(detail.gmtCreate).fromNow(); break;
-    case 2: showTime = long > 1 ?  moment(detail.gmtCreate).format('YYYY-MM-DD') : moment(detail.gmtCreate).fromNow(); break;
-    case 3: showTime = long > 1 ?  moment(detail.gmtCreate).format('YYYY-MM-DD') : moment(detail.gmtCreate).fromNow(); break;
-    case 4: showTime = long > 1 ?  moment(detail.gmtCreate).format('YYYY-MM-DD') : moment(detail.gmtCreate).fromNow(); break;
-    case 5: showTime = long > 1 ?  moment(detail.gmtCreate).format('YYYY-MM-DD') : moment(detail.gmtCreate).fromNow(); break;
-    case 6: showTime = long > 1 ?  moment(detail.gmtCreate).format('YYYY-MM-DD') : moment(detail.gmtCreate).fromNow(); break;
-    case 7: showTime = long > 1 ?  moment(detail.gmtCreate).format('YYYY-MM-DD') : moment(detail.gmtCreate).fromNow(); break;
-    case 8: showTime = long > 1 ?  moment(detail.gmtCreate).format('YYYY-MM-DD') : moment(detail.gmtCreate).fromNow(); break;
+    case 1: showTime = long > 1 ?  moment(detail.gmtCreate).format('YYYY-MM-DD') : moment(detail.gmtCreate).startOf('hour').fromNow(); break;
+    case 2: showTime = long > 1 ?  moment(detail.gmtCreate).format('YYYY-MM-DD') : moment(detail.gmtCreate).startOf('hour').fromNow(); break;
+    case 3: showTime = long > 1 ?  moment(detail.gmtCreate).format('YYYY-MM-DD') : moment(detail.gmtCreate).startOf('hour').fromNow(); break;
+    case 4: showTime = long > 1 ?  moment(detail.gmtCreate).format('YYYY-MM-DD') : moment(detail.gmtCreate).startOf('hour').fromNow(); break;
+    case 5: showTime = long > 1 ?  moment(detail.gmtCreate).format('YYYY-MM-DD') : moment(detail.gmtCreate).startOf('hour').fromNow(); break;
+    case 6: showTime = long > 1 ?  moment(detail.gmtCreate).format('YYYY-MM-DD') : moment(detail.gmtCreate).startOf('hour').fromNow(); break;
+    case 7: showTime = long > 1 ?  moment(detail.gmtCreate).format('YYYY-MM-DD') : moment(detail.gmtCreate).startOf('hour').fromNow(); break;
+    case 8: showTime = long > 1 ?  moment(detail.gmtCreate).format('YYYY-MM-DD') : moment(detail.gmtCreate).startOf('hour').fromNow(); break;
   }
   return showTime
 };
-
 
 const getJumpType = (type) => {
   let apiName;
@@ -127,12 +132,24 @@ const getJumpType = (type) => {
     case 2: apiName = subrogationTrialMarkReadApi; url = '/subpackage/pages/monitor/asset-auction/index'; break;
     case 3: apiName = subrogationCourtMarkReadApi; url = '/subpackage/pages/monitor/asset-auction/index'; break;
     case 4: apiName = subrogationJudgmentMarkReadApi; url = '/subpackage/pages/monitor/asset-auction/index'; break;
-    case 5: apiName = 'auctionMarkReadApi'; url = '/subpackage/pages/monitor/asset-auction/index'; break;
-    case 6: apiName = 'auctionMarkReadApi'; url = '/subpackage/pages/monitor/asset-auction/index'; break;
-    case 7: apiName = 'auctionMarkReadApi'; url = '/subpackage/pages/monitor/asset-auction/index'; break;
-    case 8: apiName = 'auctionMarkReadApi'; url = '/subpackage/pages/monitor/asset-auction/index'; break;
+    case 5: apiName = bankruptcyMarkReadApi; url = '/subpackage/pages/monitor/asset-auction/index'; break;
+    case 6: apiName = lawsuitTrialMarkReadApi; url = '/subpackage/pages/monitor/asset-auction/index'; break;
+    case 7: apiName = lawsuitCourtMarkReadApi; url = '/subpackage/pages/monitor/asset-auction/index'; break;
+    case 8: apiName = lawsuitJudgmentMarkReadApi; url = '/subpackage/pages/monitor/asset-auction/index'; break;
   }
   return { apiName, url}
 };
 
-export { getPlot, getTitleTag, getRiskTag, getObligorName, getTime, getAuctionStatus, getAuctionRoleType, getJumpType}
+// 类型 1：普通 2：破产 3：执行 4：终本
+const getCaseType = (type) => {
+  let caseType = '普通案件';
+  switch (type) {
+    case 1: caseType = '普通'; break;
+    case 2: caseType = '破产'; break;
+    case 3: caseType = '执行'; break;
+    case 4: caseType = '终本'; break;
+  }
+  return caseType;
+};
+
+export { getPlot, getTitleTag, getRiskTag, getObligorName, getTime, getAuctionStatus, getAuctionRoleType, getJumpType, getCaseType }
