@@ -500,7 +500,7 @@ export default class Monitor extends Component <IProps, IState>{
 
   render () {
     const { currentId, scrollHeight, listCount, starId, assetsList, riskList, queryAssetsConfig, queryRiskConfig} = this.state;
-    console.log('monitor state === ',JSON.stringify(currentId), JSON.stringify(starId), JSON.stringify(queryAssetsConfig[1].title), JSON.stringify(queryRiskConfig[1].title));
+    // console.log('monitor state === ',JSON.stringify(currentId), JSON.stringify(starId), JSON.stringify(queryAssetsConfig[1].title), JSON.stringify(queryRiskConfig[1].title));
     let list = currentId === 1 ?  assetsList : riskList;
     return (
       <View className='monitor'>
