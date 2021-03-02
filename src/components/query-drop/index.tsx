@@ -85,17 +85,13 @@ class QueryDrop extends Component<IProps, IState>{
     return JSON.stringify(config) !== JSON.stringify(nextProps.config) || type !== nextProps.type || isMask !== nextState.isMask
   }
 
-  componentWillUpdate(nextProps: Readonly<IProps>, nextState: Readonly<IState>): void {
-    // console.log('drop component  === ',this.props, nextProps);
-    const { dispatch, type} = this.props;
+  componentWillReceiveProps(nextProps: Readonly<IProps> ): void {
+    const { type, dispatch } = this.props;
     if(type !== nextProps.type){
       dispatch({
         type:'queryDrop/initConfig',
         payload: nextProps.initConfig
-      });
-      this.setState({
-        isMask: false,
-      });
+      })
     }
   }
 
@@ -157,8 +153,9 @@ class QueryDrop extends Component<IProps, IState>{
     });
   };
 
-  // 处理线性选择的参数
+  // 处理多线性选择的参数
   handleDealLineChoose = (info, conditions) => {
+    // console.log('handleDealLineChoose info ', JSON.stringify(info))
     const { currentTab, params } = this.state;
     const { dispatch } = this.props;
     dispatch({
@@ -169,7 +166,7 @@ class QueryDrop extends Component<IProps, IState>{
         info,
       }
     });
-    let newParams = {...params, [currentTab.field] : info.value.join(), };
+    let newParams = {...params, [currentTab.field] : info.value.join()};
     this.handleRequestParmas(newParams);
     this.setState({
       params: newParams,
@@ -212,7 +209,7 @@ class QueryDrop extends Component<IProps, IState>{
   render(){
     const { currentTab, isMask, maskHeight } = this.state;
     const { config } = this.props;
-    // console.log('drop-box config === ', config);
+    // console.log('drop-box config 222=== ', JSON.stringify(config[1]));
     return (
       <View className='drop'>
         <View className='drop-box' id='drop-box'>

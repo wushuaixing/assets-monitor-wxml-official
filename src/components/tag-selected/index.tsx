@@ -6,7 +6,7 @@ import './index.scss';
 interface configType{
   id: number,
   title: string,
-  value: string
+  value: string | undefined
 }
 
 type IProps = {
@@ -21,18 +21,19 @@ type IState = {
 };
 
 const assetsConfig: configType[] = [
-  { title: '全部', id: 1, value: ''},
+  { title: '全部', id: 1, value: undefined},
   { title: '三星', id: 2, value: '3'},
   { title: '二星', id: 3, value: '2'},
   { title: '一星', id: 4, value: '1'}
 ];
 const riskConfig: configType[] = [
-  { title: '全部', id: 1, value: ''},
+  { title: '全部', id: 1, value: undefined},
   { title: '高风险', id: 2, value: '90'},
   { title: '警示', id: 3, value: '80'},
   { title: '提示', id: 4, value: '60'},
   { title: '利好', id: 5, value: '40'}
 ];
+
 class TagSelected extends Component<IProps, IState>{
   $instance = getCurrentInstance();
   constructor(props) {
@@ -48,19 +49,13 @@ class TagSelected extends Component<IProps, IState>{
     eventCenter.on(onShowEventId, this.onShow);
   }
 
-  componentWillUpdate(nextProps: Readonly<IProps>): void {
-    const { type, initId} = this.props;
-    if(type !== nextProps.type){
-      this.setState({
-        config: nextProps.type === 'assets' ? assetsConfig : riskConfig,
-        selected: nextProps.initId,
-      })
-    }
-    if(initId !== nextProps.initId && nextProps.initId > 0){
-      this.setState({
-        selected: nextProps.initId,
-      })
-    }
+  componentWillReceiveProps(nextProps: Readonly<IProps>): void {
+    const { type, initId } = nextProps;
+    const { selected } = this.state;
+    this.setState({
+      config: type === 'assets' ? assetsConfig : riskConfig,
+      selected: initId > 0 ? initId : selected,
+    })
   }
 
   componentWillUnmount(): void {
@@ -81,7 +76,7 @@ class TagSelected extends Component<IProps, IState>{
   onClickTag = (item) => {
     const { onClick } = this.props;
     this.setState({
-      selected: item.id
+      selected: item.id,
     }, () => {
       onClick(item);
     })

@@ -1,16 +1,15 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
+import Taro from '@tarojs/taro';
 import moment from "moment";
 import {View, Text, Image} from '@tarojs/components';
-import { getPlot, getTitleTag, getRiskTag} from './config';
-// import { roleType } from '../../utils/const/monitor';
+import { getPlot, getTitleTag, getRiskTag, getObligorName, getTime, getAuctionStatus, getAuctionRoleType, getJumpType, getCaseType } from './config';
+import { floatFormat } from '../../utils/tools/common';
 import './index.scss';
 
-const roleType = ['未知', '资产所有人', '债权人', '资产线索', '起诉人', '竞买人'];
 
 interface itemType{
   caseNumber?: string
   caseReason?: string
-  gmtCreate?: Date
   isRead: boolean
   id: number
   title: string
@@ -20,20 +19,64 @@ interface itemType{
   obligorName: string
   valueLevel: number
   bankruptcyType?:number
+  consultPrice: number
+  auctionStatusTag?: number
+  roundTag?: number
+  caseType?: number
+  start?: Date
+  gmtCreate?: Date
+  gmtRegister?: Date
+  gmtPublish?: Date
+  publishDate?: Date
+  gmtTrial?: Date
+  court?: string
 }
 
 type IProps = {
   type: string
   dataType: number
   object: itemType
-  onClick: any
+  onMarkRead: any
+  index: number
 }
 
-const ListItem = React.memo((props: IProps) => {
-  const { dataType, type, object } = props;
-  const detail: itemType = {...object};
+const ListItem = (props: IProps) => {
+  const { dataType, type, object, index} = props;
+  const [detail, setDetail] = useState(props.object);
+  useEffect(() => {
+    setDetail(props.object);
+  }, [props.object]);
+
+  const onRefresh = (objValue, type) => {
+    const newDetail = {...detail};
+    newDetail[type] = objValue[type];
+    setDetail(newDetail);
+  };
+
+
+  const handleMarkRead = () => {
+    getJumpType(dataType).apiName({idList: [`${detail.id}`]})
+      .then(res => {
+        let url = getJumpType(dataType).url;
+        if(res.code === 200 && res.data){
+          Taro.navigateTo({url: url})
+        }
+        else {
+          const { id, isRead } = detail;
+          onRefresh({id, isRead: !isRead, index}, 'isRead');
+          let detailString = JSON.stringify({...detail, dataType});
+          Taro.navigateTo({
+            url: `${url}?detail=${detailString}`,
+            success: function(res) {
+              res.eventChannel.emit('acceptDataFromOpenerPage', { ...detail, dataType})
+            }
+          })
+        }
+    })
+  };
+
   return (
-    <View className='item'>
+    <View className='item' onClick={handleMarkRead}>
       <View className='item-segmentation'/>
       <View className='item-header'>
         <View className={`${detail.isRead ? `item-header-box` : ``}`}>
@@ -53,17 +96,22 @@ const ListItem = React.memo((props: IProps) => {
             }
 
             <View className='item-header-title-tag-type'>{getTitleTag(dataType, detail.bankruptcyType)}</View>
+            {/*优先展示 新增拍卖轮次*/}
             {
-              dataType === 1 ? <View className='item-header-title-tag-status'>拍卖状态变更</View> : null
+              dataType === 1 ? ( detail.roundTag === 1 ? <View className='item-header-title-tag-status'>新增拍卖轮次</View> : ( detail.auctionStatusTag === 1 ? <View className='item-header-title-tag-status'>拍卖状态变更</View> : null)) : null
             }
           </View>
           <View className={`item-header-title-${ detail.isRead ? 'readtext' : 'noreadtext'}`}>
             {
-              detail.obligorName
+              getObligorName(dataType, detail)
             }
           </View>
         </View>
-        <View className='item-header-time'>{detail.time}</View>
+        <View className='item-header-time'>
+          {
+            getTime(dataType, detail)
+          }
+        </View>
       </View>
       <View className='item-line'/>
       {/*资产拍卖*/}
@@ -72,54 +120,33 @@ const ListItem = React.memo((props: IProps) => {
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>标题</View>
 						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.title }</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.title}</View>
 					</View>
+	        <View className='item-content-info'>
+		        <View className='item-content-info-label'>角色</View>
+		        <View className='item-content-info-colon'>：</View>
+		        <View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{getAuctionRoleType(detail.roleType)}</View>
+	        </View>
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>拍卖状态</View>
 						<View className='item-content-info-colon'>：</View>
-						<View className='item-content-info-noreadtext item-content-info-status'>{detail.status}</View>
+						<View className='item-content-info-noreadtext item-content-info-status'>{getAuctionStatus(detail.status)}</View>
 					</View>
+	        <View className='item-content-info'>
+		        <View className='item-content-info-label'>评估价</View>
+		        <View className='item-content-info-colon'>：</View>
+		        <View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{`${floatFormat(detail.consultPrice)}元`}</View>
+	        </View>
 					<View className='item-content-info'>
-						<View className='item-content-info-label'>角色</View>
+						<View className='item-content-info-label'>开拍时间</View>
 						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>未知</View>
-            {/*<View className={`item-content-info-${currentData[index].object.isRead ? `readtext` : `noreadtext`}`}>{roleType[currentData[index].object.roleType]}</View>*/}
-					</View>
-					<View className='item-content-info'>
-						<View className='item-content-info-label'>案件类型</View>
-						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>执行案件</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{moment(detail.start).format('YYYY-MM-DD HH:mm:ss')}</View>
 					</View>
 				</View>
       }
       {/*代位权-立案*/}
       {
         dataType === 2 && <View className='item-content'>
-					<View className='item-content-info'>
-						<View className='item-content-info-label'>立案日期</View>
-						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>2020-03-25</View>
-					</View>
-					<View className='item-content-info'>
-						<View className='item-content-info-label'>案号</View>
-						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>（2020）沪0117民初14166号</View>
-					</View>
-					<View className='item-content-info'>
-						<View className='item-content-info-label'>案由</View>
-						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>借款纠纷</View>
-					</View>
-					<View className='item-content-info'>
-						<View className='item-content-info-label'>案件类型</View>
-						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>执行案件</View>
-					</View>
-				</View>
-      }
-      {/*代位权-开庭*/}
-      {
-        dataType === 3 && <View className='item-content'>
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>立案日期</View>
 						<View className='item-content-info-colon'>：</View>
@@ -133,7 +160,32 @@ const ListItem = React.memo((props: IProps) => {
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>案由</View>
 						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.caseReason}</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.caseReason || '-'}</View>
+					</View>
+					<View className='item-content-info'>
+						<View className='item-content-info-label'>案件类型</View>
+						<View className='item-content-info-colon'>：</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.caseType ? getCaseType(detail.caseType) : '-'}</View>
+					</View>
+				</View>
+      }
+      {/*代位权-开庭*/}
+      {
+        dataType === 3 && <View className='item-content'>
+					<View className='item-content-info'>
+						<View className='item-content-info-label'>开庭日期</View>
+						<View className='item-content-info-colon'>：</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.gmtCreate ? moment(detail.gmtCreate).format('YYYY-MM-DD') : '-'}</View>
+					</View>
+					<View className='item-content-info'>
+						<View className='item-content-info-label'>案号</View>
+						<View className='item-content-info-colon'>：</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.caseNumber || '-'}</View>
+					</View>
+					<View className='item-content-info'>
+						<View className='item-content-info-label'>案由</View>
+						<View className='item-content-info-colon'>：</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.caseReason || '-'}</View>
 					</View>
 				</View>
       }
@@ -143,22 +195,22 @@ const ListItem = React.memo((props: IProps) => {
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>发布日期</View>
 						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>2020-03-25</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.gmtPublish ? moment(detail.gmtPublish).format('YYYY-MM-DD') : '-'}</View>
 					</View>
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>案号</View>
 						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>（2020）沪0117民初14166号</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.caseNumber || '-'}</View>
 					</View>
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>案由</View>
 						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>借款纠纷</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.caseReason || '-'}</View>
 					</View>
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>案件类型</View>
 						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>执行案件</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.caseType ? getCaseType(detail.caseType) : '-'}</View>
 					</View>
 				</View>
       }
@@ -168,22 +220,22 @@ const ListItem = React.memo((props: IProps) => {
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>发布日期</View>
 						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>2020-03-25</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.publishDate ? moment(detail.publishDate).format('YYYY-MM-DD') : '-'}</View>
 					</View>
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>申请人</View>
 						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>（2020）沪0117民初14166号</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.obligorName || '-'}</View>
 					</View>
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>案由</View>
 						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>借款纠纷</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.obligorName || '-'}</View>
 					</View>
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>破产法院</View>
 						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>九江市中级人民法院</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.court || '-'}</View>
 					</View>
 				</View>
       }
@@ -193,13 +245,18 @@ const ListItem = React.memo((props: IProps) => {
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>标题</View>
 						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>山东金安投资有限公司受理公告</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.title || '-'}</View>
 					</View>
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>发布日期</View>
 						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>2020-03-25</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.publishDate ? moment(detail.publishDate).format('YYYY-MM-DD') : '-'}</View>
 					</View>
+	        <View className='item-content-info'>
+		        <View className='item-content-info-label'>破产法院</View>
+		        <View className='item-content-info-colon'>：</View>
+		        <View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.court || '-'}</View>
+	        </View>
 				</View>
       }
       {/*涉诉-立案*/}
@@ -208,22 +265,22 @@ const ListItem = React.memo((props: IProps) => {
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>立案日期</View>
 						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>2020-03-25</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.gmtRegister ? moment(detail.gmtRegister).format('YYYY-MM-DD') : '-'}</View>
 					</View>
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>案号</View>
 						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>（2020）沪0117民初14166号</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.caseNumber || '-'}</View>
 					</View>
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>案由</View>
 						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>借款纠纷</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.caseReason || '-'}</View>
 					</View>
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>案件类型</View>
 						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>执行案件</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.caseType ? getCaseType(detail.caseType) : '-'}</View>
 					</View>
 				</View>
       }
@@ -231,19 +288,19 @@ const ListItem = React.memo((props: IProps) => {
       {
         dataType === 7 && <View className='item-content'>
 					<View className='item-content-info'>
-						<View className='item-content-info-label'>立案日期</View>
+						<View className='item-content-info-label'>开庭日期</View>
 						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>2020-03-25</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.gmtTrial ? moment(detail.gmtTrial).format('YYYY-MM-DD') : '-'}</View>
 					</View>
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>案号</View>
 						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>（2020）沪0117民初14166号</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.caseNumber || '-'}</View>
 					</View>
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>案由</View>
 						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>借款纠纷</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.caseReason || '-'}</View>
 					</View>
 				</View>
       }
@@ -253,27 +310,27 @@ const ListItem = React.memo((props: IProps) => {
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>发布日期</View>
 						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>2020-03-25</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.gmtPublish ? moment(detail.gmtPublish).format('YYYY-MM-DD') : '-'}</View>
 					</View>
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>案号</View>
 						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>（2020）沪0117民初14166号</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.caseNumber || '-'}</View>
 					</View>
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>案由</View>
 						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>借款纠纷</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.caseReason || '-'}</View>
 					</View>
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>案件类型</View>
 						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>执行案件</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.caseType ? getCaseType(detail.caseType) : '-'}</View>
 					</View>
 				</View>
       }
     </View>
   );
-});
+};
 
 export default ListItem;

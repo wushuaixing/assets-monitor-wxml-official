@@ -1,20 +1,34 @@
 import React, { Component } from 'react'
-import Taro from '@tarojs/taro';
+import Taro, { getCurrentInstance } from '@tarojs/taro';
 import {View, Text} from '@tarojs/components'
 import NavigationBar from "../../../../components/navigation-bar";
 import './index.scss'
-
 
 type IProps = {
 }
 
 type IState = {
-  current: number
-  isScroll?: boolean
+  detail: {}
 };
 
 
 export default class AssetsAuction extends Component <IProps, IState>{
+  $instance = getCurrentInstance();
+  constructor(props) {
+    super(props);
+    this.state = {
+      detail: {}
+    };
+  }
+
+  onLoad(option){
+    const _this = Taro.getCurrentInstance().page;
+    const eventChannel = _this.getOpenerEventChannel();
+    // 监听acceptDataFromOpenerPage事件，获取上一页面通过eventChannel传送到当前页面的数据
+    eventChannel.on('acceptDataFromOpenerPage', (detail) => {
+        console.log('detail === ', detail);
+    })
+  }
 
   navigateToDetail = () => {
     Taro.navigateTo({

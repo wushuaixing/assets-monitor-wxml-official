@@ -25,9 +25,10 @@ export default {
   effects: {
     *getCurrentOrganization({ payload }, { call, put }) {
       const res = yield call(currentOrganizationApi, payload);
-      if(res.code === 200){
-        yield put({ type: 'updateState', payload: {businessCount: res.data.businessCount} });
-      }
+      return res;
+      // if(res.code === 200){
+      //   yield put({ type: 'updateState', payload: {businessCount: res.data.businessCount} });
+      // }
     },
 
     *getAuthRule({}, {call}) {

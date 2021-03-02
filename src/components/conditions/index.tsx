@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import {Image, Input, ScrollView, Text, View} from '@tarojs/components';
+import {Image, Text, View} from '@tarojs/components';
 import { AtButton, AtFloatLayout, AtCalendar} from 'taro-ui';
 import clear from '../../assets/img/components/clear.png';
 import { connect } from 'react-redux';
@@ -100,14 +100,14 @@ export default class Conditions extends Component <IProps, IState>{
     this.params = {};
   }
 
-  componentWillUpdate(nextProps: Readonly<IProps>): void {
-    const { config } = this.props;
-    if(JSON.stringify(config) !== JSON.stringify(nextProps.config)){
-      this.setState({
-        config: nextProps.config
-      })
-    }
-  }
+  // componentWillUpdate(nextProps: Readonly<IProps>): void {
+  //   const { config } = this.props;
+  //   if(JSON.stringify(config) !== JSON.stringify(nextProps.config)){
+  //     this.setState({
+  //       config: nextProps.config
+  //     })
+  //   }
+  // }
 
   // 选择单项之后关闭窗口
   onSelected = (info) => {
