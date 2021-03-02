@@ -4,7 +4,18 @@ import ObligorListItem from "./obligorListItem";
 import BusinessListItem from "./businessListItem/index";
 import './index.scss'
 
-export default class ListManage extends Component {
+
+type isState = {
+  refreshDownStatus: boolean
+}
+export default class ListManage extends Component<any, isState> {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      refreshDownStatus: false
+    };
+  }
 
   componentWillMount() {
   }
@@ -27,19 +38,43 @@ export default class ListManage extends Component {
     if (onScrollToLower) onScrollToLower();
   }
 
-  onRefresherRefresh = () =>{
+  onRefresherRefresh = () => {
+    this.setState({
+      refreshDownStatus: true
+    })
     console.log('onRefresherRefresh===')
-    const {handleBusinessList} = this.props;
-    if(handleBusinessList)handleBusinessList();
+    const {current} = this.props;
+    if (current) {
+      const {handleObligorList} = this.props;
+      if (handleObligorList) {
+        handleObligorList();
+        setTimeout(() => {
+          this.setState({
+            refreshDownStatus: false
+          })
+        })
+      }
+    } else {
+      const {handleBusinessList} = this.props;
+      if (handleBusinessList) {
+        handleBusinessList();
+        setTimeout(() => {
+          this.setState({
+            refreshDownStatus: false
+          })
+        })
+      }
+    }
   }
 
-  onRefresherRestore = () =>{
+  onRefresherRestore = () => {
     console.log('onRefresherRestore===')
   }
 
 
   render() {
-    const {data,current,searchValue,handleBusinessList,loading} = this.props;
+    const {data, current, searchValue, handleBusinessList, loading} = this.props;
+    const {refreshDownStatus} = this.state;
     return (
       <View className='yc-monitorManage-bottom'>
         <ScrollView
@@ -49,7 +84,7 @@ export default class ListManage extends Component {
           lowerThreshold={60}
           // refresherThreshold={0}
           // upperThreshold={1}
-          refresherTriggered={loading}
+          refresherTriggered={refreshDownStatus}
           onScrollToLower={this.onScrollToLower}
           onRefresherRefresh={this.onRefresherRefresh}
           refresherEnabled
@@ -58,7 +93,8 @@ export default class ListManage extends Component {
           onRefresherRestore={this.onRefresherRestore}
         >
           {
-            current ? <ObligorListItem data={data} type='obligor'/> : <BusinessListItem data={data} searchValue={searchValue} handleBusinessList={handleBusinessList}/>
+            current ? <ObligorListItem data={data} type='obligor'/> :
+              <BusinessListItem data={data} searchValue={searchValue} handleBusinessList={handleBusinessList}/>
           }
 
         </ScrollView>

@@ -61,20 +61,20 @@ export default class BusinessListItem extends Component<any, isState> {
     Taro.navigateTo({url: '/subpackage/pages/monitorManage/addBusiness/index'});
   }
 
-  onDeleteClick = (id) =>{
+  onDeleteClick = (id) => {
     this.props.dispatch({
       type: 'monitorManage/getCurClickItem',
       payload: {curClickItem: ''}
     })
-    console.log('onDeleteClick',id)
+    console.log('onDeleteClick', id)
     this.props.dispatch({
-      type:'monitorManage/getIsDeleteOpendModal',
-      payload:{deleteId:id,isDeleteOpendModal:true}
+      type: 'monitorManage/getIsDeleteOpendModal',
+      payload: {deleteId: id, isDeleteOpendModal: true}
     })
   }
 
   render() {
-    const {data, searchValue,handleBusinessList} = this.props;
+    const {data, searchValue, handleBusinessList} = this.props;
     console.log('this.props', this.props)
     const {curClickItem} = this.props.monitorManage;
     // this.focusComponents = new Set([
@@ -106,65 +106,82 @@ export default class BusinessListItem extends Component<any, isState> {
                   }}>
                     <Text className='yc-businessListItem-content-logo-text'>{i.obligorName.slice(0, 4)}</Text>
                   </View>
-                  <View className='yc-businessListItem-content-middleRight'>
-                    <View className='yc-businessListItem-content-middleRight-middle'>
-                      <View className='yc-businessListItem-content-middleRight-middle-caseNumber'>{i.caseNumber}</View>
-                      <View className='yc-businessListItem-content-middleRight-middle-obligorDetail'>
+                  <View style={{display:'inline-block'}}>
+                    <View className='yc-businessListItem-content-middleRight'>
+                      <View className='yc-businessListItem-content-middleRight-middle'>
                         <View
-                          className='yc-businessListItem-content-middleRight-middle-obligorDetail-obligorName'>借款人：</View>
-                        <View className='yc-businessListItem-content-middleRight-middle-obligorDetail-obligorValue'>
-                          {i.obligorName ? <RichText nodes={i.obligorName.toString().replace(
-                            reg,
-                            `<em style="color:#FF3B30;font-style: normal;">${searchValue}</em>`
-                          )}
-                          /> : '-'}
+                          className='yc-businessListItem-content-middleRight-middle-caseNumber'>{i.caseNumber}</View>
+                        <View className='yc-businessListItem-content-middleRight-middle-obligorDetail'>
+                          <View
+                            className='yc-businessListItem-content-middleRight-middle-obligorDetail-obligorName'>借款人：</View>
+                          <View className='yc-businessListItem-content-middleRight-middle-obligorDetail-obligorValue'>
+                            {i.obligorName ? <RichText nodes={i.obligorName.toString().replace(
+                              reg,
+                              `<em style="color:#FF3B30;font-style: normal;">${searchValue}</em>`
+                            )}
+                            /> : '-'}
+                          </View>
                         </View>
                       </View>
                     </View>
-                    <View className='yc-businessListItem-content-middleRight-right'>
-                      {/*{*/}
-                      {/*  [0, 1, 2].map((_i, indexTemp) => {*/}
-                      {/*    return (<View className='yc-businessListItem-content-middleRight-right-circle'*/}
-                      {/*                  style={{marginRight: indexTemp !== 2 ? '6rpx' : '0'}}/>)*/}
-                      {/*  })*/}
-                      {/*}*/}
+                    <View className='yc-businessListItem-content-middleRightContent'>
+                      <View>
+                        {/*{*/}
+                        {/*  [0, 1, 2].map((_i, indexTemp) => {*/}
+                        {/*    return (<View className='yc-businessListItem-content-middleRight-right-circle'*/}
+                        {/*                  style={{marginRight: indexTemp !== 2 ? '6rpx' : '0'}}/>)*/}
+                        {/*  })*/}
+                        {/*}*/}
 
 
-                      <View className='yc-circle'>
-                        <View onClick={(e) => {
-                          e.stopPropagation();
-                        }}>
-                          <View
-                            onClick={(e) => this.onClickMore(e, i)}
-                          >
-                            {
-                              [0, 1, 2].map((_i, indexTemp) => {
-                                return (<View className='yc-businessListItem-content-middleRight-right-circle'
-                                              style={{marginRight: indexTemp !== 2 ? '6rpx' : '0'}}/>)
-                              })
-                            }
+                        <View className='yc-circle'>
+                          <View onClick={(e) => {
+                            e.stopPropagation();
+                          }}>
+                            <View
+                              onClick={(e) => this.onClickMore(e, i)}
+                              className='yc-businessListItem-content-middleRightContent-circleContent'
+                            >
+                              {
+                                [0, 1, 2].map((_i, indexTemp) => {
+                                  return (
+                                    <View
+                                      className='yc-businessListItem-content-middleRightContent-circleContent-circle'
+                                      style={{marginRight: indexTemp !== 2 ? '6rpx' : '0'}}/>)
+                                })
+                              }
+                            </View>
                           </View>
-                        </View>
-                        <View className="popover_body"
-                              style={{display: curClickItem === i.id ? "block" : "none"}}
-                        >
-                          <View>
+                          <View className="popover_body"
+                                style={{display: curClickItem === i.id ? "block" : "none"}}
+                          >
                             <View>
-                              <View className="ant-popover ant-popover-placement-bottomRight "
-                                    style={{left: "0rpx", top: '20rpx', transformOrigin: '50% 91.6rpx'}}
-                              >
-                                <View className="ant-popover-content">
-                                  <View className="ant-popover-arrow">
-                                    <Text className="ant-popover-arrow-content"/>
-                                  </View>
-                                  <View className="ant-popover-inner">
-                                    <View className="ant-popover-inner-content">
-                                      <View className='ant-popover-inner-content-text'
-                                            style={{paddingTop: '32rpx'}} onClick={this.onEditBusinessClick}>编辑</View>
-                                      <View className='ant-popover-inner-content-line'/>
-                                      <View className='ant-popover-inner-content-text' onClick={(e)=>{e.stopPropagation();}}>
-                                        <View  onClick={()=>{this.onDeleteClick(i.id)}}>
-                                          删除
+                              <View>
+                                <View className="ant-popover ant-popover-placement-bottomRight "
+                                      style={{left: "0rpx", top: '20rpx', transformOrigin: '50% 91.6rpx'}}
+                                >
+                                  <View className="ant-popover-content">
+                                    <View className="ant-popover-arrow">
+                                      <Text className="ant-popover-arrow-content"/>
+                                    </View>
+                                    <View className="ant-popover-inner">
+                                      <View className="ant-popover-inner-content">
+                                        <View onClick={(e) => {
+                                          e.stopPropagation()
+                                        }}>
+                                          <View className='ant-popover-inner-content-text'
+                                                style={{paddingTop: '32rpx'}}
+                                                onClick={this.onEditBusinessClick}>编辑</View>
+                                        </View>
+                                        <View className='ant-popover-inner-content-line'/>
+                                        <View className='ant-popover-inner-content-text' onClick={(e) => {
+                                          e.stopPropagation();
+                                        }}>
+                                          <View onClick={() => {
+                                            this.onDeleteClick(i.id)
+                                          }}>
+                                            删除
+                                          </View>
                                         </View>
                                       </View>
                                     </View>
@@ -174,11 +191,11 @@ export default class BusinessListItem extends Component<any, isState> {
                             </View>
                           </View>
                         </View>
-                      </View>
 
 
-                      <View className='yc-businessListItem-content-middleRight-right-date'>
-                        {moment(i.uploadTime).format('YYYY-MM-DD')}添加
+                        <View className='yc-businessListItem-content-middleRightContent-date'>
+                          {moment(i.uploadTime).format('YYYY-MM-DD')}
+                        </View>
                       </View>
                     </View>
                     {
@@ -206,6 +223,7 @@ export default class BusinessListItem extends Component<any, isState> {
                         : null
                     }
                   </View>
+
                 </View>
                 <View className='yc-businessListItem-line'/>
               </View>
