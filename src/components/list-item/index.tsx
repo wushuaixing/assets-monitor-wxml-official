@@ -1,13 +1,15 @@
-import React from "react";
+import React, {useState} from "react";
+import Taro from '@tarojs/taro';
 import moment from "moment";
 import {View, Text, Image} from '@tarojs/components';
-import { getPlot, getTitleTag, getRiskTag} from './config';
+import { getPlot, getTitleTag, getRiskTag, getObligorName, getTime, getAuctionStatus, getAuctionRoleType, getJumpType } from './config';
 // import { roleType } from '../../utils/const/monitor';
+import { floatFormat } from '../../utils/tools/common';
 import './index.scss';
 
-const roleType = ['未知', '资产所有人', '债权人', '资产线索', '起诉人', '竞买人'];
 
 interface itemType{
+  start?: Date
   caseNumber?: string
   caseReason?: string
   gmtCreate?: Date
@@ -20,20 +22,53 @@ interface itemType{
   obligorName: string
   valueLevel: number
   bankruptcyType?:number
+  consultPrice: number
+  auctionStatusTag?: number
+  roundTag?: number
 }
 
 type IProps = {
   type: string
   dataType: number
   object: itemType
-  onClick: any
+  onMarkRead: any
+  index: number
 }
 
 const ListItem = React.memo((props: IProps) => {
-  const { dataType, type, object } = props;
-  const detail: itemType = {...object};
+  const { dataType, type, object, index} = props;
+  const [detail, setDetail] = useState(props.object);
+
+  const onRefresh = (objValue, type) => {
+    const newDetail = {...detail};
+    newDetail[type] = objValue[type];
+    setDetail(newDetail);
+  };
+
+
+  const handleMarkRead = () => {
+    getJumpType(dataType).apiName({idList: [`${detail.id}`]})
+      .then(res => {
+        let url = getJumpType(dataType).url;
+        if(res.code === 200 && res.data){
+          Taro.navigateTo({url: url})
+        }
+        else {
+          const { id, isRead } = detail;
+          onRefresh({id, isRead: !isRead, index}, 'isRead');
+          let detailString = JSON.stringify({...detail, dataType});
+          Taro.navigateTo({
+            url: `${url}?detail=${detailString}`,
+            success: function(res) {
+              res.eventChannel.emit('acceptDataFromOpenerPage', { detail: {...detail, dataType}})
+            }
+          })
+        }
+    })
+  };
+
   return (
-    <View className='item'>
+    <View className='item' onClick={handleMarkRead}>
       <View className='item-segmentation'/>
       <View className='item-header'>
         <View className={`${detail.isRead ? `item-header-box` : ``}`}>
@@ -53,17 +88,22 @@ const ListItem = React.memo((props: IProps) => {
             }
 
             <View className='item-header-title-tag-type'>{getTitleTag(dataType, detail.bankruptcyType)}</View>
+            {/*优先展示 新增拍卖轮次*/}
             {
-              dataType === 1 ? <View className='item-header-title-tag-status'>拍卖状态变更</View> : null
+              dataType === 1 ? ( detail.roundTag === 1 ? <View className='item-header-title-tag-status'>新增拍卖轮次</View> : ( detail.auctionStatusTag === 1 ? <View className='item-header-title-tag-status'>拍卖状态变更</View> : null)) : null
             }
           </View>
           <View className={`item-header-title-${ detail.isRead ? 'readtext' : 'noreadtext'}`}>
             {
-              detail.obligorName
+              getObligorName(dataType, detail)
             }
           </View>
         </View>
-        <View className='item-header-time'>{detail.time}</View>
+        <View className='item-header-time'>
+          {
+            getTime(dataType, detail)
+          }
+        </View>
       </View>
       <View className='item-line'/>
       {/*资产拍卖*/}
@@ -72,23 +112,27 @@ const ListItem = React.memo((props: IProps) => {
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>标题</View>
 						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.title }</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.title}</View>
 					</View>
+	        <View className='item-content-info'>
+		        <View className='item-content-info-label'>角色</View>
+		        <View className='item-content-info-colon'>：</View>
+		        <View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{getAuctionRoleType(detail.roleType)}</View>
+	        </View>
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>拍卖状态</View>
 						<View className='item-content-info-colon'>：</View>
-						<View className='item-content-info-noreadtext item-content-info-status'>{detail.status}</View>
+						<View className='item-content-info-noreadtext item-content-info-status'>{getAuctionStatus(detail.status)}</View>
 					</View>
+	        <View className='item-content-info'>
+		        <View className='item-content-info-label'>评估价</View>
+		        <View className='item-content-info-colon'>：</View>
+		        <View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{`${floatFormat(detail.consultPrice)}元`}</View>
+	        </View>
 					<View className='item-content-info'>
-						<View className='item-content-info-label'>角色</View>
+						<View className='item-content-info-label'>开拍时间</View>
 						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>未知</View>
-            {/*<View className={`item-content-info-${currentData[index].object.isRead ? `readtext` : `noreadtext`}`}>{roleType[currentData[index].object.roleType]}</View>*/}
-					</View>
-					<View className='item-content-info'>
-						<View className='item-content-info-label'>案件类型</View>
-						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>执行案件</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{moment(detail.start).format('YYYY-MM-DD HH:mm:ss')}</View>
 					</View>
 				</View>
       }

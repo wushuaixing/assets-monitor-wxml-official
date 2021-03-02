@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
-import Taro from '@tarojs/taro';
+import Taro, { getCurrentInstance } from '@tarojs/taro';
 import {View, Text} from '@tarojs/components'
 import NavigationBar from "../../../../components/navigation-bar";
 import './index.scss'
-
 
 type IProps = {
 }
@@ -15,6 +14,29 @@ type IState = {
 
 
 export default class AssetsAuction extends Component <IProps, IState>{
+  $instance = getCurrentInstance();
+  constructor(props) {
+    super(props);
+    this.state = {
+
+    };
+  }
+
+  onLoad(option){
+    console.log('this ====', this);
+    let detailString = this.$instance.router.params.detail;
+    console.log('getCurrentInstance === ', detailString, JSON.parse(detailString));
+    // const eventChannel = Taro.getOpenerEventChannel();
+    // eventChannel.emit('acceptDataFromOpenedPage', {data: 'test'});
+    // eventChannel.emit('someEvent', {data: 'test'});
+    // // 监听acceptDataFromOpenerPage事件，获取上一页面通过eventChannel传送到当前页面的数据
+    // eventChannel.on('acceptDataFromOpenerPage', (detail) => {
+    //   console.log('detail === ', detail);
+    // })
+    // Taro.getOpenerEventChannel().on('acceptDataFromOpenerPage', (detail) => {
+    //   console.log('detail === ', detail);
+    // });
+  }
 
   navigateToDetail = () => {
     Taro.navigateTo({

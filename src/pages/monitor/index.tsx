@@ -46,6 +46,7 @@ type IState = {
   listCount: number
   scrollHeight: number
   page: number
+  hasNext: boolean
 };
 
 const tabList = [
@@ -120,9 +121,10 @@ function filterArray(rule) {
  * @param starId
  */
 function getStarValue(tabId: number, starId: number) {
-  let star = 90;
+  let star: number | undefined = undefined;
   if(tabId === 1){
     switch (starId) {
+      case 1: star = undefined; break;
       case 2: star = 90; break;
       case 3: star = 80; break;
       case 4: star = 60; break;
@@ -130,6 +132,7 @@ function getStarValue(tabId: number, starId: number) {
   }
   else {
     switch (starId) {
+      case 1: star = undefined; break;
       case 2: star = 90; break;
       case 3: star = 80; break;
       case 4: star = 60; break;
@@ -275,8 +278,43 @@ export default class Monitor extends Component <IProps, IState>{
       riskList: [],
       scrollHeight: 0,
       page: 1,
+      hasNext: false,
     };
   }
+
+
+  onLoad() {
+    const { monitorParams } = this.props;
+    const { currentId, starId, params } = this.state;
+    if(Object.keys(monitorParams).length !== 0){
+      let tabId = monitorParams.tabId > 0 ? monitorParams.tabId : currentId;
+      let newStarId = monitorParams.starId > 0 ? monitorParams.starId : starId;
+      let dataArray = Array.isArray(monitorParams.value) && monitorParams.value.length > 0 ? monitorParams.value : (tabId === 1 ?  assestRuleArray : riskRuleArray );
+      let assetAndRiskTypeValue = filterArray(dataArray).join();
+      // console.log('handleUpdataConfig');
+      let newParams = {
+        ...params,
+        assetAndRiskType: assetAndRiskTypeValue,
+        score: getStarValue(tabId, newStarId)
+      };
+      this.setState({
+        queryAssetsConfig: this.handleUpdataConfig(monitorParams),
+        queryRiskConfig: this.handleUpdataConfig(monitorParams),
+        currentId: tabId,
+        starId: newStarId,
+        params: {...newParams},
+      }, () => {
+        const { queryAssetsConfig } = this.state;
+        // console.log('newParams === ', newParams, JSON.stringify(queryAssetsConfig[1]));
+        this.handleRequestList({...newParams}, true);
+      });
+    }
+    else {
+      const { params } = this.state;
+      console.log('newParams === ', params);
+      this.handleRequestList({...params}, true);
+    }
+  };
 
   componentWillMount(): void {
     const onReadyEventId = this.$instance.router.onReady;
@@ -299,88 +337,38 @@ export default class Monitor extends Component <IProps, IState>{
         }
       });
     });
-    const onShowEventId = this.$instance.router.onShow;
-    eventCenter.on(onShowEventId, this.onShow);
   }
-
 
   shouldComponentUpdate(nextProps: Readonly<IProps>, nextState: Readonly<IState>): boolean {
-    const { listCount, currentId} = this.state;
-    return listCount !== nextState.listCount || currentId !== nextState.currentId;
+    // console.log('should should=== ', JSON.stringify(nextProps.monitorParams), JSON.stringify(this.props.monitorParams));
+    // console.log('should === ', JSON.stringify(this.state.queryAssetsConfig[1].title), JSON.stringify(nextState.queryAssetsConfig[1].title));
+    // const { monitorParams } = this.props;
+    const { listCount, currentId } = this.state;
+    return listCount !== nextState.listCount || currentId !== nextState.currentId
   }
 
-  componentWillUpdate(nextProps: Readonly<IProps>, nextState: Readonly<IState>, nextContext: any): void {
-    const { assetsList, riskList } = this.state;
-    if(JSON.stringify(assetsList) !== JSON.stringify(nextState.assetsList)){
-      this.setState({
-        assetsList: [...nextState.assetsList,]
-      })
-    }
-    if(JSON.stringify(riskList) !== JSON.stringify(nextState.riskList)){
-      this.setState({
-        riskList: [...nextState.riskList],
-      })
-    }
-  }
 
-  componentWillUnmount () {
-    const onShowEventId = this.$instance.router.onShow;
-    // 卸载
-    eventCenter.off(onShowEventId, this.onShow)
-  }
-
-  onShow = () => {
-    this.handleDealInitParams()
-  };
-
-  // 请求其他页面带来的参数
-  handleDealInitParams = () => {
-    const { monitorParams } = this.props;
-    const { currentId, starId, params } = this.state;
-    if(Object.keys(monitorParams).length !== 0){
-      let tabId = monitorParams.tabId > 0 ? monitorParams.tabId : currentId;
-      let newStarId = monitorParams.starId > 0 ? monitorParams.starId : starId;
-      let dataArray = Array.isArray(monitorParams.value) && monitorParams.value.length > 0 ? monitorParams.value : (tabId === 1 ?  assestRuleArray : riskRuleArray );
-      let assetAndRiskTypeValue = filterArray(dataArray).join();
-      let newParams = {
-        ...params,
-        assetAndRiskType: assetAndRiskTypeValue,
-        score: getStarValue(tabId, newStarId)
-      };
-      let config = monitorParams.tabId === 1 ? {queryAssetsConfig: this.handleUpdataConfig(monitorParams)} : {queryRiskConfig: this.handleUpdataConfig(monitorParams)};
-      // @ts-ignore
-      this.setState({
-        ...config,
-        currentId: tabId,
-        starId: newStarId,
-        params: {...newParams},
-      }, () => {
-        console.log('newParams === ', newParams);
-        this.handleRequestList({...newParams}, true);
-      });
-    }
-    else {
-      const { params } = this.state;
-      console.log('newParams === ', params);
-      this.handleRequestList({...params}, true);
-    }
-  };
-
-  // 更新页面的config
   handleUpdataConfig = (params) => {
     const { tabId, value} = params;
-    const { queryAssetsConfig, queryRiskConfig } = this.state;
     if( tabId === 1 && Array.isArray(value) && value.length === 1){
+      const { queryAssetsConfig } = this.state;
       let assetsConfig = [...queryAssetsConfig];
       assetsConfig[1].isSelected = true;
       assetsConfig[1].title = getRuleName(value);
-      return assetsConfig;
+      return [...assetsConfig]
+      // this.setState({
+      //   queryAssetsConfig: [...assetsConfig],
+      // });
     }
     if( tabId === 2 && Array.isArray(value) && value.length === 1){
+      const { queryRiskConfig } = this.state;
       let riskConfig = [...queryRiskConfig];
       riskConfig[1].isSelected = true;
       riskConfig[1].title = getRuleName(value);
-      return riskConfig;
+      return [...riskConfig];
+      // this.setState({
+      //   queryRiskConfig: [...riskConfig],
+      // })
     }
   };
 
@@ -408,6 +396,7 @@ export default class Monitor extends Component <IProps, IState>{
             page: page + 1,
             assetsList: isNew ? data.list : assetsList.concat(data.list),
             listCount: data.total,
+            hasNext: data.hasNext,
           })
         }
       }).catch(err => {
@@ -425,62 +414,12 @@ export default class Monitor extends Component <IProps, IState>{
         const {code, data } = res;
         Taro.hideLoading();
         if(code === 200){
-          let list = [
-            {
-              dataType: 5,
-              object: {
-                obligorName: '乐视网信息科技有限公司',
-                bankruptcyType: 1,
-                valueLevel: 90,
-                publishDate: '2020-12-12',
-                isRead: true,
-                court: '九江市中级人民法院',
-              }
-            },
-            {
-              dataType: 6,
-              object: {
-                obligorName: '乐视网信息科技有限公司',
-                bankruptcyType: 1,
-                valueLevel: 60,
-                publishDate: '2020-12-12',
-                isRead: true,
-                court: '九江市中级人民法院',
-              }
-            },
-            {
-              dataType: 6,
-              object: {
-                obligorName: '乐视网信息科技有限公司',
-                bankruptcyType: 1,
-                valueLevel: 80,
-                publishDate: '2020-12-12',
-                isRead: true,
-                court: '九江市中级人民法院',
-              }
-            },
-            {
-              dataType: 6,
-              object: {
-                obligorName: '乐视网信息科技有限公司',
-                bankruptcyType: 1,
-                valueLevel: 40,
-                publishDate: '2020-12-12',
-                isRead: true,
-                court: '九江市中级人民法院',
-              }
-            },
-          ];
           this.setState({
             page: page + 1,
-            riskList: [...list],
-            listCount: 4,
+            riskList: isNew ? data.list : riskList.concat(data.list),
+            listCount: data.total,
+            hasNext: data.hasNext,
           })
-          // this.setState({
-          //   page: page + 1,
-          //   riskList: isNew ? [...list] : riskList.concat(data.list),
-          //   listCount: data.total,
-          // })
         }
       }).catch(err => {
         Taro.hideLoading();
@@ -496,6 +435,7 @@ export default class Monitor extends Component <IProps, IState>{
     this.setState({
       currentId: info.id,
       params: newParams,
+      page: 1,
     }, () => {
       this.handleRequestList({assetAndRiskType: assetAndRiskTypeParams}, true)
     });
@@ -507,37 +447,61 @@ export default class Monitor extends Component <IProps, IState>{
     let newParams = {...params, score: getStarValue(currentId, info.id)};
     this.setState({
       params: newParams,
+      page: 1,
+    }, () => {
+      this.handleRequestList({...newParams}, true);
     });
-    this.handleRequestList({...newParams}, true);
   };
 
   handleSetParams = (queryParams) => {
+    console.log('queryParams === ', queryParams);
     const { params} = this.state;
     let newParams = {...params, ...queryParams};
     this.setState({
       params: newParams,
+      page: 1,
+    }, () => {
+      this.handleRequestList({...newParams}, true)
     });
-    this.handleRequestList({...newParams}, true)
   };
-
 
   // 点击已读和跳转详情页
-  handleReadListItem = (id) => {
-    Taro.navigateTo({
-      url: `/subpackage/pages/monitor/asset-auction/index`,
-    })
-  };
+  // handleReadListItem = (id, index) => {
+  //   const { dispatch } = this.props;
+  //   dispatch({
+  //     type:'monitor/auctionMarkRead',
+  //     payload: {
+  //       idList: [`${id}`],
+  //     }
+  //   }).then(res => {
+  //     if(res.code === 200 && res.data){
+  //       this.handleUpdateList(1, index);
+  //       Taro.navigateTo({
+  //         url: `/subpackage/pages/monitor/asset-auction/index`,
+  //       })
+  //     }
+  //     else {
+  //       Taro.navigateTo({
+  //         url: `/subpackage/pages/monitor/asset-auction/index`,
+  //       })
+  //     }
+  //   })
+  // };
 
   // 可视化滚动的触底函数
   handleScrollToLower = (event) => {
-    const { currentId } = this.state;
-    this.handleRequestList({assetAndRiskType: filterArray(currentId === 1 ? ['zcwjzcpm', 'zcwjdwq'] : ['fxjkqypccz', 'fxjkssjk'], '').join()}, false)
+    const { currentId, hasNext} = this.state;
+    let array = currentId === 1 ? assestRuleArray : riskRuleArray;
+    if(hasNext){
+      this.handleRequestList({assetAndRiskType: filterArray(array.join())}, false)
+    }
   };
 
+
   render () {
-    const { currentId, scrollHeight, listCount, queryAssetsConfig, queryRiskConfig, starId, assetsList, riskList } = this.state;
-    console.log('monitor state === ', this.props, this.state);
-    let list = currentId === 1 ? assetsList : riskList;
+    const { currentId, scrollHeight, listCount, starId, assetsList, riskList, queryAssetsConfig, queryRiskConfig} = this.state;
+    console.log('monitor state === ',JSON.stringify(currentId), JSON.stringify(starId), JSON.stringify(queryAssetsConfig[1].title), JSON.stringify(queryRiskConfig[1].title));
+    let list = currentId === 1 ?  assetsList : riskList;
     return (
       <View className='monitor'>
         <NavigationBar title={'源诚资产监控'} type={'blue'} color='white'/>
@@ -578,12 +542,14 @@ export default class Monitor extends Component <IProps, IState>{
 		          </View>
 	          </View>
             {
-              list.map((item: any) => {
+              list.map((item: any, index: number) => {
                 return (
                   <ListItem
                     {...item}
-                    onClick={() => this.handleReadListItem(item.object.id)}
+                    // onMarkRead={this.handleReadListItem}
+                    // onClick={() => this.handleReadListItem(item.object.id)}
                     type={currentId === 1 ? 'assets' : 'risk'}
+                    index={index}
                   />
                 )
               })

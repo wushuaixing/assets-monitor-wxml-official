@@ -65,7 +65,8 @@ export default class LineChoose extends Component <IProps, IState>{
     this.setState({
       conditions,
       childrenName: conditions.filter(item => item.isSelected)[0].childrenName,
-      leftId: conditions.filter(item => item.isSelected)[0].id
+      leftId: conditions.filter(item => item.isSelected)[0].id,
+      info: conditions.filter(item => item.isSelected)[0].childrenName[0],
     });
   }
 
@@ -86,6 +87,7 @@ export default class LineChoose extends Component <IProps, IState>{
       conditions: [...newConditions],
       childrenName: info.childrenName,
       leftId: info.id,
+      info: info.childrenName[0]
     });
   };
 
@@ -131,7 +133,6 @@ export default class LineChoose extends Component <IProps, IState>{
   // 确认按钮
   onConfirm = () => {
     const { info, conditions } = this.state;
-    // console.log('info === ', info);
     const { onConfirmLineChoose } = this.props;
     onConfirmLineChoose(info, conditions);
   };

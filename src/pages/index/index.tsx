@@ -39,7 +39,6 @@ interface caseItem{
 
 type IProps = {
   count: number,
-  businessCount: number
   dispatch: any
   assetsArray: dataItem[]
   riskArray: dataItem[]
@@ -53,6 +52,7 @@ type IState = {
   type: string
   scrollViewHeight: number
   loading: boolean,
+  businessCount: number
   caseArray: caseItem[]
 };
 
@@ -80,6 +80,7 @@ class Index extends Component <IProps, IState>{
       ],
       scrollViewHeight: 0,
       loading: true,
+      businessCount: 0,
     };
   }
 
@@ -92,7 +93,14 @@ class Index extends Component <IProps, IState>{
     dispatch({
       type: 'home/getCurrentOrganization',
       payload: {}
-    });
+    }).then(res => {
+      if(res.code === 200){
+        this.setState({
+          businessCount: res.data.businessCount,
+        })
+      }
+    }).catch(() => {Taro.hideLoading();});
+
     dispatch({
       type: 'home/getAuthRule',
       payload: {}
@@ -120,9 +128,10 @@ class Index extends Component <IProps, IState>{
   }
 
   shouldComponentUpdate(nextProps: Readonly<IProps>, nextState: Readonly<IState>): boolean {
-    const { businessCount, assetsArray, riskArray} = this.props;
+    // console.log('home nextProps === ', this.props, nextProps);
+    const { assetsArray, riskArray} = this.props;
     const { current } = this.state;
-    return current !== nextState.current || businessCount !== nextProps.businessCount || JSON.stringify(assetsArray) !== JSON.stringify(nextProps.assetsArray) || JSON.stringify(riskArray) !== JSON.stringify(nextProps.riskArray);
+    return current !== nextState.current || JSON.stringify(assetsArray) !== JSON.stringify(nextProps.assetsArray) || JSON.stringify(riskArray) !== JSON.stringify(nextProps.riskArray);
   }
 
   // 点击资产或者风险tab
@@ -224,7 +233,7 @@ class Index extends Component <IProps, IState>{
         }
       }
     });
-    Taro.switchTab({url:'/pages/monitor/index'});
+    Taro.switchTab({ url:'/pages/monitor/index'});
   };
 
   render () {
@@ -232,8 +241,8 @@ class Index extends Component <IProps, IState>{
       { title: '资产', id: 1 },
       { title: '风险', id: 2 },
     ];
-    const { current, caseArray, scrollViewHeight} = this.state;
-    const { assetsArray, riskArray, businessCount, assetsStarLevelCounts,  riskStarLevelCounts} = this.props;
+    const { current, caseArray, businessCount, scrollViewHeight} = this.state;
+    const { assetsArray, riskArray, assetsStarLevelCounts,  riskStarLevelCounts} = this.props;
     // console.log('home === ', this.props, this.state);
     return (
       <View className='home'>

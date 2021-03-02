@@ -1,4 +1,5 @@
-import { assetListApi, assetListCountApi, riskListApi, riskListCountApi} from '../../services/monitor';
+import { assetListApi, assetListCountApi, riskListApi, riskListCountApi, auctionMarkReadApi, subrogationTrialMarkReadApi,
+subrogationCourtMarkReadApi, subrogationJudgmentMarkReadApi, bankruptcyMarkReadApi, lawsuitTrialMarkReadApi, lawsuitCourtMarkReadApi, lawsuitJudgmentMarkReadApi } from '../../services/monitor';
 import { clearEmpty } from '../../utils/tools/common';
 
 export default {
@@ -25,6 +26,46 @@ export default {
       const res = yield call(riskListCountApi, {...clearEmpty(payload)});
       return res;
     },
+
+    *auctionMarkRead({ payload }, {all, call, put }) {
+      const res = yield call(auctionMarkReadApi, {...clearEmpty(payload)});
+      return res;
+    },
+    //
+    // *subrogationTrialMarkRead({ payload }, {all, call, put }) {
+    //   const res = yield call(subrogationTrialMarkReadApi, {...clearEmpty(payload)});
+    //   return res;
+    // },
+    //
+    // *subrogationCourtMarkRead({ payload }, {all, call, put }) {
+    //   const res = yield call(subrogationCourtMarkReadApi, {...clearEmpty(payload)});
+    //   return res;
+    // },
+    //
+    // *subrogationJudgmentMarkRead({ payload }, {all, call, put }) {
+    //   const res = yield call(subrogationJudgmentMarkReadApi, {...clearEmpty(payload)});
+    //   return res;
+    // },
+    //
+    // *bankruptcyMarkRead({ payload }, {all, call, put }) {
+    //   const res = yield call(bankruptcyMarkReadApi, {...clearEmpty(payload)});
+    //   return res;
+    // },
+    //
+    // *lawsuitTrialMarkRead({ payload }, {all, call, put }) {
+    //   const res = yield call(lawsuitTrialMarkReadApi, {...clearEmpty(payload)});
+    //   return res;
+    // },
+    //
+    // *lawsuitCourtMarkRead({ payload }, {all, call, put }) {
+    //   const res = yield call(lawsuitCourtMarkReadApi, {...clearEmpty(payload)});
+    //   return res;
+    // },
+    //
+    // *lawsuitJudgmentMarkReadApi({ payload }, {all, call, put }) {
+    //   const res = yield call(lawsuitJudgmentMarkReadApi, {...clearEmpty(payload)});
+    //   return res;
+    // },
   },
   reducers: {
     updateState(state, { payload }) {
