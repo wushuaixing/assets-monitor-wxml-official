@@ -1,0 +1,77 @@
+.yc-subrogation {
+  background: #F5F5F5;
+  height: 100vh;
+  font-family: PingFangSC-Medium, PingFang SC;
+
+  &-line {
+    height: 24px;
+  }
+
+
+  &-baseInfo {
+    background: #fff;
+    padding-bottom: 24px;
+    &-title {
+      padding:0 24px;
+      height: 89px;
+      font-size: 32px;
+      font-weight: 500;
+      color: #333333;
+      line-height: 89px;
+    }
+
+    &-line {
+      height: 1px;
+      background: #E5E5E5;
+    }
+
+    &-content {
+      //padding-top: 24px;
+      padding:24px 24px 0;
+      &-info {
+        display: flex;
+        font-size: 28px;
+        font-weight: 400;
+        line-height: 28px;
+        &-colon{
+          color: #999999;
+          word-break: keep-all;
+        }
+        &-justifylabel{
+          height: 28px;
+          color: #999999;
+          word-break: keep-all;
+          max-width: 110px;
+          width: 110px;
+          text-align-last: justify;
+          text-align: justify;
+          text-justify: distribute-all-lines;
+        }
+        &-copyIcon{
+          font-size:24px;
+          color:#0979E6;
+          margin-left:9px;
+        }
+        &-label {
+          word-break: keep-all;
+          color: #999999;
+        }
+        &-sourceLinkLabel{
+          letter-spacing: 9px;
+        }
+        &-value {
+          color: #666666;
+        }
+
+        &-valueStar {
+          font-weight: 500;
+        }
+      }
+
+      &-line {
+        height: 20px;
+      }
+    }
+  }
+
+}
