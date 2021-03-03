@@ -4,7 +4,6 @@ import { Text, View} from '@tarojs/components';
 import SingelSelected from '../single-selected/index';
 import LineChoose from "../line-choose/index";
 import MultipleForm from '../multiple-form/index';
-import { connect } from 'react-redux';
 import './index.scss';
 
 interface childType{
@@ -36,7 +35,6 @@ type IProps = {
   config: configType[]
   initConfig: configType[]
   onsetParams: (params?: any) => void
-  dispatch: any
   dropParams: {}
 }
 
@@ -49,15 +47,16 @@ type IState = {
   currentTab: configType
   params: {[propName: string] : any}
   conditions: conditionsType[]
+  config: configType[]
 };
 
-@connect(({ queryDrop }) => ({ ...queryDrop }))
 class QueryDrop extends Component<IProps, IState>{
   $instance = getCurrentInstance();
   constructor(props) {
     super(props);
     this.state = {
       animation: '',
+      config: [],
       isMask: false,
       maskHeight: 0,
       currentType: '',
@@ -68,39 +67,44 @@ class QueryDrop extends Component<IProps, IState>{
   }
 
   componentWillMount(): void {
-    const { dispatch, initConfig } = this.props;
-    dispatch({
-      type:'queryDrop/initConfig',
-      payload: initConfig
-    });
     const onReadyEventId = this.$instance.router.onReady;
     eventCenter.once(onReadyEventId, this.onRady);
+    const onShowEventId = this.$instance.router.onShow;
+    eventCenter.on(onShowEventId, this.onShow);
+  }
+
+  componentDidMount(): void {
+    const { initConfig } = this.props;
+    this.setState(() => ({
+      config: initConfig
+    }));
+  }
+
+  componentDidShow(): void {
+    console.log('componentDidShow');
   }
 
   shouldComponentUpdate(nextProps: Readonly<IProps>, nextState: Readonly<IState>): boolean {
-    // console.log('drop should === ',this.props, nextProps);
-    const { isMask } = this.state;
-    const { config, type} = this.props;
-    return JSON.stringify(config) !== JSON.stringify(nextProps.config) || type !== nextProps.type || isMask !== nextState.isMask
+    const { config, isMask } = this.state;
+    const { type, initConfig } = this.props;
+    return JSON.stringify(config) !== JSON.stringify(nextState.config) || type !== nextProps.type || isMask !== nextState.isMask || JSON.stringify(initConfig) !== JSON.stringify(nextProps.initConfig)
   }
 
   componentWillReceiveProps(nextProps: Readonly<IProps> ): void {
-    const { type, dispatch } = this.props;
+    const { type } = this.props;
     if(type !== nextProps.type){
       this.setState({
         isMask: false,
+        config: nextProps.initConfig
       });
-      dispatch({
-        type:'queryDrop/initConfig',
-        payload: nextProps.initConfig
-      })
     }
   }
 
   componentWillUnmount(): void {
     const onReadyEventId = this.$instance.router.onReady;
-    // 卸载
     eventCenter.off(onReadyEventId, this.onRady);
+    // const onShowEventId = this.$instance.router.onShow;
+    // eventCenter.off(onShowEventId, this.onShow);
   }
 
   onRady = () => {
@@ -122,76 +126,93 @@ class QueryDrop extends Component<IProps, IState>{
     });
   };
 
+  onShow = () => {
+    const { initConfig } = this.props;
+    console.log('onShow  props', JSON.stringify(initConfig));
+    this.setState(() => ({
+      config: initConfig
+    }));
+  };
+
   // 点击切换筛选条件Tab
   handleClick = (info) => {
+    const { config } = this.state;
+    let newConfig: configType[] = [];
+     config.forEach(item => {
+      if(item.id === info.id){
+        newConfig.push({...item, isSelected: true })
+      }
+      else {
+        newConfig.push({...item})
+      }
+    });
     this.setState({
       currentTab: info,
       isMask: true,
-    });
-    const { dispatch } = this.props;
-    dispatch({
-      type:'queryDrop/updateShowSelected',
-      payload: info
+      config: newConfig
     });
   };
 
   // 处理单线的参数
   handleDealParams = (info, conditions) => {
-    const { currentTab, params} = this.state;
-    const { dispatch } = this.props;
-    dispatch({
-      type:'queryDrop/updateConfig',
-      payload: {
-        tab: currentTab,
-        conditions,
-        info,
+    const { config, currentTab, params} = this.state;
+    let newConfig: configType[] = [];
+    config.forEach(item => {
+      if(item.id === currentTab.id){
+        newConfig.push({...item, conditions: [...conditions], title: info.name ? info.name : item.title})
+      }
+      else {
+        newConfig.push({...item})
       }
     });
     let newParams = { ...params, [currentTab.field] : info.value };
     this.handleRequestParmas(newParams);
     this.setState({
       params: newParams,
-      isMask: false
+      isMask: false,
+      config: [...newConfig]
     });
   };
 
   // 处理多线性选择的参数
   handleDealLineChoose = (info, conditions) => {
-    // console.log('handleDealLineChoose info ', JSON.stringify(info))
-    const { currentTab, params } = this.state;
-    const { dispatch } = this.props;
-    dispatch({
-      type:'queryDrop/updateLineConfig',
-      payload: {
-        tab: currentTab,
-        conditions,
-        info,
+    const { config, currentTab, params } = this.state;
+    let newConfig: configType[] = [];
+    config.forEach(item => {
+      if(item.id === currentTab.id){
+        newConfig.push({...item, conditions: [...conditions], title: info.name ? info.name : item.title})
+      }
+      else {
+        newConfig.push({...item})
       }
     });
     let newParams = {...params, [currentTab.field] : info.value.join()};
     this.handleRequestParmas(newParams);
     this.setState({
       params: newParams,
-      isMask: false
+      isMask: false,
+      config: [...newConfig]
     });
   };
 
   // 处理多样化表单的参数
   handleSubmitForm = (conditions, formParams) => {
-    const { currentTab, params } = this.state;
-    const { dispatch } = this.props;
-    dispatch({
-      type:'queryDrop/updateFormConfig',
-      payload: {
-        tab: currentTab,
-        conditions,
+    const { config, currentTab, params } = this.state;
+    let newConfig: configType[] = [];
+    config.forEach(item => {
+      if(item.id === currentTab.id){
+        newConfig.push({...item, isSelected: true, conditions: [...conditions],})
+      }
+      else {
+        newConfig.push({...item})
       }
     });
     let newParams = {...params, ...formParams};
     this.handleRequestParmas(newParams);
     this.setState({
       params: newParams,
-      isMask: false
+      isMask: false,
+      config: [...newConfig]
     });
   };
 
@@ -209,8 +230,8 @@ class QueryDrop extends Component<IProps, IState>{
   };
 
   render(){
-    const { currentTab, isMask, maskHeight } = this.state;
-    const { config } = this.props;
+    const { config, currentTab, isMask, maskHeight } = this.state;
+    console.log('drop render === ', JSON.stringify(config));
     return (
       <View className='drop'>
         <View className='drop-box' id='drop-box'>

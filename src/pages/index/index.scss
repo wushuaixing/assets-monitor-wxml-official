@@ -217,6 +217,7 @@
       border-bottom-left-radius: 24px;
       border-bottom-right-radius: 24px;
       &-level{
+        display: flex;
         color: $common-text;
         font-size: 30px;
         line-height: 30px;
@@ -277,6 +278,7 @@
         }
       }
       &-typeTitle{
+        display: flex;
         color: $common-text;
         font-size: 30px;
         margin: 48px 0 0 24px;

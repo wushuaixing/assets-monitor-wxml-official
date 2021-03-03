@@ -64,7 +64,6 @@ class Tab extends Component<IProps, IState>{
     const { selected } = this.state;
     const { config, type } = this.props;
     const typeName = type || 'tab';
-    // console.log('selected state === ', this.state);
     return (
       <View className={`${typeName}`} >
         <View className={`${typeName}-bg-${selected === 1 ? 'leftActive' : 'rightActive'}`}/>

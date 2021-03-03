@@ -35,13 +35,14 @@ interface itemType{
 type IProps = {
   type: string
   dataType: number
+  updateTime: Date
   object: itemType
   onMarkRead: any
   index: number
 }
 
 const ListItem = (props: IProps) => {
-  const { dataType, type, object, index} = props;
+  const { dataType, updateTime, type, object, index} = props;
   const [detail, setDetail] = useState(props.object);
   useEffect(() => {
     setDetail(props.object);
@@ -109,7 +110,7 @@ const ListItem = (props: IProps) => {
         </View>
         <View className='item-header-time'>
           {
-            getTime(dataType, detail)
+            getTime(updateTime)
           }
         </View>
       </View>
@@ -175,7 +176,7 @@ const ListItem = (props: IProps) => {
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>开庭日期</View>
 						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.gmtCreate ? moment(detail.gmtCreate).format('YYYY-MM-DD') : '-'}</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.gmtCreate ? moment(detail.gmtCreate * 1000).format('YYYY-MM-DD') : '-'}</View>
 					</View>
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>案号</View>

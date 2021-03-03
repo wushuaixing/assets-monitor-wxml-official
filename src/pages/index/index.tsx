@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import NavigationBar from '../../components/navigation-bar';
 import Tab from "../../components/tab";
 import { setGlobalData} from "../../utils/const/global";
-import { handleDealAuthRule} from "../../utils/tools/common";
+import {handleDealAuthRule, isRule, getArraySum } from "../../utils/tools/common";
 import addBus from '../../assets/img/page/add-bus.png';
 import portrait from '../../assets/img/page/portrait-search.png';
 import auction from '../../assets/img/page/auction.png';
@@ -28,7 +28,7 @@ interface dataItem{
   icon: string
   num: number
   isRule: boolean
-  value: string[]
+  value: string
 }
 
 interface caseItem{
@@ -40,8 +40,7 @@ interface caseItem{
 type IProps = {
   count: number,
   dispatch: any
-  assetsArray: dataItem[]
-  riskArray: dataItem[]
+
   assetsStarLevelCounts: {starLevel: number, starLevelCount: number}[]
   riskStarLevelCounts: {starLevel: number, starLevelCount: number}[]
 };
@@ -54,6 +53,17 @@ type IState = {
   loading: boolean,
   businessCount: number
   caseArray: caseItem[]
+  assetsArray: dataItem[]
+  riskArray: dataItem[]
+  starLevel: {
+    three: number,
+    two: number,
+    one: number,
+    high: number,
+    warn: number,
+    good: number,
+    tip: number
+  }
 };
 
 @connect(({ home }) => ({ ...home }))
@@ -81,6 +91,17 @@ class Index extends Component <IProps, IState>{
       scrollViewHeight: 0,
       loading: true,
       businessCount: 0,
+      assetsArray: [],
+      riskArray: [],
+      starLevel: {
+        three: 0,
+        two: 0,
+        one: 0,
+        high: 0,
+        tip: 0,
+        warn: 0,
+        good: 0,
+      }
     };
   }
 
@@ -94,11 +115,7 @@ class Index extends Component <IProps, IState>{
   }
 
   componentDidShow () {
-    const { loading } = this.state;
     const { dispatch } = this.props;
-    if(loading){
-      Taro.showLoading();
-    }
     dispatch({
       type: 'home/getCurrentOrganization',
       payload: {}
@@ -108,67 +125,116 @@ class Index extends Component <IProps, IState>{
           businessCount: res.data.businessCount,
         })
       }
-    }).catch(() => {Taro.hideLoading();});
+    }).catch();
     dispatch({
       type: 'home/getAuthRule',
       payload: {}
     }).then(res => {
-      Taro.hideLoading();
-      if(res.code=== 200){
+      if(res.code === 200){
         let ruleArray = handleDealAuthRule(res.data.orgPageGroups);
         setGlobalData('ruleArray', ruleArray);
-        dispatch({
-          type: 'home/getAssets',
-          payload: {}
-        });
+        this.handleClick({id: 1});
       }
-    }).catch(() => {Taro.hideLoading();});
+    }).catch(() => {});
   }
 
   shouldComponentUpdate(nextProps: Readonly<IProps>, nextState: Readonly<IState>): boolean {
-    const { assetsArray, riskArray} = this.props;
-    const { current, businessCount} = this.state;
-    return current !== nextState.current ||  businessCount !== nextState.businessCount || JSON.stringify(assetsArray) !== JSON.stringify(nextProps.assetsArray) || JSON.stringify(riskArray) !== JSON.stringify(nextProps.riskArray);
+    const { current, businessCount, starLevel } = this.state;
+    return current !== nextState.current ||  businessCount !== nextState.businessCount || JSON.stringify(starLevel) !== JSON.stringify(nextState.starLevel);
   }
 
   // 点击资产或者风险tab
   handleClick = (value) => {
     const { dispatch } = this.props;
+    const { loading } = this.state;
+    if(loading){
+      Taro.showLoading();
+    }
     if(value.id === 1){
       dispatch({
-        type: 'home/getAuthRule',
+        type: 'home/getAssets',
         payload: {}
       }).then(res => {
-        if(res.code=== 200){
-          let ruleArray = handleDealAuthRule(res.data.orgPageGroups);
-          setGlobalData('ruleArray', ruleArray);
-          dispatch({
-            type: 'home/getAssets',
-            payload: {}
+        Taro.hideLoading();
+        const { starLevel } = this.state;
+        let newStarLevel = {...starLevel};
+        const { code, data} = res;
+        if( code === 200){
+          Taro.hideLoading();
+          let newAssetsArrary: dataItem[] =  [
+            { id: 1, name: '资产拍卖', num: data.auctionCount || 0, isRule: isRule('zcwjzcpm'), icon: 'icon-auction', value: 'zcwjzcpm'},
+            { id: 2, name: '代位权', num: data.subrogationCount || 0, isRule: isRule('zcwjdwq'), icon: 'icon-subrogation', value: 'zcwjdwq'},
+          ];
+          data.starLevelCounts.forEach(item => {
+            if(item.starLevel === 90){
+              newStarLevel.three = item.starLevelCount;
+            }
+            else if(item.starLevel === 80){
+              newStarLevel.two = item.starLevelCount;
+            }
+            else if(item.starLevel === 60){
+              newStarLevel.one = item.starLevelCount;
+            }
           });
+          this.setState({
+            current: value.id,
+            starLevel: newStarLevel,
+            assetsArray: [...newAssetsArrary]
+          })
         }
-      }).catch();
-
+      }).catch(()=>{
+        this.setState({
+          current: value.id,
+        });
+        Taro.hideLoading();
+      });
     }
     else {
       dispatch({
-        type: 'home/getAuthRule',
+        type: 'home/getRisk',
         payload: {}
       }).then(res => {
-        if(res.code === 200){
-          let ruleArray = handleDealAuthRule(res.data.orgPageGroups);
-          setGlobalData('ruleArray', ruleArray);
-          dispatch({
-            type: 'home/getRisk',
-            payload: {}
+        Taro.hideLoading();
+        const { code, data} = res;
+        const { starLevel } = this.state;
+        let newStarLevel = {...starLevel};
+        if( code === 200){
+          let newRiskArrary = [
+            { id: 21, name: '破产重整', num: data.bankruptcyCount || 0, isRule: isRule('fxjkqypccz'), icon: 'icon-bankruptcy', value: 'fxjkqypccz'},
+            { id: 22, name: '涉诉', num: data.lawsuitCount  || 0, isRule: isRule('fxjkssjk'), icon: 'icon-litigation', value: 'fxjkssjk'},
+          ];
+          data.starLevelCounts.forEach(item => {
+            if(item.starLevel === 90){
+              newStarLevel.high = item.starLevelCount;
+            }
+            else if(item.starLevel === 80){
+              newStarLevel.warn = item.starLevelCount;
+            }
+            else if(item.starLevel === 60){
+              newStarLevel.tip = item.starLevelCount;
+            }
+            else{
+              newStarLevel.good = item.starLevelCount;
+            }
           });
+          this.setState({
+            current: value.id,
+            starLevel: newStarLevel,
+            riskArray: [...newRiskArrary]
+          })
         }
-      }).catch();
-
+      }).catch(() => {
+        Taro.hideLoading();
+        this.setState({
+          current: value.id,
+        });
+      });
     }
-    this.setState({
-      current: value.id
-    })
+  };
+
+  // 跳转添加业务
+  onAddBusClick = (type) =>{
+    Taro.navigateTo({url: `/subpackage/pages/monitorManage/addBusiness/index?type=${type}`});
   };
 
   // 跳转债务人业务详情页
@@ -218,7 +284,7 @@ class Index extends Component <IProps, IState>{
   };
 
   // 跳转到监控页
-  navigateToMonitor = (tabId: number, star: number, value: string[]) => {
+  navigateToMonitor = (tabId: number, star: number, value: string) => {
     const { dispatch  } = this.props;
     dispatch({
       type: 'home/getAuthRule',
@@ -244,18 +310,22 @@ class Index extends Component <IProps, IState>{
       { title: '资产', id: 1 },
       { title: '风险', id: 2 },
     ];
-    const { current, caseArray, businessCount, scrollViewHeight} = this.state;
-    const { assetsArray, riskArray, assetsStarLevelCounts,  riskStarLevelCounts} = this.props;
+    const { current, caseArray, businessCount, assetsArray, riskArray, starLevel, scrollViewHeight} = this.state;
+    console.log('index render === ', riskArray, JSON.stringify(riskArray));
+    const assetsSum = getArraySum(assetsArray, 'num');
+    const riskSum = getArraySum(riskArray, 'num');
+
     return (
       <View className='home'>
         <View className='home-title'>
           <NavigationBar  title='源诚资产监控' type='gradient' color='white'/>
         </View>
         {
-          businessCount > 0 && <ScrollView scrollY style={{ height: scrollViewHeight }}>
+          businessCount > 0 ? <ScrollView scrollY style={{ height: scrollViewHeight }}>
             <View className='home-bg'>
               <View className='home-header'>
-                <View className='home-header-tab'>
+                <View className='home-header-tab' onClick={()=>{this.onAddBusClick('homeAddBus')}}
+                >
                   <View className='home-header-tab-logo'>
                     <Image className='home-header-tab-logo-pic' src={addBus}/>
                   </View>
@@ -277,7 +347,6 @@ class Index extends Component <IProps, IState>{
                 </View>
               </View>
             </View>
-
             <View className='home-middle'>
               <View className='home-middle-tab' onClick={() =>{this.navigateToPage('business')}}>
                 <View className='home-middle-tab-logo'>
@@ -306,41 +375,41 @@ class Index extends Component <IProps, IState>{
             </View>
 
             <View className='home-data'>
-              <Tab type={'homeTab'} config={tabList} onClick={this.handleClick}/>
+              <Tab type={'homeTab'} config={tabList} onClick={this.handleClick} initId={current} />
               {
                 current === 1 && (
-                  assetsArray.length > 0 ? <View className='home-data-box'>
+                  assetsArray.length > 0 ? ( assetsSum > 0 ? <View className='home-data-box'>
                     <View className='home-data-box-level'>
                       <Text>线索等级</Text>
                       <Text className='iconfont icon-question home-data-box-level-icon' onClick={this.navigateToRule}/>
                     </View>
                     <View className='home-data-box-star'>
-                      <View className='home-data-box-star-three' onClick={() => this.navigateToMonitor(1, 2, ['zcwjzcpm', 'zcwjdwq'])}>
+                      <View className='home-data-box-star-three' onClick={() => this.navigateToMonitor(1, 2, '')}>
                         <Image className='home-data-box-star-three-icon' src={star}/>
                         <View className='home-data-box-star-three-text'>
                           <View className='home-data-box-star-three-text-left'>
                             <View className='home-data-box-star-three-text-left-title'>三星</View>
-                            <View className='home-data-box-star-three-text-left-title'>{assetsStarLevelCounts[0].starLevelCount}</View>
+                            <View className='home-data-box-star-three-text-left-title'>{starLevel.three}</View>
                           </View>
                           <Text className='iconfont icon-right-arrow home-data-box-star-three-text-right' />
                         </View>
                       </View>
-                      <View className='home-data-box-star-two' onClick={() => this.navigateToMonitor(1, 3, ['zcwjzcpm', 'zcwjdwq'])}>
+                      <View className='home-data-box-star-two' onClick={() => this.navigateToMonitor(1, 3, '')}>
                         <Image className='home-data-box-star-two-icon' src={star}/>
                         <View className='home-data-box-star-two-text'>
                           <View className='home-data-box-star-two-text-left'>
                             <View className='home-data-box-star-two-text-left-title'>二星</View>
-                            <View className='home-data-box-star-two-text-left-title'>{assetsStarLevelCounts[1].starLevelCount}</View>
+                            <View className='home-data-box-star-two-text-left-title'>{starLevel.two}</View>
                           </View>
                           <Text className='iconfont icon-right-arrow home-data-box-star-three-text-right' />
                         </View>
                       </View>
-                      <View className='home-data-box-star-one' onClick={() => this.navigateToMonitor(1, 4, ['zcwjzcpm', 'zcwjdwq'])}>
+                      <View className='home-data-box-star-one' onClick={() => this.navigateToMonitor(1, 4, '')}>
                         <Image className='home-data-box-star-one-icon' src={star}/>
                         <View className='home-data-box-star-one-text'>
                           <View className='home-data-box-star-one-text-left'>
                             <View className='home-data-box-star-one-text-left-title'>一星</View>
-                            <View className='home-data-box-star-one-text-left-title'>{assetsStarLevelCounts[2].starLevelCount}</View>
+                            <View className='home-data-box-star-one-text-left-title'>{starLevel.one}</View>
                           </View>
                           <Text className='iconfont icon-right-arrow home-data-box-star-three-text-right' />
                         </View>
@@ -381,52 +450,53 @@ class Index extends Component <IProps, IState>{
                     <View className='home-data-noData-tips'>暂未发现债务人相关的资产线索</View>
                     <View className='home-data-noData-advice'>建议添加监控业务</View>
                   </View>
+                  ) : null
                 )
               }
               {
                 current === 2 && (
-                  riskArray.length > 0 ? <View className='home-data-box'>
+                  riskArray.length > 0 ? (riskSum > 0 ? <View className='home-data-box'>
                     <View className='home-data-box-level'>
                       <Text>风险等级</Text>
                       <Text className='iconfont icon-question home-data-box-level-icon' onClick={this.navigateToRule} />
                     </View>
                     <View className='home-data-box-star'>
-                      <View className='home-data-box-star-high' onClick={() => this.navigateToMonitor(2, 2, ['fxjkqypccz', 'fxjkssjk'])}>
+                      <View className='home-data-box-star-high' onClick={() => this.navigateToMonitor(2, 2, '')}>
                         <Image className='home-data-box-star-high-icon' src={high}/>
                         <View className='home-data-box-star-high-text'>
                           <View className='home-data-box-star-high-text-left'>
                             <View className='home-data-box-star-high-text-left-title'>高风险</View>
-                            <View className='home-data-box-star-high-text-left-title'>{riskStarLevelCounts[0].starLevelCount}</View>
+                            <View className='home-data-box-star-high-text-left-title'>{starLevel.high}</View>
                           </View>
                           <Text className='iconfont icon-right-arrow home-data-box-star-three-text-right' />
                         </View>
                       </View>
-                      <View className='home-data-box-star-warn' onClick={() => this.navigateToMonitor(2, 3, ['fxjkqypccz', 'fxjkssjk'])}>
+                      <View className='home-data-box-star-warn' onClick={() => this.navigateToMonitor(2, 3, '')}>
                         <Image className='home-data-box-star-warn-icon' src={warn}/>
                         <View className='home-data-box-star-warn-text'>
                           <View className='home-data-box-star-warn-text-left'>
                             <View className='home-data-box-star-warn-text-left-title'>警示</View>
-                            <View className='home-data-box-star-warn-text-left-title'>{riskStarLevelCounts[1].starLevelCount}</View>
+                            <View className='home-data-box-star-warn-text-left-title'>{starLevel.warn}</View>
                           </View>
                           <Text className='iconfont icon-right-arrow home-data-box-star-three-text-right' />
                         </View>
                       </View>
-                      <View className='home-data-box-star-tip' onClick={() => this.navigateToMonitor(2, 4, ['fxjkqypccz', 'fxjkssjk'])}>
+                      <View className='home-data-box-star-tip' onClick={() => this.navigateToMonitor(2, 4, '')}>
                         <Image className='home-data-box-star-tip-icon' src={tip}/>
                         <View className='home-data-box-star-tip-text'>
                           <View className='home-data-box-star-tip-text-left'>
                             <View className='home-data-box-star-tip-text-left-title'>提示</View>
-                            <View className='home-data-box-star-tip-text-left-title'>{riskStarLevelCounts[2].starLevelCount}</View>
+                            <View className='home-data-box-star-tip-text-left-title'>{starLevel.tip}</View>
                           </View>
                           <Text className='iconfont icon-right-arrow home-data-box-star-three-text-right' />
                         </View>
                       </View>
-                      <View className='home-data-box-star-good' onClick={() => this.navigateToMonitor(2, 5, ['fxjkqypccz', 'fxjkssjk'])}>
+                      <View className='home-data-box-star-good' onClick={() => this.navigateToMonitor(2, 5, '')}>
                         <Image className='home-data-box-star-good-icon' src={good}/>
                         <View className='home-data-box-star-good-text'>
                           <View className='home-data-box-star-good-text-left'>
                             <View className='home-data-box-star-good-text-left-title'>利好</View>
-                            <View className='home-data-box-star-good-text-left-title'>{riskStarLevelCounts[3].starLevelCount}</View>
+                            <View className='home-data-box-star-good-text-left-title'>{starLevel.good}</View>
                           </View>
                           <Text className='iconfont icon-right-arrow home-data-box-star-three-text-right' />
                         </View>
@@ -442,7 +512,7 @@ class Index extends Component <IProps, IState>{
                               className={`home-data-box-type-logo${riskArray.length === 1 ? '-noBottom' : ''}`}
                               onClick={() => this.navigateToMonitor(2, 1, item.value)}
                             >
-                            <View className='home-data-box-type-logo-left'>
+                              <View className='home-data-box-type-logo-left'>
                                 <Text className={`iconfont ${item.icon} home-data-box-type-logo-left-icon`}/>
                               </View>
                               <View className='home-data-box-type-logo-right'>
@@ -466,7 +536,7 @@ class Index extends Component <IProps, IState>{
                     </View>
                     <View className='home-data-noData-tips'>暂未发现债务人相关的风险线索</View>
                     <View className='home-data-noData-advice'>建议添加监控业务</View>
-                  </View>
+                  </View>) : null
                 )
               }
             </View>
@@ -502,19 +572,15 @@ class Index extends Component <IProps, IState>{
 								<View className='home-bottom-right'/>
 							</View>
             }
-
+          </ScrollView> : <ScrollView style={{ height: scrollViewHeight }} className='home-noBusiness'>
+            <View className='home-noBusiness-box'>
+              <Image className='home-noBusiness-box-pic' src={noData} />
+            </View>
+            <View className='home-noBusiness-prompt'>您还未添加监控的业务</View>
+            <View className='home-noBusiness-btn' onClick={()=>{this.onAddBusClick('homeEmptyBus')}}>
+              <View className='home-noBusiness-btn-text'>添加业务</View>
+            </View>
           </ScrollView>
-        }
-        {
-          businessCount <= 0 && <ScrollView style={{ height: scrollViewHeight }} className='home-noBusiness'>
-						<View className='home-noBusiness-box'>
-							<Image className='home-noBusiness-box-pic' src={noData} />
-						</View>
-						<View className='home-noBusiness-prompt'>您还未添加监控的业务</View>
-						<View className='home-noBusiness-btn'>
-							<View className='home-noBusiness-btn-text'>添加业务</View>
-						</View>
-					</ScrollView>
         }
       </View>
     )
