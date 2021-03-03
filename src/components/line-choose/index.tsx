@@ -8,6 +8,7 @@ interface childType{
   isSelected: boolean
   name: string
   value: any
+  isRule: boolean
 }
 
 export interface conditionsType{
@@ -159,16 +160,16 @@ export default class LineChoose extends Component <IProps, IState>{
           <View className='conditions-line-choose-right'>
             {
               childrenName.length > 0 && childrenName.map((item) => {
-                const { isSelected } = item;
+                const { isSelected, isRule } = item;
                 return (
-                  <View
+                  isRule ? <View
                     className={`conditions-line-choose-right-${isSelected ? `active` : `normal`}`}
                     onClick={() => this.chooseRight(item)}>
                     {item.name}
                     {
                       isSelected && <Text className='iconfont icon-selected conditions-line-choose-right-icon' />
                     }
-                  </View>
+                  </View> : null
                 )
               })
             }

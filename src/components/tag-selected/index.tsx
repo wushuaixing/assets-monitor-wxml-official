@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { View} from '@tarojs/components';
-import { eventCenter, getCurrentInstance }from '@tarojs/taro';
+import { getCurrentInstance }from '@tarojs/taro';
 import './index.scss';
 
 interface configType{
@@ -54,14 +54,11 @@ class TagSelected extends Component<IProps, IState>{
   }
 
   componentWillReceiveProps(nextProps: Readonly<IProps>): void {
-    // console.log('componentWillReceiveProps === ', JSON.stringify(this.props), JSON.stringify(nextProps));
-    const { initId } = nextProps;
     const { type } = this.props;
-    const { selected } = this.state;
     if(type !== nextProps.type){
       this.setState({
-        config: type === 'assets' ? assetsConfig : riskConfig,
-        selected: initId > 0 ? initId : selected,
+        config: nextProps.type === 'assets' ? assetsConfig : riskConfig,
+        selected: 1,
       })
     }
   }

@@ -1,5 +1,7 @@
 import assetsAuction from '../../assets/img/components/assets-auction.png'
 import subrogation from '../../assets/img/components/subrogation.png'
+import litigation from '../../assets/img/components/litigation.png';
+import bankruptcy from '../../assets/img/components/bankruptcy.png';
 import {
   auctionMarkReadApi,
   subrogationTrialMarkReadApi,
@@ -17,10 +19,10 @@ const getPlot = (type: number) => {
     case 2: return subrogation;
     case 3: return subrogation;
     case 4: return subrogation;
-    case 5: return subrogation;
-    case 6: return subrogation;
-    case 7: return subrogation;
-    case 8: return subrogation;
+    case 5: return bankruptcy;
+    case 6: return litigation;
+    case 7: return litigation;
+    case 8: return litigation;
     default: return assetsAuction;
   }
 };
