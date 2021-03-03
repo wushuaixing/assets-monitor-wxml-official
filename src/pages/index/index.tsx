@@ -221,6 +221,10 @@ class Index extends Component <IProps, IState>{
   navigateToMonitor = (tabId: number, star: number, value: string[]) => {
     const { dispatch  } = this.props;
     dispatch({
+      type: 'home/getAuthRule',
+      payload: {}
+    });
+    dispatch({
       type: 'home/updateMonitorParams',
       payload: {
         params: {

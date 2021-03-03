@@ -1,6 +1,7 @@
 import { currentOrganizationApi, assetApi, riskApi } from '../../services/home';
-import { isRule, filterArray } from '../../utils/tools/common';
+import { isRule, filterArray, handleDealAuthRule } from '../../utils/tools/common';
 import { getAuthRuleUrl } from "../../services/login";
+import { setGlobalData } from "../../utils/const/global";
 
 // 资产/风险类型 1：资产拍卖 2：代位权-立案 3：代位权-开庭 4：代位权-裁判文书 5：破产重组 6：涉诉-立案 7：涉诉-开庭 8：涉诉-裁判文书
 export default {
@@ -26,13 +27,13 @@ export default {
     *getCurrentOrganization({ payload }, { call, put }) {
       const res = yield call(currentOrganizationApi, payload);
       return res;
-      // if(res.code === 200){
-      //   yield put({ type: 'updateState', payload: {businessCount: res.data.businessCount} });
-      // }
     },
 
     *getAuthRule({}, {call}) {
       const res = yield call(getAuthRuleUrl);
+      if(res.code === 200 ){
+        setGlobalData('ruleArray', handleDealAuthRule(res.data.orgPageGroups));
+      }
       return res;
     },
 

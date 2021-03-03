@@ -77,7 +77,6 @@ class QueryDrop extends Component<IProps, IState>{
     eventCenter.once(onReadyEventId, this.onRady);
   }
 
-
   shouldComponentUpdate(nextProps: Readonly<IProps>, nextState: Readonly<IState>): boolean {
     // console.log('drop should === ',this.props, nextProps);
     const { isMask } = this.state;
@@ -88,6 +87,9 @@ class QueryDrop extends Component<IProps, IState>{
   componentWillReceiveProps(nextProps: Readonly<IProps> ): void {
     const { type, dispatch } = this.props;
     if(type !== nextProps.type){
+      this.setState({
+        isMask: false,
+      });
       dispatch({
         type:'queryDrop/initConfig',
         payload: nextProps.initConfig
@@ -209,7 +211,6 @@ class QueryDrop extends Component<IProps, IState>{
   render(){
     const { currentTab, isMask, maskHeight } = this.state;
     const { config } = this.props;
-    // console.log('drop-box config 222=== ', JSON.stringify(config[1]));
     return (
       <View className='drop'>
         <View className='drop-box' id='drop-box'>
