@@ -70,5 +70,5 @@ export default {
     backgroundColor: "#FFFFFF",
   },
   "usingComponents": {},
-  entryPagePath:'pages/index/index', // 指定小程序的默认启动路径
+  entryPagePath:'pages/default-page/index', // 指定小程序的默认启动路径
 }
