@@ -129,23 +129,11 @@ const getObligorName = (type: number, detail) => {
 };
 
 
-const getTime = (type: number, detail) => {
-  let date = new Date();
-  let currentTime = moment(date.valueOf());
-  let time = moment(detail.gmtCreate);
-  let long = currentTime.diff(time, 'days');
-  let showTime = moment(detail.gmtCreate).format('YYYY-MM-DD');
-  switch (type) {
-    case 1: showTime = long > 1 ?  moment(detail.gmtCreate).format('YYYY-MM-DD') : moment(detail.gmtCreate).startOf('hour').fromNow(); break;
-    case 2: showTime = long > 1 ?  moment(detail.gmtCreate).format('YYYY-MM-DD') : moment(detail.gmtCreate).startOf('hour').fromNow(); break;
-    case 3: showTime = long > 1 ?  moment(detail.gmtCreate).format('YYYY-MM-DD') : moment(detail.gmtCreate).startOf('hour').fromNow(); break;
-    case 4: showTime = long > 1 ?  moment(detail.gmtCreate).format('YYYY-MM-DD') : moment(detail.gmtCreate).startOf('hour').fromNow(); break;
-    case 5: showTime = long > 1 ?  moment(detail.gmtCreate).format('YYYY-MM-DD') : moment(detail.gmtCreate).startOf('hour').fromNow(); break;
-    case 6: showTime = long > 1 ?  moment(detail.gmtCreate).format('YYYY-MM-DD') : moment(detail.gmtCreate).startOf('hour').fromNow(); break;
-    case 7: showTime = long > 1 ?  moment(detail.gmtCreate).format('YYYY-MM-DD') : moment(detail.gmtCreate).startOf('hour').fromNow(); break;
-    case 8: showTime = long > 1 ?  moment(detail.gmtCreate).format('YYYY-MM-DD') : moment(detail.gmtCreate).startOf('hour').fromNow(); break;
-  }
-  return showTime
+const getTime = ( updateTime ) => {
+  let currentTime = moment();
+  let time = moment(updateTime * 1000);
+  let long = currentTime.diff(time, 'h');
+  return long < 24 ? moment(updateTime * 1000).startOf('hour').fromNow() : moment(updateTime * 1000).format('YYYY-MM-DD');
 };
 
 const getJumpType = (type) => {

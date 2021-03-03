@@ -71,8 +71,10 @@ export const isRule = (rule) => {
         ispermission = ruleArray.includes(item) ? ispermission + 1 : ispermission
       });
       return ispermission > 0
-    } else {
+    } else if (typeof rule === 'string') {
       return ruleArray.includes(rule)
+    } else {
+      return rule
     }
   } else {
     return false
@@ -187,3 +189,18 @@ export const dateToFormat = (date, format = 'YYYY-MM-DD') => {
   }
   return '-';
 }
+/**
+ * 数组根据某个对象的值去重
+ * @param arr
+ * @param val
+ */
+export const getArraySum = (arr, field) => {
+  let sum = 0;
+  if (Array.isArray(arr) && arr.length > 0) {
+    arr.forEach(item => {
+      sum += item[field];
+    })
+  }
+  return sum;
+};
+
