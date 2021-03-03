@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { View} from '@tarojs/components';
-import { getCurrentInstance }from '@tarojs/taro';
+import { eventCenter, getCurrentInstance }from '@tarojs/taro';
 import './index.scss';
 
 interface configType{
@@ -44,13 +44,14 @@ class TagSelected extends Component<IProps, IState>{
     };
   }
 
-  componentDidMount(): void {
-    const { initId } = this.props;
-    if(initId > 0){
-      this.setState({
-        selected: initId,
-      })
-    }
+  componentWillMount () {
+    const onShowEventId = this.$instance.router.onShow;
+    eventCenter.on(onShowEventId, this.onShow)
+  }
+
+  componentWillUnmount () {
+    const onShowEventId = this.$instance.router.onShow;
+    eventCenter.off(onShowEventId, this.onShow)
   }
 
   componentWillReceiveProps(nextProps: Readonly<IProps>): void {
@@ -63,6 +64,15 @@ class TagSelected extends Component<IProps, IState>{
     }
   }
 
+  onShow = () => {
+    const { initId } = this.props;
+    if(initId > 0){
+      this.setState({
+        selected: initId,
+      })
+    }
+  };
+
   onClickTag = (item) => {
     const { onClick } = this.props;
     this.setState({
@@ -74,6 +84,7 @@ class TagSelected extends Component<IProps, IState>{
 
   render(){
     const { selected, config } = this.state;
+    console.log('selected === ', selected);
     return (
       <View className='tag'>
         {

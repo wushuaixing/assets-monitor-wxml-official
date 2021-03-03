@@ -3,13 +3,15 @@ import Taro, { eventCenter, getCurrentInstance } from '@tarojs/taro'
 // import VirtualList from '@tarojs/components/virtual-list'
 import {View, Text, Image, ScrollView} from '@tarojs/components'
 import { connect } from 'react-redux';
+import { isRule } from '../../utils/tools/common';
 import NavigationBar from '../../components/navigation-bar';
 import TagSelected from '../../components/tag-selected';
 import QueryDrop from '../../components/query-drop';
 import Tab from '../../components/tab';
 import ListItem from '../../components/list-item/index';
 import blankNodata from '../../assets/img/page/blank_nodate.png';
-import {getGlobalData, setGlobalData} from "../../utils/const/global";
+import {getGlobalData} from "../../utils/const/global";
+import backTop from '../../assets/img/components/back-top.png'
 import './index.scss'
 
 interface dataItem{
@@ -79,28 +81,6 @@ function getRuleName(rule) {
     case 'fxjkssjk': title = '涉诉监控'; break;
   }
   return title;
-}
-
-function isRule(rule) {
-  let ispermission: number = 0;
-  let ruleArray: string[] = getGlobalData('ruleArray');
-  if(ruleArray && ruleArray.length > 0 ){
-    if(Array.isArray(rule) && rule.length > 0){
-      rule.forEach(item => {
-        ispermission = ruleArray.includes(item) ? ispermission + 1 : ispermission
-      });
-      return ispermission > 0
-    }
-    else if(typeof rule === 'string'){
-      return ruleArray.includes(rule)
-    }
-    else {
-      return rule
-    }
-  }
-  else {
-    return false
-  }
 }
 
 function filterArray(rule) {
@@ -316,8 +296,7 @@ export default class Monitor extends Component <IProps, IState>{
     if(Object.keys(monitorParams).length !== 0){
       let tabId = monitorParams.tabId > 0 ? monitorParams.tabId : currentId;
       let newStarId = monitorParams.starId > 0 ? monitorParams.starId : starId;
-      let dataArray = Array.isArray(monitorParams.value) && monitorParams.value.length > 0 ? monitorParams.value : (tabId === 1 ?  assestRuleArray : riskRuleArray );
-      let assetAndRiskTypeValue = filterArray(dataArray).join();
+      let assetAndRiskTypeValue = filterArray([monitorParams.value]).join();
       let newParams = {
         ...params,
         assetAndRiskType: assetAndRiskTypeValue,
@@ -342,8 +321,8 @@ export default class Monitor extends Component <IProps, IState>{
   }
 
   shouldComponentUpdate(nextProps: Readonly<IProps>, nextState: Readonly<IState>): boolean {
-    const { listCount, currentId, page, queryAssetsConfig} = this.state;
-    return listCount !== nextState.listCount || currentId !== nextState.currentId || page !== nextState.page || JSON.stringify(queryAssetsConfig[1]) !== JSON.stringify(nextState.queryAssetsConfig[1]);
+    const { listCount, currentId, page } = this.state;
+    return listCount !== nextState.listCount || currentId !== nextState.currentId || page !== nextState.page;
   }
 
   componentWillReceiveProps(nextProps: Readonly<IProps>, nextContext: any): void {
@@ -352,7 +331,9 @@ export default class Monitor extends Component <IProps, IState>{
     if(JSON.stringify(monitorParams) !== JSON.stringify(nextProps.monitorParams)){
       this.setState({
         starId: monitorParams.starId > 0 ? monitorParams.starId : starId,
-        currentId: monitorParams.tabId > 0 ? monitorParams.tabId : currentId
+        currentId: monitorParams.tabId > 0 ? monitorParams.tabId : currentId,
+        queryAssetsConfig: this.handleUpdataConfig(nextProps.monitorParams),
+        queryRiskConfig: this.handleUpdataConfig(nextProps.monitorParams),
       })
     }
   }
@@ -507,10 +488,27 @@ export default class Monitor extends Component <IProps, IState>{
     }
   };
 
+  handleScroll = (event) => {
+    const { detail } = event;
+    if(detail.scrollHeight > 0){
+      this.setState({
+        isScroll: true
+      })
+    }
+  }
+
+  backToTop = () => {
+    Taro.pageScrollTo({
+      scrollTop: 0,
+      duration: 300
+    })
+  };
 
   render () {
-    const { currentId, scrollHeight, listCount, starId, assetsList, riskList, queryAssetsConfig, queryRiskConfig} = this.state;
+    const { isScroll, currentId, scrollHeight, listCount, starId, assetsList, riskList, queryAssetsConfig, queryRiskConfig} = this.state;
     let list = currentId === 1 ?  assetsList : riskList;
+    // console.log('assts === ', JSON.stringify(queryAssetsConfig));
+    // console.log('risk === ', JSON.stringify(queryRiskConfig));
     return (
       <View className='monitor'>
         <NavigationBar title={'源诚资产监控'} type={'blue'} color='white'/>
@@ -536,10 +534,12 @@ export default class Monitor extends Component <IProps, IState>{
         }
         {
           listCount > 0 && <ScrollView
-	          className='monitor-scroll'
             scrollY
+            className='monitor-scroll'
+            enableBackToTop
             style={{height: scrollHeight}}
             onScrollToLower={this.handleScrollToLower}
+            onScroll={this.handleScroll}
           >
 	          <View className='monitor-tips'>
 		          <View className='monitor-tips-notice'>
@@ -563,6 +563,11 @@ export default class Monitor extends Component <IProps, IState>{
               })
             }
 		      </ScrollView>
+        }
+        {
+          isScroll && <View className='monitor-back' onClick={this.backToTop}>
+	          <Image src={backTop} className='monitor-back-pic' />
+          </View>
         }
       </View>
     )

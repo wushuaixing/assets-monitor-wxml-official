@@ -70,8 +70,11 @@ export const isRule = (rule) =>  {
       });
       return ispermission > 0
     }
-    else {
+    else if(typeof rule === 'string'){
       return ruleArray.includes(rule)
+    }
+    else {
+      return rule
     }
   }
   else {
@@ -175,3 +178,20 @@ export const floatFormat = (item) => {
   result = arr1.join('');
   return result;
 };
+
+/**
+ * 数组根据某个对象的值去重
+ * @param arr
+ * @param val
+ */
+export const getArraySum = (arr, field) => {
+  let sum = 0;
+  if(Array.isArray(arr) && arr.length > 0){
+    arr.forEach(item => {
+      sum += item[field];
+    })
+  }
+  return sum;
+};
+
+

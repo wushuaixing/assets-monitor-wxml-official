@@ -51,4 +51,15 @@
   &-scroll{
     background-color: $page-bg-color;
   }
+
+  &-back{
+    position: absolute;
+    right: 32px;
+    bottom: 185px;
+    z-index: 4;
+    &-pic{
+      width: 76px;
+      height: 76px;
+    }
+  }
 }
