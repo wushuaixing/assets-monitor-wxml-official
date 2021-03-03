@@ -3,6 +3,45 @@
   height: 100vh;
   font-family: PingFangSC-Regular, PingFang SC;
 
+  &-deleteModal {
+    font-family: PingFangSC-Regular, PingFang SC;
+
+    .at-modal__container {
+      width: 606px;
+      text-align: center;
+    }
+
+    .at-modal__content {
+      min-height: 0;
+      height: 167px;
+      line-height: 167px;
+      padding: 0;
+    }
+
+    .at-modal__content view {
+      font-size: 32px;
+      font-weight: 400;
+      color: #333333;
+    }
+
+    .at-modal__footer {
+      height: 97px;
+    }
+  }
+
+  &-relationTextContent{
+    height:106px;
+    background: #F5F5F5;
+    line-height: 106px;
+  }
+
+  &-addBtn {
+    position: fixed;
+    bottom: 84px;
+    padding: 0 24px;
+    width: calc(100% - 48px);
+  }
+
   &-baseInfoText {
     height: 77px;
     font-size: 30px;
@@ -12,28 +51,40 @@
     padding-left: 24px;
     display: inline-block;
   }
+  &-relationBaseInfoText{
+    line-height: 106px;
+  }
 
-  &-deleteText{
+  &-deleteText {
     display: inline-block;
     float: right;
     font-size: 34px;
     font-weight: 400;
     color: #0979E6;
-    line-height: 77px;
-    margin-right:24px;
+    line-height: 106px;
+    margin-right: 24px;
   }
 
-  &-relationText{
-    margin:24px 0 0 24px;
+  &-relationText {
+    padding: 24px;
     font-size: 34px;
     font-weight: 400;
     color: #0979E6;
     line-height: 34px;
+    background: #F5F5F5;
+  }
 
+  &-empty {
+    height: 200px;
+    background: #F5F5F5;
   }
 
   &-baseInfo {
     background: #fff;
+    &-topLine{
+      height:1px;
+      background: #E5E5E5;
+    }
 
     &-input {
       &-content {
@@ -47,7 +98,7 @@
         }
 
         &-inputText {
-          margin-left:24px;
+          margin-left: 24px;
           display: inline-block;
           min-width: 182px;
           font-size: 34px;
@@ -58,6 +109,7 @@
 
         &-selectTemp {
           display: inline-block;
+
           &-selectText {
             width: 493px;
             display: inline-block;
@@ -72,9 +124,10 @@
             float: right;
             margin-right: 28px;
             line-height: 96px;
-            &-text{
-              font-size:23px;
-              color:#CCCCCC;
+
+            &-text {
+              font-size: 23px;
+              color: #CCCCCC;
             }
           }
         }

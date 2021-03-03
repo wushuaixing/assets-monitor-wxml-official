@@ -27,3 +27,7 @@ export async function getBusinessDeleteUrl(params) {
 export async function getBusinessSaveUrl(params) {
   return request.post('/yc/wechat/business/save',  params);
 }
+
+export async function getBusinessEditUrl(params) {
+  return request.post(`/yc/wechat/business/edit/${params.id}`,  params);
+}

@@ -1,11 +1,11 @@
 import React, {Component} from 'react'
 import Taro, {getCurrentInstance} from '@tarojs/taro';
 import {connect} from 'react-redux';
-import moment from 'moment';
 import {Text, View, Image} from '@tarojs/components'
 import ObligorListItem from "../obligorListItem";
 import DeleteModal from "../deleteModal";
 import './index.scss'
+import {dateToFormat} from '../../../../utils/tools/common';
 
 type isState = {
   busBaseInfo: object,
@@ -87,7 +87,6 @@ export default class BusinessDetail extends Component<IProps, isState> {
 
   render() {
     const {busBaseInfo, relationObligorList,saveSearchValue} = this.state;
-    console.log("busBaseInfo===", busBaseInfo,this.isEmpty(busBaseInfo),busBaseInfo.caseNumber,moment(busBaseInfo.uploadTime).format( 'YYYY-MM-DD'))
     return (
       <View className='yc-businessDetail'>
         <View className='yc-businessDetail-line'/>
@@ -105,7 +104,7 @@ export default class BusinessDetail extends Component<IProps, isState> {
             <View style={{marginTop: '20rpx'}}>
               <Text className='yc-businessDetail-top-topContent-text'>添加日期：</Text>
               <Text
-                className='yc-businessDetail-top-topContent-number'>{!this.isEmpty(busBaseInfo) && busBaseInfo.uploadTime ? moment(busBaseInfo.uploadTime).format( 'YYYY-MM-DD') :'-'}</Text>
+                className='yc-businessDetail-top-topContent-number'>{!this.isEmpty(busBaseInfo) && busBaseInfo.uploadTime ? dateToFormat(busBaseInfo.uploadTime,'YYYY-MM-DD') :'-'}</Text>
             </View>
           </View>
         </View>

@@ -1,8 +1,9 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux';
 import {Button, View, Input, Form, Text} from '@tarojs/components';
-import {AtActionSheet, AtActionSheetItem} from 'taro-ui';
+import {AtActionSheet, AtActionSheetItem, AtModal, AtModalContent, AtModalAction} from 'taro-ui';
 import './index.scss'
+import {getCurrentInstance} from "@tarojs/taro";
 
 type isState = {
   isOpened: boolean,
@@ -10,6 +11,9 @@ type isState = {
   dataSource: any,
   curItem: number,
   curActionSheetType: number,
+  isDeleteOpendModal: boolean,
+  deleteIndex: number,
+  saveClickRole:any,
 }
 
 type IProps = {
@@ -29,16 +33,22 @@ export default class RelationBusiness extends Component<IProps, isState> {
 
   constructor(props) {
     super(props);
+    console.log('props', props)
     this.state = {
       isOpened: false,
       isRoleOpened: false,
       dataSource: props.data || [],
       curItem: 0,
-      curActionSheetType: 0
+      curActionSheetType: 0,
+      isDeleteOpendModal: false,
+      deleteIndex: 0,
+      saveClickRole:[]
     };
   }
 
   componentWillMount() {
+    const {router: {params: {id}}} = getCurrentInstance();
+    console.log('111111111111111111111', id)
   }
 
   componentDidMount() {
@@ -60,10 +70,10 @@ export default class RelationBusiness extends Component<IProps, isState> {
   onOpenActionSheetClick = (e, index) => {
     console.log('eeeee', e)
     this.setState({
-      isOpened: !e,
-      isRoleOpened: e === 3,
+      isOpened: e === 3,
+      isRoleOpened: !e,
       curItem: index,
-      curActionSheetType: e
+      curActionSheetType: e,
     })
   }
 
@@ -74,15 +84,23 @@ export default class RelationBusiness extends Component<IProps, isState> {
   }
 
   onSheetItemClick = (type, value) => {
-    const {curItem, dataSource, curActionSheetType} = this.state;
+    const {curItem, dataSource, curActionSheetType,saveClickRole} = this.state;
+    console.log('curItem',curItem)
+    this.setState({
+      saveClickRole:[]
+    })
     dataSource[curItem][type] = value;
-    if(type === 'role'){
+    if (type === 'role') {
       dataSource[curItem].roleText = handleRole[value];
     }
+    if(type === 'borrowType'){
+      saveClickRole.push({key:curItem,value:true});
+    }
     this.setState({
-      dataSource
+      dataSource,
+      saveClickRole
     })
-    this.onCancel(curActionSheetType ? 'isRoleOpened' : 'isOpened')
+    this.onCancel(curActionSheetType ? 'isOpened' : 'isRoleOpened')
   }
 
   onInput = (e, type, index) => {
@@ -93,36 +111,70 @@ export default class RelationBusiness extends Component<IProps, isState> {
     })
   }
 
+  onBlur = (e,type,index)=>{
+    if(type === 'obligorName'){
+      const {dataSource,saveClickRole} = this.state;
+      console.log('saveClickRole===',saveClickRole,index)
+      const curValue = e.detail.value;
+      const isClick = saveClickRole.filter(i=>i.key === index && i.value === true);
+      console.log('isClick===',isClick)
+      if(curValue.length > 4 && isClick.length === 0){
+        dataSource[index]['borrowType'] = 1
+      }
+      if(curValue.length <= 4 && isClick.length === 0){
+        dataSource[index]['borrowType'] = 0
+      }
+      this.setState({
+        dataSource
+      })
+    }
+  }
+
   delete = (index) => {
-    let {dataSource} = this.state;
-    dataSource = dataSource.filter((_, i) => i !== index);
     this.setState({
-      dataSource
+      deleteIndex: index,
+      isDeleteOpendModal: true
     })
-    console.log(82, index, this.state, dataSource)
+  }
+
+  onDeleteCancel = () => {
+    this.setState({
+      isDeleteOpendModal: false
+    })
+  }
+
+  onDeleteConform = () => {
+    const {deleteIndex} = this.state;
+    let {dataSource} = this.state;
+    dataSource = dataSource.filter((_, i) => i !== deleteIndex);
+    this.setState({
+      dataSource,
+      isDeleteOpendModal: false
+    })
+    console.log(82, deleteIndex, this.state, dataSource)
   }
 
   addClick = () => {
     const {dataSource} = this.state;
     const obj = {
-      "assetTotal": 0,
-      "bankruptcy": true,
-      "borrowType": "",
-      "dishonestStatus": 1,
-      "id": 1,
-      "isBorrower": true,
-      "isTable": 0,
-      "limitConsumption": 0,
-      "limitHeightStatus": 1,
-      "obligorId": 1,
-      "obligorName": "",
-      "obligorNumber": "",
-      "obligorPushType": 0,
-      "openBusinessCount": 1,
-      "regStatus": "",
-      "riskTotal": 0,
-      "role": 1,
-      "roleText": ""
+      "assetTotal": null,
+      "bankruptcy": null,
+      "borrowType": "", // 债务人类型
+      "dishonestStatus": null,
+      "id": null,
+      "isBorrower": null,
+      "isTable": null,
+      "limitConsumption": null,
+      "limitHeightStatus": null,
+      "obligorId": null,
+      "obligorName": "", // 债务人名称
+      "obligorNumber": "", // 债务人证件号
+      "obligorPushType": null,
+      "openBusinessCount": null,
+      "regStatus": null,
+      "riskTotal": null,
+      "role": "", // 债务人角色
+      "roleText": "" // 债务人角色名称
     }
     dataSource.push(obj);
     this.setState({
@@ -131,7 +183,7 @@ export default class RelationBusiness extends Component<IProps, isState> {
   }
 
   render() {
-    const {isOpened, isRoleOpened, dataSource} = this.state;
+    const {isOpened, isRoleOpened, dataSource, isDeleteOpendModal} = this.state;
     console.log(65, this)
     const relationBusinessConfig = [
       {
@@ -179,12 +231,13 @@ export default class RelationBusiness extends Component<IProps, isState> {
           dataSource.map((res, index) => {
             return (
               <View>
-                <View>
-                  <View className='yc-addBusiness-baseInfoText'>关联债务人{index + 1}</View>
+                <View className='yc-addBusiness-relationTextContent'>
+                  <View className='yc-addBusiness-baseInfoText yc-addBusiness-relationBaseInfoText'>关联债务人{index + 1}</View>
                   <View className='yc-addBusiness-deleteText' onClick={() => this.delete(index)}>刪除</View>
                 </View>
 
                 <View className='yc-addBusiness-baseInfo'>
+                  <View className='yc-addBusiness-baseInfo-topLine'/>
                   {
                     relationBusinessConfig.map((i, indexTemp) => {
                       return (
@@ -200,13 +253,14 @@ export default class RelationBusiness extends Component<IProps, isState> {
                                   placeholder={i.placeHolder}
                                   value={res[i.field]}
                                   onInput={(e) => this.onInput(e, i.field, index)}
+                                  onBlur={(e)=>{this.onBlur(e,i.field,index)}}
                                 /> :
                                 <View className='yc-addBusiness-baseInfo-input-content-selectTemp'
                                       onClick={() => {
                                         this.onOpenActionSheetClick(indexTemp, index)
                                       }}>
                                   <View
-                                    className='yc-addBusiness-baseInfo-input-content-selectTemp-selectText'>{indexTemp ? handleRole[res.role] ? handleRole[res.role] : i.placeHolder : handleBorrowType[res.borrowType] || i.placeHolder}</View>
+                                    className='yc-addBusiness-baseInfo-input-content-selectTemp-selectText'>{indexTemp ? handleBorrowType[res.borrowType] ? handleBorrowType[res.borrowType] : i.placeHolder : handleRole[res.role] || i.placeHolder}</View>
                                   <View className='yc-addBusiness-baseInfo-input-content-selectTemp-arrow'>
                                     <Text
                                       className="iconfont icon-right-arrow yc-addBusiness-baseInfo-input-content-selectTemp-arrow-text"/>
@@ -214,18 +268,22 @@ export default class RelationBusiness extends Component<IProps, isState> {
                                 </View>
                             }
                           </View>
-                          <View className='yc-addBusiness-baseInfo-input-content-line'/>
+                          {
+                            indexTemp !== relationBusinessConfig.length - 1 && <View className='yc-addBusiness-baseInfo-input-content-line'/>
+                          }
                         </View>
 
                       )
                     })
                   }
+                  <View className='yc-addBusiness-baseInfo-topLine'/>
                 </View>
               </View>
             )
           })
         }
         <View onClick={this.addClick} className='yc-addBusiness-relationText'>添加关联债务人</View>
+        <View className='yc-addBusiness-empty'/>
         <AtActionSheet isOpened={isOpened} cancelText='取消' onCancel={() => {
           this.onCancel('isOpened')
         }}
@@ -278,6 +336,19 @@ export default class RelationBusiness extends Component<IProps, isState> {
             未知
           </AtActionSheetItem>
         </AtActionSheet>
+
+        <View className='yc-addBusiness-deleteModal'>
+          <AtModal isOpened={isDeleteOpendModal}>
+            <AtModalContent>
+              <View>确定删除该条业务？</View>
+            </AtModalContent>
+            <AtModalAction>
+              <Button onClick={this.onDeleteCancel}>取消</Button>
+              <Button onClick={this.onDeleteConform}>确定</Button>
+            </AtModalAction>
+          </AtModal>
+        </View>
+
       </View>
     )
   }

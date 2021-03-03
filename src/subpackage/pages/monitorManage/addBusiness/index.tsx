@@ -1,14 +1,18 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux';
 import {Button, View, Input, Form, Text} from '@tarojs/components';
-import {AtActionSheet, AtActionSheetItem} from 'taro-ui';
+import {AtActionSheet, AtActionSheetItem, AtButton} from 'taro-ui';
 import RelationBusiness from './relationBusiness';
 import './index.scss'
 import {Message} from "../../../../utils/tools/common";
+import Taro, {getCurrentInstance} from "@tarojs/taro";
 
 type isState = {
   isBaseOpened: boolean,
   baseObj: object,
+  relationList: any,
+  showLoading: boolean,
+  isClickActionSheet: boolean
 }
 
 type IProps = {
@@ -24,27 +28,52 @@ export default class BusinessDetail extends Component<IProps, isState> {
     this.state = {
       isBaseOpened: false,
       baseObj: {
-        "bankruptcyStatus": 0,
+        "bankruptcyStatus": null,
         "borrowType": "", // 借款人类型
-        "businessPushType": 0,
+        "businessPushType": null,
         "caseNumber": '', // 业务编号
-        "dishonestStatus": 0,
-        "guarantee": 0,
-        "guaranteeString": "担保",
-        "id": 1,
-        "isBorrower": true,
-        "obligorId": 1,
+        "dishonestStatus": null,
+        "guarantee": null,
+        "guaranteeString": null,
+        "id": null,
+        "isBorrower": null,
+        "obligorId": null,
         "obligorName": "", // 借款人名称
         "obligorNumber": "", // 证件号
-        "obligorPushType": 0,
-        "orgName": "",
-        "uploadTime": ""
-      }
+        "obligorPushType": null,
+        "orgName": null,
+        "uploadTime": null
+      },
+      relationList: [],
+      showLoading: false,
+      isClickActionSheet: false
     };
     this.obligorList = [];
   }
 
   componentWillMount() {
+    const {router: {params: {id}}} = getCurrentInstance();
+    if (id) {
+      this.props.dispatch({
+        type: 'monitorManage/getBusinessDetail',
+        payload: {id}
+      }).then((res) => {
+        console.log('res编辑', res)
+        if (res.code === 200) {
+          const {detail, obligorList} = res.data;
+          const buildData = obligorList.filter(i => i.obligorId !== detail.obligorId);
+          this.setState({
+            baseObj: detail,
+            relationList: buildData,
+            showLoading: true
+          })
+        }
+      })
+    } else {
+      this.setState({
+        showLoading: true
+      })
+    }
   }
 
   componentDidMount() {
@@ -72,78 +101,161 @@ export default class BusinessDetail extends Component<IProps, isState> {
   }
 
   onSubmit = () => {
+    const {router: {params: {id, type, searchValue}}} = getCurrentInstance();
+    console.log('type===', type)
     const {baseObj} = this.state;
-    const params = {
-      'detail':baseObj,
-      'obligorList':this.obligorList
+    const relationList = this.obligorList;
+    const relationObligorName = relationList.filter(i => i.obligorName === "") // 过滤关联债务人为空
+    const relationObligorNumber = relationList.filter(i => i.obligorNumber === "") // 过滤关联债务人证件号为空
+    if (baseObj.obligorName === "") {
+      Message('请填写借款人名称');
+      return;
     }
-    console.log('params===',params)
-    // this.props.dispatch({
-    //   type:'monitorManage/getBusinessSave',
-    //   payload:{...params}
-    // }).then(res=>{
-    //   console.log('onSubmitonSubmitonSubmit',res)
-    // })
+    if (baseObj.borrowType === 0 && baseObj.obligorNumber === "") {
+      Message('请填写借款人证件号');
+      return;
+    }
+    if (relationObligorName.length > 0) {
+      relationList.forEach((i, index) => {
+        if (i.obligorName === "") {
+          Message(`请填写关联债务人${index + 1}的债务人名称`);
+          return;
+        }
+      })
+    }
+    if (relationObligorNumber.length > 0) {
+      relationList.forEach((i, index) => {
+        if (i.borrowType === 0 && i.obligorNumber === "") {
+          Message(`请填写关联债务人${index + 1}的证件号`)
+          return;
+        }
+      })
+    }
+    const params = {
+      'detail': baseObj,
+      'obligorList': this.obligorList
+    }
+    console.log('params===', params)
+    if (id) {
+      // 编辑业务
+      console.log('编辑')
+      params['id'] = id;
+      this.props.dispatch({
+        type: 'monitorManage/getBusinessEdit',
+        payload: {...params}
+      }).then(res => {
+        console.log('编辑res', res)
+        Message(res.message);
+        if (res.code === 200) {
+          setTimeout(() => {
+            if (type === 'editBus') {
+              Taro.navigateTo({url: `/subpackage/pages/monitorManage/index?type=business&searchValue=${searchValue}`})
+            }
+          }, 500)
+        }
+      }).catch(() => {
+        Message('网络异常请稍后再试！')
+      })
+    } else {
+      console.log('添加')
+      // 添加业务
+      this.props.dispatch({
+        type: 'monitorManage/getBusinessSave',
+        payload: {...params}
+      }).then(res => {
+        console.log('onSubmitonSubmitonSubmit', res)
+        Message(res.message);
+        if (res.code === 200) {
+          setTimeout(() => {
+            if (type === 'addBus') {
+              Taro.navigateTo({url: `/subpackage/pages/monitorManage/index?type=business&searchValue=${searchValue}`})
+            }
+            if (type === 'homeAddBus') {
+              Taro.navigateTo({url: '/subpackage/pages/monitorManage/index?type=business'})
+            }
+            if (type === 'homeEmptyBus') {
+              Taro.switchTab({url: '/pages/index/index'});
+            }
+          }, 500)
+        }
+      }).catch(() => {
+        Message('网络异常请稍后再试！')
+      })
+    }
   }
 
-  onReset = (event) => {
-    console.log('onReset====', event)
-  }
   getValue = (value) => {
     console.log(636363, value)
-    this.obligorList=value
+    this.obligorList = value
   }
 
   onInput = (e, field) => {
     const {baseObj} = this.state;
     const {value} = e.detail;
     if (field === 'caseNumber') {
-      const curValue = value.slice(0,32);
-      if(curValue.length <= 32){
+      const curValue = value.slice(0, 32);
+      if (curValue.length <= 32) {
         baseObj[field] = curValue;
         this.setState({
           baseObj
         })
-      }else{
+      } else {
         Message('最长输入32个字符');
       }
     }
-    if(field === 'obligorName'){
-      const curValue = value.slice(0,40);
-      if(curValue.length <= 40){
+    if (field === 'obligorName') {
+      const curValue = value.slice(0, 40);
+      if (curValue.length <= 40) {
         baseObj[field] = curValue;
-        if(curValue.length > 4){
-          baseObj['borrowType'] = 1;
-        }
-        if(curValue.length <=4){
-          baseObj['borrowType'] = 0;
-        }
-        this.setState({
-          baseObj
-        })
-      }else{
+      } else {
         Message('最长输入40个字符');
       }
     }
-    if(field === 'obligorNumber'){
-      const curValue = value.slice(0,18);
-      if(curValue.length <= 18){
+    if (field === 'obligorNumber') {
+      const curValue = value.slice(0, 18);
+      if (curValue.length <= 18) {
         baseObj[field] = curValue;
         this.setState({
           baseObj
         })
-      }else{
+      } else {
         Message('最长输入18个字符');
       }
     }
   }
 
+  onBlur = (e, field) => {
+    if (field === 'obligorName') {
+      const {baseObj, isClickActionSheet} = this.state;
+      const curValue = e.detail.value;
+      if (curValue.length > 4 && !isClickActionSheet) {
+        baseObj['borrowType'] = 1;
+      }
+      if (curValue.length <= 4 && !isClickActionSheet) {
+        baseObj['borrowType'] = 0;
+      }
+      this.setState({
+        baseObj
+      })
+    }
+  }
+
+  onSheetItemClick = (type, value) => {
+    const {baseObj} = this.state;
+    baseObj[type] = value;
+    this.setState({
+      baseObj,
+      isClickActionSheet: true,
+      isBaseOpened: false
+    })
+  }
+
   render() {
-    const {isBaseOpened,baseObj} = this.state;
-    console.log('this.state=====',baseObj)
+    const {isBaseOpened, baseObj, relationList, showLoading} = this.state;
+    console.log('this.state=====', baseObj)
     const handleBorrowType = {
-      0:'个人',
-      1:'企业'
+      0: '个人',
+      1: '企业'
     }
     const businessBaseInfoConfig = [
       {
@@ -179,55 +291,53 @@ export default class BusinessDetail extends Component<IProps, isState> {
         type: 'select'
       },
     ];
-    const relationDataSource = [
-      {
-        "assetTotal": 0,
-        "bankruptcy": true,
-        "borrowType": "",
-        "dishonestStatus": 1,
-        "id": 1,
-        "isBorrower": true,
-        "isTable": 0,
-        "limitConsumption": 0,
-        "limitHeightStatus": 1,
-        "obligorId": 1,
-        "obligorName": "",
-        "obligorNumber": "",
-        "obligorPushType": 0,
-        "openBusinessCount": 1,
-        "regStatus": "",
-        "riskTotal": 0,
-        "role": 1,
-        "roleText": "担保人"
-      },
-      {
-        "assetTotal": 0,
-        "bankruptcy": true,
-        "borrowType": "",
-        "dishonestStatus": 1,
-        "id": 1,
-        "isBorrower": true,
-        "isTable": 0,
-        "limitConsumption": 0,
-        "limitHeightStatus": 1,
-        "obligorId": 1,
-        "obligorName": "",
-        "obligorNumber": "",
-        "obligorPushType": 0,
-        "openBusinessCount": 1,
-        "regStatus": "",
-        "riskTotal": 0,
-        "role": 1,
-        "roleText": "担保人"
-      }
-    ]
+    // const relationDataSource = [
+    //   {
+    //     "assetTotal": 0,
+    //     "bankruptcy": true,
+    //     "borrowType": "",
+    //     "dishonestStatus": 1,
+    //     "id": 1,
+    //     "isBorrower": true,
+    //     "isTable": 0,
+    //     "limitConsumption": 0,
+    //     "limitHeightStatus": 1,
+    //     "obligorId": 1,
+    //     "obligorName": "",
+    //     "obligorNumber": "",
+    //     "obligorPushType": 0,
+    //     "openBusinessCount": 1,
+    //     "regStatus": "",
+    //     "riskTotal": 0,
+    //     "role": 1,
+    //     "roleText": "担保人"
+    //   },
+    //   {
+    //     "assetTotal": 0,
+    //     "bankruptcy": true,
+    //     "borrowType": "",
+    //     "dishonestStatus": 1,
+    //     "id": 1,
+    //     "isBorrower": true,
+    //     "isTable": 0,
+    //     "limitConsumption": 0,
+    //     "limitHeightStatus": 1,
+    //     "obligorId": 1,
+    //     "obligorName": "",
+    //     "obligorNumber": "",
+    //     "obligorPushType": 0,
+    //     "openBusinessCount": 1,
+    //     "regStatus": "",
+    //     "riskTotal": 0,
+    //     "role": 1,
+    //     "roleText": "担保人"
+    //   }
+    // ]
     return (
       <View className='yc-addBusiness'>
         <View className='yc-addBusiness-baseInfoText'>基础信息</View>
         <View className='yc-addBusiness-baseInfo'>
           <Form
-            onSubmit={this.onSubmit}
-            onReset={this.onReset}
           >
             {
               businessBaseInfoConfig.map((i, index) => {
@@ -246,6 +356,9 @@ export default class BusinessDetail extends Component<IProps, isState> {
                             onInput={(e) => {
                               this.onInput(e, i.field)
                             }}
+                            onBlur={(e) => {
+                              this.onBlur(e, i.field)
+                            }}
                             value={baseObj[i.field]}
                           /> :
                           <View className='yc-addBusiness-baseInfo-input-content-selectTemp'
@@ -259,21 +372,33 @@ export default class BusinessDetail extends Component<IProps, isState> {
                           </View>
                       }
                     </View>
-                    <View className='yc-addBusiness-baseInfo-input-content-line'/>
+                    {
+                      index !== businessBaseInfoConfig.length - 1 &&
+                      <View className='yc-addBusiness-baseInfo-input-content-line'/>
+                    }
                   </View>
 
                 )
               })
             }
-            <RelationBusiness data={relationDataSource} value={(value) => this.getValue(value)}/>
-            <Button form-type='submit'>提交</Button>
-            <Button form-type='reset'>重置</Button>
+            {
+              showLoading && <RelationBusiness data={relationList} value={(value) => this.getValue(value)}/>
+            }
+
+            <View className='yc-addBusiness-addBtn'>
+              <AtButton type='primary' onClick={this.onSubmit}>确认添加</AtButton>
+            </View>
+
           </Form>
           <AtActionSheet isOpened={isBaseOpened} cancelText='取消' onCancel={this.onCancel}>
-            <AtActionSheetItem>
+            <AtActionSheetItem onClick={() => {
+              this.onSheetItemClick('borrowType', 0)
+            }}>
               个人
             </AtActionSheetItem>
-            <AtActionSheetItem>
+            <AtActionSheetItem onClick={() => {
+              this.onSheetItemClick('borrowType', 1)
+            }}>
               企业
             </AtActionSheetItem>
           </AtActionSheet>

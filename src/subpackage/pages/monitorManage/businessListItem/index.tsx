@@ -3,8 +3,8 @@ import {connect} from 'react-redux';
 import {Text, View, RichText} from '@tarojs/components'
 import Taro from '@tarojs/taro';
 import './index.scss'
-import moment from 'moment';
 import DeleteModal from '../deleteModal/index';
+import {dateToFormat} from '../../../../utils/tools/common';
 
 type isState = {
   curData: any,
@@ -53,12 +53,13 @@ export default class BusinessListItem extends Component<any, isState> {
     })
   }
 
-  onEditBusinessClick = () => {
+  onEditBusinessClick = (id) => {
+    const {searchValue} = this.props;
     this.props.dispatch({
       type: 'monitorManage/getCurClickItem',
       payload: {curClickItem: ''}
     })
-    Taro.navigateTo({url: '/subpackage/pages/monitorManage/addBusiness/index'});
+    Taro.navigateTo({url: `/subpackage/pages/monitorManage/addBusiness/index?type=editBus&searchValue=${searchValue}&id=${id}`});
   }
 
   onDeleteClick = (id) => {
@@ -171,7 +172,7 @@ export default class BusinessListItem extends Component<any, isState> {
                                         }}>
                                           <View className='ant-popover-inner-content-text'
                                                 style={{paddingTop: '32rpx'}}
-                                                onClick={this.onEditBusinessClick}>编辑</View>
+                                                onClick={()=>{this.onEditBusinessClick(i.id)}}>编辑</View>
                                         </View>
                                         <View className='ant-popover-inner-content-line'/>
                                         <View className='ant-popover-inner-content-text' onClick={(e) => {
@@ -194,7 +195,7 @@ export default class BusinessListItem extends Component<any, isState> {
 
 
                         <View className='yc-businessListItem-content-middleRightContent-date'>
-                          {moment(i.uploadTime).format('YYYY-MM-DD')}
+                          {dateToFormat(i.uploadTime,'YYYY-MM-DD')}
                         </View>
                       </View>
                     </View>
