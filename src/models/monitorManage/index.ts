@@ -5,7 +5,8 @@ import {
   getBusinessListUrl,
   getBusinessDetailUrl,
   getBusinessDeleteUrl,
-  getBusinessSaveUrl
+  getBusinessSaveUrl,
+  getBusinessEditUrl,
 } from "../../services/monitorManage";
 
 export default {
@@ -53,6 +54,10 @@ export default {
     },
     * getBusinessSave({payload}, {call}) {
       const res = yield call(getBusinessSaveUrl, payload);
+      return res;
+    },
+    * getBusinessEdit({payload}, {call}) {
+      const res = yield call(getBusinessEditUrl, payload);
       return res;
     },
   },

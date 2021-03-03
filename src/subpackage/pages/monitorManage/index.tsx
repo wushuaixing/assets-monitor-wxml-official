@@ -190,8 +190,9 @@ export default class MonitorManage extends Component<IProps, isState> {
   }
 
   onAddBusinessClick = () => {
+    const {searchValue} = this.state;
     this.onMiddleClick();
-    Taro.navigateTo({url: '/subpackage/pages/monitorManage/addBusiness/index'});
+    Taro.navigateTo({url: `/subpackage/pages/monitorManage/addBusiness/index?type=addBus&searchValue=${searchValue}`});
   }
 
   onMiddleClick = () => {
