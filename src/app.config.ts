@@ -15,6 +15,8 @@ export default {
         "monitor/asset-auction/index",
         "monitor/asset-auction/detail/index",
         "monitor/asset-auction/confirmation/index",
+        "monitor/bankruptcy/index",
+        "monitor/bankruptcy/details/index",
         "monitor/subrogation/index",
         "monitor/involve-info/index",
         "monitorManage/index",

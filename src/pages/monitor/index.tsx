@@ -9,7 +9,8 @@ import QueryDrop from '../../components/query-drop';
 import Tab from '../../components/tab';
 import ListItem from '../../components/list-item/index';
 import blankNodata from '../../assets/img/page/blank_nodate.png';
-import { getGlobalData } from "../../utils/const/global";
+import {getGlobalData, setGlobalData} from "../../utils/const/global";
+import {handleDealAuthRule} from "../../utils/tools/common";
 import './index.scss'
 
 interface dataItem{
@@ -153,6 +154,15 @@ export default class Monitor extends Component <IProps, IState>{
       loading: false,
       listCount: 0,
       count: 0,
+      params: {
+        assetAndRiskType: filterArray(assestRuleArray).join(),
+      },
+      starId: 1,
+      assetsList: [],
+      riskList: [],
+      scrollHeight: 0,
+      page: 1,
+      hasNext: false,
       queryAssetsConfig: [
         {
           id: 1,
@@ -251,6 +261,7 @@ export default class Monitor extends Component <IProps, IState>{
               childrenName: [
                 {name: '全部', value: filterArray(['fxjkqypccz', 'fxjkssjk']), id: 1, isSelected: true, isRule: true },
                 {name: '破产重整', value: filterArray(['fxjkqypccz']), id: 2, isSelected: false, isRule: isRule('fxjkqypccz') },
+                {name: '涉诉监控', value: filterArray(['fxjkssjk']), id: 3, isSelected: false, isRule: isRule('fxjkssjk') },
               ]
             }
           ],
@@ -270,52 +281,9 @@ export default class Monitor extends Component <IProps, IState>{
           ],
         },
       ],
-      params: {
-        assetAndRiskType: filterArray(assestRuleArray).join(),
-      },
-      starId: 1,
-      assetsList: [],
-      riskList: [],
-      scrollHeight: 0,
-      page: 1,
-      hasNext: false,
+
     };
   }
-
-
-  onLoad() {
-    const { monitorParams } = this.props;
-    const { currentId, starId, params } = this.state;
-    if(Object.keys(monitorParams).length !== 0){
-      let tabId = monitorParams.tabId > 0 ? monitorParams.tabId : currentId;
-      let newStarId = monitorParams.starId > 0 ? monitorParams.starId : starId;
-      let dataArray = Array.isArray(monitorParams.value) && monitorParams.value.length > 0 ? monitorParams.value : (tabId === 1 ?  assestRuleArray : riskRuleArray );
-      let assetAndRiskTypeValue = filterArray(dataArray).join();
-      // console.log('handleUpdataConfig');
-      let newParams = {
-        ...params,
-        assetAndRiskType: assetAndRiskTypeValue,
-        score: getStarValue(tabId, newStarId)
-      };
-      this.setState({
-        queryAssetsConfig: this.handleUpdataConfig(monitorParams),
-        queryRiskConfig: this.handleUpdataConfig(monitorParams),
-        currentId: tabId,
-        starId: newStarId,
-        params: {...newParams},
-      }, () => {
-        const { queryAssetsConfig } = this.state;
-        // console.log('newParams === ', newParams, JSON.stringify(queryAssetsConfig[1]));
-        this.handleRequestList({...newParams}, true);
-      });
-    }
-    else {
-      const { params } = this.state;
-      console.log('newParams === ', params);
-      this.handleRequestList({...params}, true);
-    }
-  };
-
   componentWillMount(): void {
     const onReadyEventId = this.$instance.router.onReady;
     eventCenter.once(onReadyEventId, () => {
@@ -339,36 +307,69 @@ export default class Monitor extends Component <IProps, IState>{
     });
   }
 
+  componentDidShow() {
+    console.log('componentDidShow === ');
+    const { monitorParams, dispatch } = this.props;
+    const { currentId, starId, params } = this.state;
+    dispatch({
+      type: 'home/getAuthRule',
+      payload: {}
+    }).then(res => {
+      let ruleArray = handleDealAuthRule(res.data.orgPageGroups);
+      setGlobalData('ruleArray', ruleArray);
+      if(Object.keys(monitorParams).length !== 0){
+        let tabId = monitorParams.tabId > 0 ? monitorParams.tabId : currentId;
+        let newStarId = monitorParams.starId > 0 ? monitorParams.starId : starId;
+        let dataArray = Array.isArray(monitorParams.value) && monitorParams.value.length > 0 ? monitorParams.value : (tabId === 1 ?  assestRuleArray : riskRuleArray );
+        let assetAndRiskTypeValue = filterArray(dataArray).join();
+        console.log('monitorParams === ', monitorParams, JSON.stringify(monitorParams));
+        let newParams = {
+          ...params,
+          assetAndRiskType: assetAndRiskTypeValue,
+          score: getStarValue(tabId, newStarId)
+        };
+        this.setState({
+          queryAssetsConfig: this.handleUpdataConfig(monitorParams),
+          queryRiskConfig: this.handleUpdataConfig(monitorParams),
+          currentId: tabId,
+          starId: newStarId,
+          params: {...newParams},
+        }, () => {
+          const { queryAssetsConfig: config } = this.state;
+          console.log('config === ', JSON.stringify(config[1]));
+          this.handleRequestList({...newParams}, true);
+        });
+      }
+      else {
+        const { params } = this.state;
+        this.handleRequestList({...params}, true);
+      }
+    }).catch(() => {Taro.hideLoading();});
+
+  }
+
   shouldComponentUpdate(nextProps: Readonly<IProps>, nextState: Readonly<IState>): boolean {
-    // console.log('should should=== ', JSON.stringify(nextProps.monitorParams), JSON.stringify(this.props.monitorParams));
-    // console.log('should === ', JSON.stringify(this.state.queryAssetsConfig[1].title), JSON.stringify(nextState.queryAssetsConfig[1].title));
     // const { monitorParams } = this.props;
-    const { listCount, currentId } = this.state;
-    return listCount !== nextState.listCount || currentId !== nextState.currentId
+    const { listCount, currentId, page } = this.state;
+    return listCount !== nextState.listCount || currentId !== nextState.currentId || page !== nextState.page
   }
 
 
   handleUpdataConfig = (params) => {
+    const { queryAssetsConfig, queryRiskConfig } = this.state;
     const { tabId, value} = params;
-    if( tabId === 1 && Array.isArray(value) && value.length === 1){
-      const { queryAssetsConfig } = this.state;
+    if( tabId === 1 ){
       let assetsConfig = [...queryAssetsConfig];
       assetsConfig[1].isSelected = true;
       assetsConfig[1].title = getRuleName(value);
       return [...assetsConfig]
-      // this.setState({
-      //   queryAssetsConfig: [...assetsConfig],
-      // });
     }
-    if( tabId === 2 && Array.isArray(value) && value.length === 1){
-      const { queryRiskConfig } = this.state;
+    if( tabId === 2 ){
+      const {  } = this.state;
       let riskConfig = [...queryRiskConfig];
       riskConfig[1].isSelected = true;
       riskConfig[1].title = getRuleName(value);
       return [...riskConfig];
-      // this.setState({
-      //   queryRiskConfig: [...riskConfig],
-      // })
     }
   };
 
@@ -436,6 +437,7 @@ export default class Monitor extends Component <IProps, IState>{
       currentId: info.id,
       params: newParams,
       page: 1,
+      starId: 1,
     }, () => {
       this.handleRequestList({assetAndRiskType: assetAndRiskTypeParams}, true)
     });
@@ -448,6 +450,7 @@ export default class Monitor extends Component <IProps, IState>{
     this.setState({
       params: newParams,
       page: 1,
+      starId: info.id
     }, () => {
       this.handleRequestList({...newParams}, true);
     });
@@ -490,17 +493,16 @@ export default class Monitor extends Component <IProps, IState>{
 
   // 可视化滚动的触底函数
   handleScrollToLower = (event) => {
-    const { currentId, hasNext} = this.state;
-    let array = currentId === 1 ? assestRuleArray : riskRuleArray;
+    const { hasNext, params } = this.state;
     if(hasNext){
-      this.handleRequestList({assetAndRiskType: filterArray(array.join())}, false)
+      this.handleRequestList({...params}, false)
     }
   };
 
 
   render () {
     const { currentId, scrollHeight, listCount, starId, assetsList, riskList, queryAssetsConfig, queryRiskConfig} = this.state;
-    // console.log('monitor state === ',JSON.stringify(currentId), JSON.stringify(starId), JSON.stringify(queryAssetsConfig[1].title), JSON.stringify(queryRiskConfig[1].title));
+    console.log('monitor state === ', JSON.stringify(this.state.params), assetsList.length);
     let list = currentId === 1 ?  assetsList : riskList;
     return (
       <View className='monitor'>
@@ -544,13 +546,11 @@ export default class Monitor extends Component <IProps, IState>{
             {
               list.map((item: any, index: number) => {
                 return (
-                  <ListItem
+                  item.dataType > 0 ? <ListItem
                     {...item}
-                    // onMarkRead={this.handleReadListItem}
-                    // onClick={() => this.handleReadListItem(item.object.id)}
                     type={currentId === 1 ? 'assets' : 'risk'}
                     index={index}
-                  />
+                  /> : null
                 )
               })
             }

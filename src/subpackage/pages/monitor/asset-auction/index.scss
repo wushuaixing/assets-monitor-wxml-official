@@ -128,6 +128,7 @@
 
   &-history{
     margin-top: 23px;
+    position: relative;
     &-title{
       background-color: white;
       display: flex;
@@ -153,6 +154,17 @@
 
     &-content{
       @include contentStyle;
+    }
+
+    &-arrow{
+      padding: 50px;
+      position: absolute;
+      right: -20px;
+      top: 175px;
+      &-icon{
+        color: $light-text-color;
+        font-size: 33px;
+      }
     }
   }
 

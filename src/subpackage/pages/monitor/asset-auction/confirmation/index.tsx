@@ -51,7 +51,15 @@ export default class Confirmation extends Component <IProps, IState>{
           </View>
 
         </View>
-
+        <View className='confirmation-plan'>
+          <View className='confirmation-plan-title'>【网络拍卖竞价结果】</View>
+          <View className='confirmation-plan-text'>
+            用户姓名陈书韵通过竞买号D4771于2020年11月10日在杭州市萧山区人民法院于阿里拍卖平台开展的“位于桐庐县桐君街道富欧·罗兰公寓15幢车4室的房产”项目公开竞价中，以最高应价胜出。
+            该标的网络拍卖成交价格：¥99000（玖万玖仟元）
+            在网络拍卖中竞买成功的用户，必须依照标的物《竞买须知》、《竞买公告》要求，按时交付标的物网拍成交余款、办理相关手续。
+            标的物最终成交以杭州市萧山区人民法院出具拍卖成交裁定为准。
+          </View>
+        </View>
       </View>
     )
   }
