@@ -9,6 +9,7 @@ export default {
   },
   effects: {
     *assetList({ payload }, { call }) {
+      // console.log('payload 111=== ', clearEmpty(payload));
       const res = yield call(assetListApi, { ...clearEmpty(payload), num: 10});
       return res;
     },
@@ -18,6 +19,7 @@ export default {
     },
 
     *riskList({payload}, { call, put }) {
+      // console.log('payload 222=== ', clearEmpty(payload));
       const res = yield call(riskListApi, {...clearEmpty(payload), num: 10});
       return res;
     },

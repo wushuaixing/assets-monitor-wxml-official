@@ -85,6 +85,15 @@ class Index extends Component <IProps, IState>{
   }
 
   componentWillMount () {
+    Taro.getSystemInfo().then(res => {
+      setGlobalData('statusBarHeight', res.statusBarHeight);
+      this.setState({
+        scrollViewHeight: res.windowHeight - res.statusBarHeight
+      })
+    });
+  }
+
+  componentDidShow () {
     const { loading } = this.state;
     const { dispatch } = this.props;
     if(loading){
@@ -100,7 +109,6 @@ class Index extends Component <IProps, IState>{
         })
       }
     }).catch(() => {Taro.hideLoading();});
-
     dispatch({
       type: 'home/getAuthRule',
       payload: {}
@@ -109,7 +117,6 @@ class Index extends Component <IProps, IState>{
       if(res.code=== 200){
         let ruleArray = handleDealAuthRule(res.data.orgPageGroups);
         setGlobalData('ruleArray', ruleArray);
-        // console.log('getGlobalData', getGlobalData('ruleArray'));
         dispatch({
           type: 'home/getAssets',
           payload: {}
@@ -118,20 +125,10 @@ class Index extends Component <IProps, IState>{
     }).catch(() => {Taro.hideLoading();});
   }
 
-  componentDidMount () {
-    Taro.getSystemInfo().then(res => {
-      setGlobalData('statusBarHeight', res.statusBarHeight);
-      this.setState({
-        scrollViewHeight: res.windowHeight - res.statusBarHeight
-      })
-    });
-  }
-
   shouldComponentUpdate(nextProps: Readonly<IProps>, nextState: Readonly<IState>): boolean {
-    // console.log('home nextProps === ', this.props, nextProps);
     const { assetsArray, riskArray} = this.props;
-    const { current } = this.state;
-    return current !== nextState.current || JSON.stringify(assetsArray) !== JSON.stringify(nextProps.assetsArray) || JSON.stringify(riskArray) !== JSON.stringify(nextProps.riskArray);
+    const { current, businessCount} = this.state;
+    return current !== nextState.current ||  businessCount !== nextState.businessCount || JSON.stringify(assetsArray) !== JSON.stringify(nextProps.assetsArray) || JSON.stringify(riskArray) !== JSON.stringify(nextProps.riskArray);
   }
 
   // 点击资产或者风险tab
@@ -224,6 +221,10 @@ class Index extends Component <IProps, IState>{
   navigateToMonitor = (tabId: number, star: number, value: string[]) => {
     const { dispatch  } = this.props;
     dispatch({
+      type: 'home/getAuthRule',
+      payload: {}
+    });
+    dispatch({
       type: 'home/updateMonitorParams',
       payload: {
         params: {
@@ -233,7 +234,9 @@ class Index extends Component <IProps, IState>{
         }
       }
     });
-    Taro.switchTab({ url:'/pages/monitor/index'});
+    Taro.switchTab({
+      url:'/pages/monitor/index'
+    });
   };
 
   render () {
@@ -243,7 +246,6 @@ class Index extends Component <IProps, IState>{
     ];
     const { current, caseArray, businessCount, scrollViewHeight} = this.state;
     const { assetsArray, riskArray, assetsStarLevelCounts,  riskStarLevelCounts} = this.props;
-    // console.log('home === ', this.props, this.state);
     return (
       <View className='home'>
         <View className='home-title'>

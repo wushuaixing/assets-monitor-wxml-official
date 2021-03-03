@@ -4,15 +4,56 @@ import { View, Text } from '@tarojs/components';
 import NavigationBar from "../../../../../components/navigation-bar"
 import './index.scss';
 
+interface historyAuctionType{
+  round?: number
+  consultPrice?: number
+  court?: string
+  currentPrice?: number
+  initialPrice?: number
+  start?: string
+  status?: number
+  title?: string
+  url?: string
+}
+
 type IProps = {
 }
 
 type IState = {
-
+  detail: {
+    title: string
+    status: number
+    consultPrice: number
+    initialPrice: number
+    start: Date
+    valueLevel: number
+    obligorName: string
+    remark: string
+    important: number
+    historyAuction: historyAuctionType[]
+  }
 };
 
-
 export default class AssetsDetail extends Component <IProps, IState>{
+  constructor(props) {
+    super(props);
+    this.state = {
+      detail: {}
+    };
+  }
+
+  onLoad(option){
+    const _this = Taro.getCurrentInstance().page;
+    const eventChannel = _this.getOpenerEventChannel();
+    // 监听acceptDataFromOpenerPage事件，获取上一页面通过eventChannel传送到当前页面的数据
+    eventChannel.on('acceptDataFromOpenerPage', (detail) => this.handleState(detail))
+  }
+
+  handleState = (detail) => {
+    this.setState({
+      detail
+    })
+  };
 
   navigateToConfirmation = () => {
     Taro.navigateTo({
