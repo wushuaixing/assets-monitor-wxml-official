@@ -44,34 +44,27 @@ class TagSelected extends Component<IProps, IState>{
     };
   }
 
-  componentWillMount(): void {
-    const onShowEventId = this.$instance.router.onShow;
-    eventCenter.on(onShowEventId, this.onShow);
-  }
-
-  componentWillReceiveProps(nextProps: Readonly<IProps>): void {
-    const { type, initId } = nextProps;
-    const { selected } = this.state;
-    this.setState({
-      config: type === 'assets' ? assetsConfig : riskConfig,
-      selected: initId > 0 ? initId : selected,
-    })
-  }
-
-  componentWillUnmount(): void {
-    const onShowEventId = this.$instance.router.onShow;
-    // 卸载
-    eventCenter.off(onShowEventId, this.onShow);
-  }
-
-  onShow = () => {
+  componentDidMount(): void {
     const { initId } = this.props;
     if(initId > 0){
       this.setState({
         selected: initId,
-      });
+      })
     }
-  };
+  }
+
+  componentWillReceiveProps(nextProps: Readonly<IProps>): void {
+    // console.log('componentWillReceiveProps === ', JSON.stringify(this.props), JSON.stringify(nextProps));
+    const { initId } = nextProps;
+    const { type } = this.props;
+    const { selected } = this.state;
+    if(type !== nextProps.type){
+      this.setState({
+        config: type === 'assets' ? assetsConfig : riskConfig,
+        selected: initId > 0 ? initId : selected,
+      })
+    }
+  }
 
   onClickTag = (item) => {
     const { onClick } = this.props;
@@ -84,7 +77,6 @@ class TagSelected extends Component<IProps, IState>{
 
   render(){
     const { selected, config } = this.state;
-    // console.log('TagSelected ===', this.state);
     return (
       <View className='tag'>
         {

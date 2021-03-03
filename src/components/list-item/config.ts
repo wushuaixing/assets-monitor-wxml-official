@@ -26,6 +26,28 @@ const getPlot = (type: number) => {
 };
 
 // const status = 1-即将开始、3-正在进行、5-已成交、7-已流拍、9-中止、11-撤回
+const getLevel = (type, status: number) => {
+  let title: string = '即将开始';
+  if(type === 1){
+    switch (status) {
+      case 90: title = '三星'; break;
+      case 80: title = '二星'; break;
+      case 60: title = '一星'; break;
+    }
+  }
+  else{
+    switch (status) {
+      case 90: title = '高风险'; break;
+      case 80: title = '警示'; break;
+      case 60: title = '提示'; break;
+      case 40: title = '利好'; break;
+    }
+  }
+
+  return title
+};
+
+// const status = 1-即将开始、3-正在进行、5-已成交、7-已流拍、9-中止、11-撤回
 const getAuctionStatus = (status: number) => {
   let title: string = '即将开始';
   switch (status) {
@@ -100,7 +122,7 @@ const getObligorName = (type: number, detail) => {
       name = litigationParties.length > 0 ? litigationParties.map(item => { return item.name}).join() : '';
       break;
   }
-  console.log('name === ', name);
+  // console.log('name === ', name);
   return name
 };
 
@@ -132,7 +154,7 @@ const getJumpType = (type) => {
     case 2: apiName = subrogationTrialMarkReadApi; url = '/subpackage/pages/monitor/asset-auction/index'; break;
     case 3: apiName = subrogationCourtMarkReadApi; url = '/subpackage/pages/monitor/asset-auction/index'; break;
     case 4: apiName = subrogationJudgmentMarkReadApi; url = '/subpackage/pages/monitor/asset-auction/index'; break;
-    case 5: apiName = bankruptcyMarkReadApi; url = '/subpackage/pages/monitor/asset-auction/index'; break;
+    case 5: apiName = bankruptcyMarkReadApi; url = '/subpackage/pages/monitor/bankruptcy/index'; break;
     case 6: apiName = lawsuitTrialMarkReadApi; url = '/subpackage/pages/monitor/asset-auction/index'; break;
     case 7: apiName = lawsuitCourtMarkReadApi; url = '/subpackage/pages/monitor/asset-auction/index'; break;
     case 8: apiName = lawsuitJudgmentMarkReadApi; url = '/subpackage/pages/monitor/asset-auction/index'; break;
@@ -152,4 +174,4 @@ const getCaseType = (type) => {
   return caseType;
 };
 
-export { getPlot, getTitleTag, getRiskTag, getObligorName, getTime, getAuctionStatus, getAuctionRoleType, getJumpType, getCaseType }
+export { getPlot, getTitleTag, getRiskTag, getObligorName, getTime, getAuctionStatus, getAuctionRoleType, getJumpType, getCaseType, getLevel}

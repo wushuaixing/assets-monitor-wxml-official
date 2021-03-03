@@ -40,6 +40,19 @@
         word-break: break-all;
       }
     }
+  }
+  &-plan{
+    color: $common-text;
+    font-size: 30px;
+    padding: 40px 24px;
+    &-title{
+      line-height: 45px;
+      font-weight: 500;
+    }
+    &-text{
+      line-height: 45px;
+      font-weight: 500;
+    }
 
   }
 }
