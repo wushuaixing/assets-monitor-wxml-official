@@ -9,7 +9,6 @@ import {dateToFormat} from "../../../../utils/tools/common";
 type IProps = {}
 
 type IState = {
-  type: string,
   detail: {
     parties:any,
     informationExplain:string,
@@ -23,42 +22,36 @@ type IState = {
     court:string,
     url:string,
     gmtTrial:any,
+    dataType:number,
   }
 };
 
 
 export default class Subrogation extends Component <IProps, IState> {
-
+  // $instance = getCurrentInstance();
   constructor(props) {
     super(props);
     this.state = {
-      type: '',
       detail: {}
     };
   }
 
-  componentDidShow() {
-  }
 
+  onLoad(option){
+    console.log('onLoad===')
+    const _this = Taro.getCurrentInstance().page;
+    const eventChannel = _this.getOpenerEventChannel();
+    // 监听acceptDataFromOpenerPage事件，获取上一页面通过eventChannel传送到当前页面的数据
+    eventChannel.on('acceptDataFromOpenerPage', (detail) => {
+      console.log('detail',detail)
+      this.handleState(detail)})
+  }
 
   handleState = (detail) => {
     this.setState({
       detail: detail
     });
   };
-
-  componentWillMount() {
-    const {router: {params: {type}}} = getCurrentInstance();
-    const _this = Taro.getCurrentInstance().page;
-    const eventChannel = _this.getOpenerEventChannel();
-    // 监听acceptDataFromOpenerPage事件，获取上一页面通过eventChannel传送到当前页面的数据
-    eventChannel.on('acceptDataFromOpenerPage', (detail) => {
-        console.log('监听detail', detail)
-        this.handleState(detail)
-      }
-    )
-    this.setState({type})
-  }
 
   onCopyClick = (val) => {
     if (val) {
@@ -76,7 +69,7 @@ export default class Subrogation extends Component <IProps, IState> {
 
 
   render() {
-    const {type, detail} = this.state;
+    const {detail} = this.state;
     const handleType = {
       2: '代位-立案信息',
       3: '代位-开庭信息',
@@ -97,17 +90,17 @@ export default class Subrogation extends Component <IProps, IState> {
       3: '执行',
       4: '终本'
     }
-    const plaintiffData = detail.parties.filter(i => i.obligorId > 0 && i.roleType === 1); // 原告
-    const handlePlaintiffData = plaintiffData.map(i => {
+    const plaintiffData = detail && detail.parties && detail.parties.filter(i => i.obligorId > 0 && i.roleType === 1); // 原告
+    const handlePlaintiffData = plaintiffData && plaintiffData.map(i => {
       return i.name
     })
-    const defendantData = detail.parties.filter(i => i.obligorId > 0 && i.roleType === 2); // 被告
-    const handleDefendantData = defendantData.map(i => {
+    const defendantData = detail && detail.parties && detail.parties.filter(i => i.roleType === 2); // 被告
+    const handleDefendantData = defendantData && defendantData.map(i => {
       return i.name
     })
     return (
       <View className='yc-subrogation'>
-        <NavigationBar border title={handleType[type]}/>
+        <NavigationBar border title={handleType[detail.dataType]}/>
         <View className='yc-subrogation-line'/>
         {/*线索分析*/}
         <View className='yc-subrogation-baseInfo'>
@@ -137,14 +130,14 @@ export default class Subrogation extends Component <IProps, IState> {
             <View className='yc-subrogation-baseInfo-content-info'>
               <View className='yc-subrogation-baseInfo-content-info-label'>原告：</View>
               <View className='yc-subrogation-baseInfo-content-info-value'
-                    style={{color: handlePlaintiffData.join('，') ? '#0979E6' : '#666666'}}>{handlePlaintiffData.join('，') || '-'}</View>
+                    style={{color: handleDefendantData && handlePlaintiffData.join('，') ? '#0979E6' : '#666666'}}>{handleDefendantData && handlePlaintiffData.join('，') || '-'}</View>
             </View>
 
             <View className='yc-subrogation-baseInfo-content-line'/>
 
             <View className='yc-subrogation-baseInfo-content-info'>
               <View className='yc-subrogation-baseInfo-content-info-label'>被告：</View>
-              <View className='yc-subrogation-baseInfo-content-info-value'>{handleDefendantData.join('，') || '-'}</View>
+              <View className='yc-subrogation-baseInfo-content-info-value'>{handleDefendantData && handleDefendantData.join('，') || '-'}</View>
             </View>
 
             <View className='yc-subrogation-baseInfo-line' style={{margin: '24rpx 0'}}/>
@@ -157,7 +150,7 @@ export default class Subrogation extends Component <IProps, IState> {
 
             <View className='yc-subrogation-baseInfo-content-line'/>
             {
-              type === '4' ?
+              detail.dataType === 4 ?
                 <View>
                   <View className='yc-subrogation-baseInfo-content-info'>
                     <View className='yc-subrogation-baseInfo-content-info-justifylabel'>判决日期</View>
@@ -174,10 +167,10 @@ export default class Subrogation extends Component <IProps, IState> {
                   </View>
                 </View> :
                 <View className='yc-subrogation-baseInfo-content-info'>
-                  <View className='yc-subrogation-baseInfo-content-info-justifylabel'>{dateType[type]}日期</View>
+                  <View className='yc-subrogation-baseInfo-content-info-justifylabel'>{dateType[detail.dataType]}日期</View>
                   <View className='yc-subrogation-baseInfo-content-info-colon'>：</View>
                   <View
-                    className='yc-subrogation-baseInfo-content-info-value'>{type === '2' ? dateToFormat(detail.gmtRegister, 'YYYY-MM-DD') : type === '3' ? dateToFormat(detail.gmtTrial, 'YYYY-MM-DD') : '-'}</View>
+                    className='yc-subrogation-baseInfo-content-info-value'>{detail.dataType === 2 ? dateToFormat(detail.gmtRegister, 'YYYY-MM-DD') : detail.dataType === 3 ? dateToFormat(detail.gmtTrial, 'YYYY-MM-DD') : '-'}</View>
                 </View>
             }
 
@@ -193,7 +186,7 @@ export default class Subrogation extends Component <IProps, IState> {
             <View className='yc-subrogation-baseInfo-content-line'/>
 
             {
-              type !== '3' ?
+              detail.dataType !== 3 ?
                 <View className='yc-subrogation-baseInfo-content-info'>
                   <View className='yc-subrogation-baseInfo-content-info-justifylabel'>案件类型</View>
                   <View className='yc-subrogation-baseInfo-content-info-colon'>：</View>
@@ -216,7 +209,7 @@ export default class Subrogation extends Component <IProps, IState> {
           <View className='yc-subrogation-baseInfo-line' style={{marginTop: '24rpx'}}/>
 
           {/*{*/}
-          {/*  type === '4' ?*/}
+          {/*  detail.dataType === 4 ?*/}
           {/*    <View>*/}
           {/*      <View className='yc-subrogation-baseInfo-content'>*/}
           {/*        <View className='yc-subrogation-baseInfo-content-info'>*/}

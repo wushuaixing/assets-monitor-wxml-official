@@ -143,13 +143,13 @@ const getJumpType = (type) => {
   let url: string = '';
   switch (type) {
     case 1: apiName = auctionMarkReadApi; url = '/subpackage/pages/monitor/asset-auction/index'; break;
-    case 2: apiName = subrogationTrialMarkReadApi; url = '/subpackage/pages/monitor/subrogation/index?type=2'; break;
-    case 3: apiName = subrogationCourtMarkReadApi; url = '/subpackage/pages/monitor/subrogation/index?type=3'; break;
-    case 4: apiName = subrogationJudgmentMarkReadApi; url = '/subpackage/pages/monitor/subrogation/index?type=4'; break;
+    case 2: apiName = subrogationTrialMarkReadApi; url = '/subpackage/pages/monitor/subrogation/index'; break;
+    case 3: apiName = subrogationCourtMarkReadApi; url = '/subpackage/pages/monitor/subrogation/index'; break;
+    case 4: apiName = subrogationJudgmentMarkReadApi; url = '/subpackage/pages/monitor/subrogation/index'; break;
     case 5: apiName = bankruptcyMarkReadApi; url = '/subpackage/pages/monitor/bankruptcy/index'; break;
-    case 6: apiName = lawsuitTrialMarkReadApi; url = '/subpackage/pages/monitor/involve-info/index?type=6'; break;
-    case 7: apiName = lawsuitCourtMarkReadApi; url = '/subpackage/pages/monitor/involve-info/index?type=7'; break;
-    case 8: apiName = lawsuitJudgmentMarkReadApi; url = '/subpackage/pages/monitor/involve-info/index?type=8'; break;
+    case 6: apiName = lawsuitTrialMarkReadApi; url = '/subpackage/pages/monitor/involve-info/index'; break;
+    case 7: apiName = lawsuitCourtMarkReadApi; url = '/subpackage/pages/monitor/involve-info/index'; break;
+    case 8: apiName = lawsuitJudgmentMarkReadApi; url = '/subpackage/pages/monitor/involve-info/index'; break;
   }
   return { apiName, url}
 };
