@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux';
-import {Text, View, Image} from '@tarojs/components'
+import {Text, View, Image, Input} from '@tarojs/components'
 import {AtTabs} from 'taro-ui'
 import './index.scss'
 import busEmptyImg from '../../../assets/img/page/blank_nodate.png'
@@ -17,7 +17,8 @@ type isState = {
   curPage: number,
   total: number,
   hasNext: boolean,
-  loading: false,
+  loading: boolean,
+  listLoading: boolean
 }
 
 type IProps = {
@@ -37,6 +38,8 @@ export default class MonitorManage extends Component<IProps, isState> {
       curPage: 1,
       total: 0,
       hasNext: false,
+      loading: false,
+      listLoading: true
     };
   }
 
@@ -77,23 +80,21 @@ export default class MonitorManage extends Component<IProps, isState> {
     })
   }
 
-  handleChange = (value) => {
+  handleChange = (e) => {
     const {current} = this.state;
-    this.setState({
-      searchValue: value.slice(0, 40),
-      dataSource: []
-    }, () => {
-      if (value.length <= 40) {
-        if (current) {
-          this.handleObligorList(1, value, 0)
-        } else {
-          this.handleBusinessList(1, value, 0)
-        }
+    if (e.detail.value.length > 40) {
+      Message('最长输入40个字');
+    } else {
+      if (current) {
+        this.handleObligorList(1, e.detail.value, 0)
       } else {
-        Message('最长输入40个字');
+        this.handleBusinessList(1, e.detail.value, 0)
       }
+    }
+    this.setState({
+      searchValue: e.detail.value.slice(0, 40),
+      dataSource: []
     })
-
   }
 
   handleScrollDown = () => {
@@ -124,17 +125,19 @@ export default class MonitorManage extends Component<IProps, isState> {
 
   handleObligorList = (pageTemp, searchValue, isScroll) => {
     this.setState({
-      loading: !isScroll
+      loading: !isScroll,
+      listLoading: !isScroll
     })
     Taro.showLoading({title: '正在加载...'});
     this.props.dispatch({
       type: 'monitorManage/getObligorList',
       payload: {page: pageTemp, obligorName: searchValue}
     }).then(res => {
-      this.setState({
-        loading: false
-      })
       Taro.hideLoading();
+      this.setState({
+        loading: false,
+        listLoading: false
+      })
       if (res.code === 200) {
         const {data: {list, page, total, hasNext}} = res;
         this.setState({
@@ -148,7 +151,8 @@ export default class MonitorManage extends Component<IProps, isState> {
       }
     }).catch(() => {
       this.setState({
-        loading: false
+        loading: false,
+        listLoading: false
       })
       Taro.hideLoading();
       Message('网络异常请稍后再试！')
@@ -157,17 +161,19 @@ export default class MonitorManage extends Component<IProps, isState> {
 
   handleBusinessList = (pageTemp, searchValue, isScroll) => {
     this.setState({
-      loading: !isScroll
+      loading: !isScroll,
+      listLoading: !isScroll
     })
     Taro.showLoading({title: '正在加载...'});
     this.props.dispatch({
       type: 'monitorManage/getBusinessList',
       payload: {page: pageTemp, caseNumberOrObligorName: searchValue}
     }).then((res) => {
-      this.setState({
-        loading: false
-      })
       Taro.hideLoading();
+      this.setState({
+        loading: false,
+        listLoading: false
+      })
       if (res.code === 200) {
         const {data: {list, page, total, hasNext}} = res;
         this.setState({
@@ -182,7 +188,8 @@ export default class MonitorManage extends Component<IProps, isState> {
       }
     }).catch(() => {
       this.setState({
-        loading: false
+        loading: false,
+        listLoading: false
       })
       Taro.hideLoading();
       Message('网络异常请稍后再试！')
@@ -207,9 +214,10 @@ export default class MonitorManage extends Component<IProps, isState> {
       {title: '业务', id: 1},
       {title: '债务人', id: 2},
     ];
-    const {current, searchValue, total, dataSource, loading} = this.state;
+    const {current, searchValue, total, dataSource, loading, listLoading} = this.state;
     const totalNumerText = current ? '个债务人' : '笔监控业务';
     const emptyText = current ? '暂无监控的债务人' : '您还未添加监控业务';
+    const placeholderText = current ? '请输入债务人名称' : '请输入业务编号或业务中的债务人姓名';
     return (
       <View className='yc-monitorManage'>
         <View className='yc-monitorManage-header'>
@@ -219,15 +227,39 @@ export default class MonitorManage extends Component<IProps, isState> {
               <AtTabs current={current} tabList={tabList} onClick={this.handleClick.bind(this)}
                       className='yc-monitorManage-top-tab-atTab'/>
             </View>
+
+
             <View onClick={this.onMiddleClick}>
               {
                 dataSource.length > 0 || searchValue !== "" ?
-                  <SearchInput searchValue={searchValue} handleChange={this.handleChange}
-                               onRemoveClick={this.onRemoveClick} current={current}/>
+                  // <SearchInput searchValue={searchValue} handleChange={this.handleChange}
+                  //              onRemoveClick={this.onRemoveClick} current={current}/>
+                  <View className='yc-monitorManage-top-search'>
+                    <Text className="iconfont icon-icon-monitorManage-search yc-monitorManage-top-search-icon"/>
+                    <View className='yc-monitorManage-top-search-input'>
+                      <Input
+                        type='text'
+                        placeholder={placeholderText}
+                        value={searchValue}
+                        onInput={this.handleChange}
+                      />
+                    </View>
+                    {
+                      searchValue !== "" ?
+                        <Text className="iconfont icon-remove yc-monitorManage-top-search-removeIcon"
+                              onClick={this.onRemoveClick}/> :
+                        null
+                    }
+
+                  </View>
                   : null
               }
             </View>
+
+
           </View>
+
+
           {
             dataSource.length > 0 ?
               <View className='yc-monitorManage-middle' onClick={this.onMiddleClick}>
@@ -241,34 +273,52 @@ export default class MonitorManage extends Component<IProps, isState> {
               </View> : null
           }
         </View>
+
         {
-          dataSource.length > 0 ?
+          dataSource.length > 0 && !listLoading ?
             <ListManage data={dataSource} onScrollToLower={this.handleScrollDown} current={current}
                         searchValue={searchValue} handleBusinessList={() => {
               this.handleBusinessList(1, searchValue, 0)
             }}
-                        handleObligorList={()=>{this.handleObligorList(1,searchValue,0)}}
+                        handleObligorList={() => {
+                          this.handleObligorList(1, searchValue, 0)
+                        }}
             />
             :
             <View>
               {
                 searchValue === '' ?
-                  <View className='yc-monitorManage-businessEmpty'>
-                    <View className='yc-monitorManage-businessEmpty-content'>
-                      <Image src={busEmptyImg} className='yc-monitorManage-businessEmpty-content-img'/>
-                      <View className='yc-monitorManage-businessEmpty-content-text'>{emptyText}</View>
-                      {
-                        !current ? <View className='yc-monitorManage-businessEmpty-content-addBus'
-                                         onClick={this.onAddBusinessClick}>添加业务</View> : null
-                      }
-                    </View>
-                  </View> :
-                  <View className='yc-monitorManage-businessEmpty' style={{background: "#F5F5F5", height: '100vh'}}>
-                    <View className='yc-monitorManage-businessEmpty-content'>
-                      <Image src={busSearchEmptyImg} className='yc-monitorManage-businessEmpty-content-img'/>
-                      <View className='yc-monitorManage-businessEmpty-content-text'>暂未找到相关数据</View>
-                    </View>
+                  <View>
+                    {
+                      !listLoading && dataSource.length === 0 ?
+                        <View className='yc-monitorManage-businessEmpty'>
+                          <View className='yc-monitorManage-businessEmpty-content'>
+                            <Image src={busEmptyImg} className='yc-monitorManage-businessEmpty-content-img'/>
+                            <View className='yc-monitorManage-businessEmpty-content-text'>{emptyText}</View>
+                            {
+                              !current ? <View className='yc-monitorManage-businessEmpty-content-addBus'
+                                               onClick={this.onAddBusinessClick}>添加业务</View> : null
+                            }
+                          </View>
+                        </View>
+                        : null
+                    }
                   </View>
+
+                  :
+                  <View>
+                    {
+                      !listLoading && dataSource.length === 0 ?
+                        <View className='yc-monitorManage-businessEmpty'
+                              style={{background: "#F5F5F5", height: '100vh'}}>
+                          <View className='yc-monitorManage-businessEmpty-content'>
+                            <Image src={busSearchEmptyImg} className='yc-monitorManage-businessEmpty-content-img'/>
+                            <View className='yc-monitorManage-businessEmpty-content-text'>暂未找到相关数据</View>
+                          </View>
+                        </View> : null
+                    }
+                  </View>
+
               }
             </View>
         }

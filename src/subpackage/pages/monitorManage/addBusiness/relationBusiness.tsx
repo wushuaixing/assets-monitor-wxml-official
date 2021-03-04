@@ -225,8 +225,8 @@ export default class RelationBusiness extends Component<IProps, isState> {
       "openBusinessCount": null,
       "regStatus": null,
       "riskTotal": null,
-      "role": "", // 债务人角色
-      "roleText": "" // 债务人角色名称
+      "role": "2", // 债务人角色
+      "roleText": "担保人" // 债务人角色名称
     }
     dataSource.push(obj);
     this.setState({
@@ -366,31 +366,31 @@ export default class RelationBusiness extends Component<IProps, isState> {
                        }}
         >
 
-          <AtActionSheetItem onClick={() => {
-            this.onSheetItemClick('role', 1)
-          }}>
-            借款人
-          </AtActionSheetItem>
+          {/*<AtActionSheetItem onClick={() => {*/}
+          {/*  this.onSheetItemClick('role', 1)*/}
+          {/*}}>*/}
+          {/*  借款人*/}
+          {/*</AtActionSheetItem>*/}
           <AtActionSheetItem onClick={() => {
             this.onSheetItemClick('role', 2)
           }}>
             担保人
           </AtActionSheetItem>
-          <AtActionSheetItem onClick={() => {
-            this.onSheetItemClick('role', 3)
-          }}>
-            抵质押人
-          </AtActionSheetItem>
+          {/*<AtActionSheetItem onClick={() => {*/}
+          {/*  this.onSheetItemClick('role', 3)*/}
+          {/*}}>*/}
+          {/*  抵质押人*/}
+          {/*</AtActionSheetItem>*/}
           <AtActionSheetItem onClick={() => {
             this.onSheetItemClick('role', 4)
           }}>
             共同借款人
           </AtActionSheetItem>
-          <AtActionSheetItem onClick={() => {
-            this.onSheetItemClick('role', 5)
-          }}>
-            未知
-          </AtActionSheetItem>
+          {/*<AtActionSheetItem onClick={() => {*/}
+          {/*  this.onSheetItemClick('role', 5)*/}
+          {/*}}>*/}
+          {/*  未知*/}
+          {/*</AtActionSheetItem>*/}
         </AtActionSheet>
 
         <View className='yc-addBusiness-deleteModal'>

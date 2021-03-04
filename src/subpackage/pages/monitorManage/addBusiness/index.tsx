@@ -128,7 +128,7 @@ export default class BusinessDetail extends Component<IProps, isState> {
       }
     }
     if (baseObj.borrowType === 0 && baseObj.obligorNumber !== "") {
-      if (!regNumber.test(baseObj.borrowType)) {
+      if (!regNumber.test(baseObj.obligorNumber)) {
         Message('请核对借款人证件号');
         return;
       }
