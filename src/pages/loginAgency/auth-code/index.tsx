@@ -200,7 +200,7 @@ export default class AuthCode extends Component<IProps, isState> {
                 <View className='yc-login-authCode-againContent-againText'>
                   点击重新获取验证码
                 </View>
-                <Text className="iconfont icon-refresh" style={{fontSize: '26rpx', color: '#0979E6',marginTop:'-1rpx'}}/>
+                <Text className="iconfont icon-refresh" style={{fontSize: '26rpx', color: '#0979E6'}}/>
               </View> :
               <View className='yc-login-authCode-secondText'>{`${second}s后重新获取验证码`}</View>
           }
