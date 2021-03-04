@@ -4,36 +4,30 @@ import moment from "moment";
 import {View, Text} from '@tarojs/components'
 import NavigationBar from "../../../../components/navigation-bar";
 import { getAuctionStatus, getLevel } from '../../../../components/list-item/config';
+import { bankruptcyAssociatedCase } from '../../../../services/monitor/bankruptcy/announcement';
 import { floatFormat } from '../../../../utils/tools/common';
 import './index.scss'
 
-interface historyAuctionType{
-  round?: number
-  consultPrice?: number
-  court?: string
-  currentPrice?: number
-  initialPrice?: number
-  start?: string
-  status?: number
-  title?: string
-  url?: string
-}
 
+interface partiesType{
+  name: string
+  role: string
+}
 type IProps = {
 }
 
 type IState = {
   detail: {
-    title: string
-    status: number
-    consultPrice: number
-    initialPrice: number
-    start: Date
     valueLevel: number
-    obligorName: string
-    remark: string
-    important: number
-    historyAuction: historyAuctionType[]
+    informationExplain: string
+    bankruptcyType: number
+    parties: partiesType[]
+    createTime?: any
+    title?: string
+    id: number
+  }
+  associatedCase: {
+    title?: string
   }
 };
 
@@ -43,7 +37,8 @@ export default class Bankruptcy extends Component <IProps, IState>{
   constructor(props) {
     super(props);
     this.state = {
-      detail: {}
+      detail: {},
+      associatedCase: {},
     };
   }
 
@@ -55,9 +50,21 @@ export default class Bankruptcy extends Component <IProps, IState>{
   }
 
   handleState = (detail) => {
+    console.log('detail === ', detail);
     this.setState({
       detail: detail
     });
+    this.handleRequestAssociatedCase(detail.id)
+  };
+
+  handleRequestAssociatedCase = (id: number) => {
+    bankruptcyAssociatedCase({id}).then((res) => {
+      if(res.code === 200){
+        this.setState({
+          associatedCase: res.data
+        })
+      }
+    }).catch()
   };
 
   navigateToDetail = () => {
@@ -79,7 +86,7 @@ export default class Bankruptcy extends Component <IProps, IState>{
   }
 
   render () {
-    const { detail } = this.state;
+    const { detail, associatedCase } = this.state;
     return (
       <View className='bankruptcy'>
         <NavigationBar border title='破产立案'/>
@@ -91,184 +98,174 @@ export default class Bankruptcy extends Component <IProps, IState>{
             <View className='bankruptcy-baseInfo-content-info'>
               <View className='bankruptcy-baseInfo-content-info-label'>价值等级：</View>
               <View
-                className='bankruptcy-baseInfo-content-info-value bankruptcy-baseInfo-content-info-valueStar'>{getLevel(2, 90)}</View>
+                className='bankruptcy-baseInfo-content-info-value bankruptcy-baseInfo-content-info-valueStar'>{getLevel(2, detail.valueLevel)}</View>
             </View>
             <View className='bankruptcy-baseInfo-content-line'/>
             <View className='bankruptcy-baseInfo-content-info'>
               <View className='bankruptcy-baseInfo-content-info-label'>信息说明：</View>
-              <View className='bankruptcy-baseInfo-content-info-value'>3个月内案由为企业借贷的立案信息</View>
+              <View className='bankruptcy-baseInfo-content-info-value'>{detail.informationExplain}</View>
             </View>
           </View>
         </View>
 
-        {/*/!*详细信息*!/*/}
-        {/*<View className='bankruptcy-baseInfo'>*/}
-        {/*  <View className='bankruptcy-baseInfo-title'>详细信息</View>*/}
-        {/*  <View className='bankruptcy-baseInfo-line'/>*/}
-        {/*  /!*{*!/*/}
-        {/*  /!*  detail.bankruptcyType === 1 ? <View>*!/*/}
+        {
+          detail.bankruptcyType === 2 ? <View className='bankruptcy-baseInfo'>
+              <View className='bankruptcy-baseInfo-title'>详细信息</View>
+              <View className='bankruptcy-baseInfo-line'/>
+              <View className='bankruptcy-baseInfo-content'>
+                <View className='bankruptcy-baseInfo-content-info'>
+                  <View className='bankruptcy-baseInfo-content-info-justifylabel'>被申请人</View>
+                  <View className='bankruptcy-baseInfo-content-info-colon'>：</View>
+                  <View className='bankruptcy-baseInfo-content-info-value link'>{detail.parties.filter(item => item.role === '被申请人')[0].name}</View>
+                </View>
+                <View className='bankruptcy-baseInfo-content-line'/>
+                <View className='bankruptcy-baseInfo-content-info'>
+                  <View className='bankruptcy-baseInfo-content-info-justifylabel'>申请人</View>
+                  <View className='bankruptcy-baseInfo-content-info-colon'>：</View>
+                  <View className='bankruptcy-baseInfo-content-info-value'>{detail.parties.filter(item => item.role === '申请人')[0].name}</View>
+                </View>
+                <View className='bankruptcy-baseInfo-line' style={{margin: '24rpx 0'}}/>
 
-        {/*  /!*  </View>*!/*/}
-        {/*  /!*}*!/*/}
-        {/*  <View className='bankruptcy-baseInfo-content'>*/}
-        {/*    <View className='bankruptcy-baseInfo-content-info'>*/}
-        {/*      <View className='bankruptcy-baseInfo-content-info-justifylabel'>被申请人</View>*/}
-        {/*      <View className='bankruptcy-baseInfo-content-info-colon'>：</View>*/}
-        {/*      <View className='bankruptcy-baseInfo-content-info-value' style={{color: '#0979E6'}}>乐视网信息科技有限公司</View>*/}
-        {/*    </View>*/}
-        {/*    <View className='bankruptcy-baseInfo-content-line'/>*/}
-        {/*    <View className='bankruptcy-baseInfo-content-info'>*/}
-        {/*      <View className='bankruptcy-baseInfo-content-info-justifylabel'>申请人</View>*/}
-        {/*      <View className='bankruptcy-baseInfo-content-info-colon'>：</View>*/}
-        {/*      <View className='bankruptcy-baseInfo-content-info-value'>四川震强绿舍建材有限公司，成都川墙星建筑劳务有限公司</View>*/}
-        {/*    </View>*/}
-        {/*    <View className='bankruptcy-baseInfo-line' style={{margin: '24rpx 0'}}/>*/}
-
-        {/*    <View className='bankruptcy-baseInfo-content-info'>*/}
-        {/*      <View className='bankruptcy-baseInfo-content-info-justifylabel'>信息类别</View>*/}
-        {/*      <View className='bankruptcy-baseInfo-content-info-colon'>：</View>*/}
-        {/*      <View className='bankruptcy-baseInfo-content-info-value'>破产立案</View>*/}
-        {/*    </View>*/}
-        {/*    <View className='bankruptcy-baseInfo-content-info'>*/}
-        {/*      <View className='bankruptcy-baseInfo-content-info-justifylabel'>发布日期</View>*/}
-        {/*      <View className='bankruptcy-baseInfo-content-info-colon'>：</View>*/}
-        {/*      <View className='bankruptcy-baseInfo-content-info-value'>2020-11-07</View>*/}
-        {/*    </View>*/}
-        {/*    <View className='bankruptcy-baseInfo-content-info'>*/}
-        {/*      <View className='bankruptcy-baseInfo-content-info-justifylabel'>案号</View>*/}
-        {/*      <View className='bankruptcy-baseInfo-content-info-colon'>：</View>*/}
-        {/*      <View className='bankruptcy-baseInfo-content-info-value'>(2020）粤2071执17138号</View>*/}
-        {/*    </View>*/}
-        {/*    <View className='bankruptcy-baseInfo-content-info'>*/}
-        {/*      <View className='bankruptcy-baseInfo-content-info-justifylabel'>经办法院</View>*/}
-        {/*      <View className='bankruptcy-baseInfo-content-info-colon'>：</View>*/}
-        {/*      <View className='bankruptcy-baseInfo-content-info-value'>(2020）粤2071执17138号</View>*/}
-        {/*    </View>*/}
-        {/*    <View className='bankruptcy-baseInfo-content-info'>*/}
-        {/*      <View className='bankruptcy-baseInfo-content-info-justifylabel'>经办法院</View>*/}
-        {/*      <View className='bankruptcy-baseInfo-content-info-colon'>：</View>*/}
-        {/*      <View className='bankruptcy-baseInfo-content-info-value'>(2020）粤2071执17138号</View>*/}
-        {/*    </View>*/}
-        {/*    <View className='bankruptcy-baseInfo-content-info'>*/}
-        {/*      <View className='bankruptcy-baseInfo-content-info-label'>管理人机构：</View>*/}
-        {/*      <View className='bankruptcy-baseInfo-content-info-value'>江苏烨泰玻璃有限公司</View>*/}
-        {/*    </View>*/}
-        {/*    <View className='bankruptcy-baseInfo-content-info'>*/}
-        {/*      <View className='bankruptcy-baseInfo-content-info-label'>管理人主要负责人：</View>*/}
-        {/*      <View className='bankruptcy-baseInfo-content-info-value'>(2020）粤2071执17138号</View>*/}
-        {/*    </View>*/}
-        {/*    <View className='bankruptcy-baseInfo-content-line'/>*/}
-        {/*    <View className='bankruptcy-baseInfo-content-info'>*/}
-        {/*      <View className='bankruptcy-baseInfo-content-info-justifylabel'>判决结果</View>*/}
-        {/*      <View className='bankruptcy-baseInfo-content-info-colon'>：</View>*/}
-        {/*      <View className='bankruptcy-baseInfo-content-info-value'>*/}
-        {/*        本案按枣庄矿业集团中兴建安工程有限公司撤回起诉处理。*/}
-        {/*      </View>*/}
-        {/*    </View>*/}
-        {/*    <View className='bankruptcy-baseInfo-content-line'/>*/}
-        {/*  </View>*/}
-
-        {/*  <View className='bankruptcy-baseInfo-line' />*/}
-
-        {/*  <View className='bankruptcy-baseInfo-content'>*/}
-        {/*    <View className='bankruptcy-baseInfo-content-info'>*/}
-        {/*      <View*/}
-        {/*        className='bankruptcy-baseInfo-content-info-label bankruptcy-baseInfo-content-info-sourceLinkLabel'>源链接：</View>*/}
-        {/*      <View onClick={()=>{this.onCopyClick('https://www.baidu.com')}}>*/}
-        {/*        <View className='bankruptcy-baseInfo-content-info-value'*/}
-        {/*              style={{color: '#0979E6',display:'inline-block'}}>www.baidu.com</View>*/}
-        {/*        <Text className='iconfont icon-copy bankruptcy-baseInfo-content-info-copyIcon'/>*/}
-        {/*      </View>*/}
-        {/*      <View className='bankruptcy-baseInfo-content-info-label' style={{marginLeft: 'auto'}}>（来源：诉讼网）</View>*/}
-        {/*    </View>*/}
-        {/*  </View>*/}
-
-        {/*</View>*/}
-
-        {/*详细信息*/}
-        <View className='bankruptcy-baseInfo'>
-          <View className='bankruptcy-baseInfo-title'>详细信息</View>
-          <View className='bankruptcy-baseInfo-line'/>
-          <View className='bankruptcy-baseInfo-content'>
-            <View className='bankruptcy-baseInfo-content-info'>
-              <View className='bankruptcy-baseInfo-content-info-justifylabel'>信息类别</View>
-              <View className='bankruptcy-baseInfo-content-info-colon'>：</View>
-              <View className='bankruptcy-baseInfo-content-info-value' style={{color: '#0979E6'}}>乐视网信息科技有限公司</View>
-            </View>
-            <View className='bankruptcy-baseInfo-content-info'>
-              <View className='bankruptcy-baseInfo-content-info-justifylabel'>公开日期</View>
-              <View className='bankruptcy-baseInfo-content-info-colon'>：</View>
-              <View className='bankruptcy-baseInfo-content-info-value'>四川震强绿舍建材有限公司，成都川墙星建筑劳务有限公司</View>
-            </View>
-            <View className='bankruptcy-baseInfo-line' style={{margin: '24rpx 0'}}/>
-
-            <View className='bankruptcy-baseInfo-content-info'>
-              <View className='bankruptcy-baseInfo-content-info-justifylabel'>标题</View>
-              <View className='bankruptcy-baseInfo-content-info-colon'>：</View>
-              <View className='bankruptcy-baseInfo-content-info-value'>
-                东营市佳昊化工有限责任公司第二次债权人会议公告
-                <View className='bankruptcy-baseInfo-content-info-value link'>查看文书详情 </View>
+                <View className='bankruptcy-baseInfo-content-info'>
+                  <View className='bankruptcy-baseInfo-content-info-justifylabel'>信息类别</View>
+                  <View className='bankruptcy-baseInfo-content-info-colon'>：</View>
+                  <View className='bankruptcy-baseInfo-content-info-value'>破产立案</View>
+                </View>
+                <View className='bankruptcy-baseInfo-content-info'>
+                  <View className='bankruptcy-baseInfo-content-info-justifylabel'>发布日期</View>
+                  <View className='bankruptcy-baseInfo-content-info-colon'>：</View>
+                  <View className='bankruptcy-baseInfo-content-info-value'>2020-11-07</View>
+                </View>
+                <View className='bankruptcy-baseInfo-content-info'>
+                  <View className='bankruptcy-baseInfo-content-info-justifylabel'>案号</View>
+                  <View className='bankruptcy-baseInfo-content-info-colon'>：</View>
+                  <View className='bankruptcy-baseInfo-content-info-value'>(2020）粤2071执17138号</View>
+                </View>
+                <View className='bankruptcy-baseInfo-content-info'>
+                  <View className='bankruptcy-baseInfo-content-info-justifylabel'>经办法院</View>
+                  <View className='bankruptcy-baseInfo-content-info-colon'>：</View>
+                  <View className='bankruptcy-baseInfo-content-info-value'>(2020）粤2071执17138号</View>
+                </View>
+                <View className='bankruptcy-baseInfo-content-info'>
+                  <View className='bankruptcy-baseInfo-content-info-justifylabel'>经办法院</View>
+                  <View className='bankruptcy-baseInfo-content-info-colon'>：</View>
+                  <View className='bankruptcy-baseInfo-content-info-value'>(2020）粤2071执17138号</View>
+                </View>
+                <View className='bankruptcy-baseInfo-content-info'>
+                  <View className='bankruptcy-baseInfo-content-info-label'>管理人机构：</View>
+                  <View className='bankruptcy-baseInfo-content-info-value'>江苏烨泰玻璃有限公司</View>
+                </View>
+                <View className='bankruptcy-baseInfo-content-info'>
+                  <View className='bankruptcy-baseInfo-content-info-label'>管理人主要负责人：</View>
+                  <View className='bankruptcy-baseInfo-content-info-value'>(2020）粤2071执17138号</View>
+                </View>
+                <View className='bankruptcy-baseInfo-content-line'/>
+                <View className='bankruptcy-baseInfo-content-info'>
+                  <View className='bankruptcy-baseInfo-content-info-justifylabel'>判决结果</View>
+                  <View className='bankruptcy-baseInfo-content-info-colon'>：</View>
+                  <View className='bankruptcy-baseInfo-content-info-value'>
+                    本案按枣庄矿业集团中兴建安工程有限公司撤回起诉处理。
+                  </View>
+                </View>
+                <View className='bankruptcy-baseInfo-content-line'/>
+              </View>
+              <View className='bankruptcy-baseInfo-line' />
+              <View className='bankruptcy-baseInfo-content'>
+                <View className='bankruptcy-baseInfo-content-info'>
+                  <View
+                    className='bankruptcy-baseInfo-content-info-label bankruptcy-baseInfo-content-info-sourceLinkLabel'>源链接：</View>
+                  <View onClick={()=>{this.onCopyClick('https://www.baidu.com')}}>
+                    <View className='bankruptcy-baseInfo-content-info-value'
+                          style={{color: '#0979E6',display:'inline-block'}}>www.baidu.com</View>
+                    <Text className='iconfont icon-copy bankruptcy-baseInfo-content-info-copyIcon'/>
+                  </View>
+                  <View className='bankruptcy-baseInfo-content-info-label' style={{marginLeft: 'auto'}}>（来源：诉讼网）</View>
+                </View>
+              </View>
+          </View> : <View>
+            <View className='bankruptcy-baseInfo'>
+              <View className='bankruptcy-baseInfo-title'>详细信息</View>
+              <View className='bankruptcy-baseInfo-line'/>
+              <View className='bankruptcy-baseInfo-content'>
+                <View className='bankruptcy-baseInfo-content-info'>
+                  <View className='bankruptcy-baseInfo-content-info-justifylabel'>信息类别</View>
+                  <View className='bankruptcy-baseInfo-content-info-colon'>：</View>
+                  <View className='bankruptcy-baseInfo-content-info-value link'>破产公告</View>
+                </View>
+                <View className='bankruptcy-baseInfo-content-info'>
+                  <View className='bankruptcy-baseInfo-content-info-justifylabel'>公开日期</View>
+                  <View className='bankruptcy-baseInfo-content-info-colon'>：</View>
+                  <View className='bankruptcy-baseInfo-content-info-value'>{moment(detail.createTime * 1000).format('YYYY-MM-DD')}</View>
+                </View>
+                <View className='bankruptcy-baseInfo-line' style={{margin: '24rpx 0'}}/>
+                <View className='bankruptcy-baseInfo-content-info'>
+                  <View className='bankruptcy-baseInfo-content-info-justifylabel'>标题</View>
+                  <View className='bankruptcy-baseInfo-content-info-colon'>：</View>
+                  <View className='bankruptcy-baseInfo-content-info-value'>
+                    {detail.title}
+                  </View>
+                  <View className='bankruptcy-baseInfo-content-info-value link'>查看文书详情 </View>
+                </View>
               </View>
             </View>
-          </View>
-        </View>
-
-        <View className='bankruptcy-baseInfo'>
-          <View className='bankruptcy-baseInfo-title'>关联案件</View>
-          <View className='bankruptcy-baseInfo-line'/>
-          <View className='bankruptcy-baseInfo-content'>
-            <View className='bankruptcy-baseInfo-content-info'>
-              <View className='bankruptcy-baseInfo-content-info-justifylabel'>案号</View>
-              <View className='bankruptcy-baseInfo-content-info-colon'>：</View>
-              <View className='bankruptcy-baseInfo-content-info-value' >2020-11-07</View>
-            </View>
-            <View className='bankruptcy-baseInfo-content-info'>
-              <View className='bankruptcy-baseInfo-content-info-justifylabel'>发布日期</View>
-              <View className='bankruptcy-baseInfo-content-info-colon'>：</View>
-              <View className='bankruptcy-baseInfo-content-info-value'>2020-11-07</View>
-            </View>
-            <View className='bankruptcy-baseInfo-content-info'>
-              <View className='bankruptcy-baseInfo-content-info-justifylabel'>经办法院</View>
-              <View className='bankruptcy-baseInfo-content-info-colon'>：</View>
-              <View className='bankruptcy-baseInfo-content-info-value'>九江市中级人民法院</View>
-            </View>
-            <View className='bankruptcy-baseInfo-content-info'>
-              <View className='bankruptcy-baseInfo-content-info-label'>管理人机构：</View>
-              <View className='bankruptcy-baseInfo-content-info-value'>江苏烨泰玻璃有限公司</View>
-            </View>
-            <View className='bankruptcy-baseInfo-content-info'>
-              <View className='bankruptcy-baseInfo-content-info-label'>管理人主要负责人：</View>
-              <View className='bankruptcy-baseInfo-content-info-value'>孙瑞玺</View>
-            </View>
-          </View>
-          <View className='bankruptcy-baseInfo-line'/>
-          <View className='bankruptcy-baseInfo-content'>
-            <View className='bankruptcy-baseInfo-content-info'>
-              <View className='bankruptcy-baseInfo-content-info-justifylabel'>被申请人</View>
-              <View className='bankruptcy-baseInfo-content-info-colon'>：</View>
-              <View className='bankruptcy-baseInfo-content-info-value' >2020-11-07</View>
-            </View>
-            <View className='bankruptcy-baseInfo-content-info'>
-              <View className='bankruptcy-baseInfo-content-info-justifylabel'>申请人</View>
-              <View className='bankruptcy-baseInfo-content-info-colon'>：</View>
-              <View className='bankruptcy-baseInfo-content-info-value'>2020-11-07</View>
-            </View>
-          </View>
-
-          <View className='bankruptcy-baseInfo-content'>
-            <View className='bankruptcy-baseInfo-content-info'>
-              <View
-                className='bankruptcy-baseInfo-content-info-label bankruptcy-baseInfo-content-info-sourceLinkLabel'>源链接：</View>
-              <View onClick={()=>{this.onCopyClick('https://www.baidu.com')}}>
-                <View className='bankruptcy-baseInfo-content-info-value'
-                      style={{color: '#0979E6',display:'inline-block'}}>www.baidu.com</View>
-                <Text className='iconfont icon-copy bankruptcy-baseInfo-content-info-copyIcon'/>
+            <View className='bankruptcy-baseInfo'>
+              <View className='bankruptcy-baseInfo-title'>关联案件</View>
+              <View className='bankruptcy-baseInfo-line'/>
+              <View className='bankruptcy-baseInfo-content'>
+                <View className='bankruptcy-baseInfo-content-info'>
+                  <View className='bankruptcy-baseInfo-content-info-justifylabel'>案号</View>
+                  <View className='bankruptcy-baseInfo-content-info-colon'>：</View>
+                  <View className='bankruptcy-baseInfo-content-info-value' >{associatedCase.title}</View>
+                </View>
+                <View className='bankruptcy-baseInfo-content-info'>
+                  <View className='bankruptcy-baseInfo-content-info-justifylabel'>发布日期</View>
+                  <View className='bankruptcy-baseInfo-content-info-colon'>：</View>
+                  <View className='bankruptcy-baseInfo-content-info-value'>2020-11-07</View>
+                </View>
+                <View className='bankruptcy-baseInfo-content-info'>
+                  <View className='bankruptcy-baseInfo-content-info-justifylabel'>经办法院</View>
+                  <View className='bankruptcy-baseInfo-content-info-colon'>：</View>
+                  <View className='bankruptcy-baseInfo-content-info-value'>九江市中级人民法院</View>
+                </View>
+                <View className='bankruptcy-baseInfo-content-info'>
+                  <View className='bankruptcy-baseInfo-content-info-label'>管理人机构：</View>
+                  <View className='bankruptcy-baseInfo-content-info-value'>江苏烨泰玻璃有限公司</View>
+                </View>
+                <View className='bankruptcy-baseInfo-content-info'>
+                  <View className='bankruptcy-baseInfo-content-info-label'>管理人主要负责人：</View>
+                  <View className='bankruptcy-baseInfo-content-info-value'>孙瑞玺</View>
+                </View>
               </View>
-              <View className='bankruptcy-baseInfo-content-info-label' style={{marginLeft: 'auto'}}>（来源：诉讼网）</View>
+              <View className='bankruptcy-baseInfo-line'/>
+              <View className='bankruptcy-baseInfo-content'>
+                <View className='bankruptcy-baseInfo-content-info'>
+                  <View className='bankruptcy-baseInfo-content-info-justifylabel'>被申请人</View>
+                  <View className='bankruptcy-baseInfo-content-info-colon'>：</View>
+                  <View className='bankruptcy-baseInfo-content-info-value' >2020-11-07</View>
+                </View>
+                <View className='bankruptcy-baseInfo-content-info'>
+                  <View className='bankruptcy-baseInfo-content-info-justifylabel'>申请人</View>
+                  <View className='bankruptcy-baseInfo-content-info-colon'>：</View>
+                  <View className='bankruptcy-baseInfo-content-info-value'>2020-11-07</View>
+                </View>
+              </View>
+
+              <View className='bankruptcy-baseInfo-content'>
+                <View className='bankruptcy-baseInfo-content-info'>
+                  <View
+                    className='bankruptcy-baseInfo-content-info-label bankruptcy-baseInfo-content-info-sourceLinkLabel'>源链接：</View>
+                  <View onClick={()=>{this.onCopyClick('https://www.baidu.com')}}>
+                    <View className='bankruptcy-baseInfo-content-info-value'
+                          style={{color: '#0979E6',display:'inline-block'}}>www.baidu.com</View>
+                    <Text className='iconfont icon-copy bankruptcy-baseInfo-content-info-copyIcon'/>
+                  </View>
+                  <View className='bankruptcy-baseInfo-content-info-label' style={{marginLeft: 'auto'}}>（来源：诉讼网）</View>
+                </View>
+              </View>
+
             </View>
           </View>
-
-        </View>
+        }
 
       </View>
     )
