@@ -41,7 +41,7 @@ export default class Search extends Component<any, isState> {
           <View className='yc-search-assets-content'>
             <Text className="iconfont icon-search_assets yc-search-assets-content-img" />
             <View className='yc-search-assets-content-text'>
-              <View className='yc-search-assets-content-text-top'>资产线索</View>
+              <View className='yc-search-assets-content-text-top'>画像查询</View>
               <View className='yc-search-assets-content-text-bottom'>个人/企业概况一手掌握</View>
             </View>
             <View className='yc-search-assets-content-icon'>

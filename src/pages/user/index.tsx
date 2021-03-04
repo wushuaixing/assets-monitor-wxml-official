@@ -28,10 +28,10 @@ export default class User extends Component<IProps, isState> {
     super(props);
     this.state = {
       baseInfoArr: [
-        {key: '业务', value: 0, disabled: false},
-        {key: '债务人', value: 0, disabled: false},
-        {key: '跟进', value: 0, disabled: true},
-        {key: '收藏', value: 0, disabled: true},
+        {key: '业务', value: 0, disabled: false,field:'business'},
+        {key: '债务人', value: 0, disabled: false,field:'obligor'},
+        {key: '跟进', value: 0, disabled: true,field:'followUp'},
+        {key: '收藏', value: 0, disabled: true,field:'collect'},
       ],
       name: ''
     };
@@ -54,10 +54,10 @@ export default class User extends Component<IProps, isState> {
       if (res.code === 200) {
         const {data: {name = '', businessCount = 0, obligorCount = 0}} = res || {};
         const buildArr = [
-          {key: '业务', value: businessCount, disabled: false},
-          {key: '债务人', value: obligorCount, disabled: false},
-          {key: '跟进', value: 0, disabled: true},
-          {key: '收藏', value: 0, disabled: true},
+          {key: '业务', value: businessCount, disabled: false,field:'business'},
+          {key: '债务人', value: obligorCount, disabled: false,field:'obligor'},
+          {key: '跟进', value: 0, disabled: true,field:'followUp'},
+          {key: '收藏', value: 0, disabled: true,field:'collect'},
         ]
         this.setState({
           name,
@@ -90,6 +90,12 @@ export default class User extends Component<IProps, isState> {
     });
   }
 
+  navigateToPage = (disabled,field,value) =>{
+    if(!disabled && value !== 0){
+      Taro.navigateTo({url:`/subpackage/pages/monitorManage/index?type=${field}`})
+    }
+  }
+
   render() {
     const {name, baseInfoArr} = this.state;
     return (
@@ -108,12 +114,12 @@ export default class User extends Component<IProps, isState> {
               {
                 baseInfoArr.map((i, index) => {
                   return (
-                    <View className='yc-user-baseInfo-amount-content'>
+                    <View className='yc-user-baseInfo-amount-content' onClick={()=>{this.navigateToPage(i.disabled,i.field,i.value)}}>
                       <View style={{borderLeft:index !== 0 ? 'solid 1px #E5E5E5' : 'solid 0 #fff'}}>
                       <View className='yc-user-baseInfo-amount-content-number'
-                            style={{color: i.disabled ? '#CCCCCC' : '#333333'}}>{i.value}</View>
+                            style={{color: i.disabled || i.value === 0 ? '#CCCCCC' : '#333333'}}>{i.value}</View>
                       <View className='yc-user-baseInfo-amount-content-text'
-                            style={{color: i.disabled ? '#CCCCCC' : '#666666'}}>{i.key}</View>
+                            style={{color: i.disabled || i.value === 0 ? '#CCCCCC' : '#666666'}}>{i.key}</View>
                       </View>
                     </View>
                   )
