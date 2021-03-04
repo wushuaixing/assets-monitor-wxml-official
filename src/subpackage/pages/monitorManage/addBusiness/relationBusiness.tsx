@@ -4,6 +4,7 @@ import {Button, View, Input, Form, Text} from '@tarojs/components';
 import {AtActionSheet, AtActionSheetItem, AtModal, AtModalContent, AtModalAction} from 'taro-ui';
 import './index.scss'
 import {getCurrentInstance} from "@tarojs/taro";
+import {Message} from '../../../../utils/tools/common'
 
 type isState = {
   isOpened: boolean,
@@ -13,7 +14,8 @@ type isState = {
   curActionSheetType: number,
   isDeleteOpendModal: boolean,
   deleteIndex: number,
-  saveClickRole:any,
+  saveClickRole: any,
+  // checkObligorNumber: any
 }
 
 type IProps = {
@@ -42,7 +44,8 @@ export default class RelationBusiness extends Component<IProps, isState> {
       curActionSheetType: 0,
       isDeleteOpendModal: false,
       deleteIndex: 0,
-      saveClickRole:[]
+      saveClickRole: [],
+      // checkObligorNumber: []
     };
   }
 
@@ -84,17 +87,17 @@ export default class RelationBusiness extends Component<IProps, isState> {
   }
 
   onSheetItemClick = (type, value) => {
-    const {curItem, dataSource, curActionSheetType,saveClickRole} = this.state;
-    console.log('curItem',curItem)
+    const {curItem, dataSource, curActionSheetType, saveClickRole} = this.state;
+    console.log('curItem', curItem)
     this.setState({
-      saveClickRole:[]
+      saveClickRole: []
     })
     dataSource[curItem][type] = value;
     if (type === 'role') {
       dataSource[curItem].roleText = handleRole[value];
     }
-    if(type === 'borrowType'){
-      saveClickRole.push({key:curItem,value:true});
+    if (type === 'borrowType') {
+      saveClickRole.push({key: curItem, value: true});
     }
     this.setState({
       dataSource,
@@ -105,29 +108,78 @@ export default class RelationBusiness extends Component<IProps, isState> {
 
   onInput = (e, type, index) => {
     const {dataSource} = this.state;
-    dataSource[index][type] = e.detail.value;
+    const {value} = e.detail;
+    if (type === 'obligorName') {
+      const curValue = value.slice(0, 40)
+      if (value.length <= 40) {
+        dataSource[index][type] = curValue;
+      } else {
+        Message('最长输入40个字符');
+      }
+    }
+    if (type === 'obligorNumber') {
+      const curValue = value.slice(0, 18)
+      if (value.length <= 18) {
+        dataSource[index][type] = curValue;
+      } else {
+        Message('最长输入18个字符');
+      }
+    }
     this.setState({
       dataSource
     })
   }
 
-  onBlur = (e,type,index)=>{
-    if(type === 'obligorName'){
-      const {dataSource,saveClickRole} = this.state;
-      console.log('saveClickRole===',saveClickRole,index)
+  onBlur = (e, type, index) => {
+    // const {value} = e.detail;
+    if (type === 'obligorName') {
+      const {dataSource, saveClickRole} = this.state;
+      console.log('saveClickRole===', saveClickRole, index)
       const curValue = e.detail.value;
-      const isClick = saveClickRole.filter(i=>i.key === index && i.value === true);
-      console.log('isClick===',isClick)
-      if(curValue.length > 4 && isClick.length === 0){
+      const isClick = saveClickRole.filter(i => i.key === index && i.value === true);
+      console.log('isClick===', isClick)
+      if (curValue.length > 4 && isClick.length === 0) {
         dataSource[index]['borrowType'] = 1
       }
-      if(curValue.length <= 4 && isClick.length === 0){
+      if (curValue.length <= 4 && isClick.length === 0) {
         dataSource[index]['borrowType'] = 0
       }
+      // const {checkObligorNumber} = this.state;
+      // const reg = /^[\u4e00-\u9fa5\uff08\uff090-9a-zA-Z·\(\)]+$/;
+      // if (reg.test(value)) {
+      //   checkObligorNumber.push({key: index, value: true, field: 'obligorName'})
+      // } else {
+      //   checkObligorNumber.push({key: index, value: false, field: 'obligorName'});
+      //   Message('请填写正确的债务人名称');
+      // }
+      this.setState({
+        dataSource,
+        // checkObligorNumber
+      })
+    }
+    if(type === 'obligorNumber'){
+      const {dataSource} = this.state;
+      const curValue = e.detail.value;
+      const reg1 = /[\(]/g;
+      const reg2 = /[\)]/g;
+      dataSource[index]['obligorNumber'] = curValue.replace(reg1, "（").replace(reg2, "）");
       this.setState({
         dataSource
       })
     }
+    // if (type === 'obligorNumber') {
+    //   const {checkObligorNumber} = this.state;
+    //   const reg = /^[0-9a-zA-Z\uff08\uff09\(\)\*]+$/;
+    //   if (reg.test(value)) {
+    //     checkObligorNumber.push({key: index, value: true, field: 'obligorNumber'})
+    //   } else {
+    //     checkObligorNumber.push({key: index, value: false, field: 'obligorNumber'})
+    //     Message('请填写正确的证件号');
+    //   }
+    //   this.setState({
+    //     checkObligorNumber
+    //   })
+    // }
   }
 
   delete = (index) => {
@@ -232,7 +284,8 @@ export default class RelationBusiness extends Component<IProps, isState> {
             return (
               <View>
                 <View className='yc-addBusiness-relationTextContent'>
-                  <View className='yc-addBusiness-baseInfoText yc-addBusiness-relationBaseInfoText'>关联债务人{index + 1}</View>
+                  <View
+                    className='yc-addBusiness-baseInfoText yc-addBusiness-relationBaseInfoText'>关联债务人{index + 1}</View>
                   <View className='yc-addBusiness-deleteText' onClick={() => this.delete(index)}>刪除</View>
                 </View>
 
@@ -253,7 +306,9 @@ export default class RelationBusiness extends Component<IProps, isState> {
                                   placeholder={i.placeHolder}
                                   value={res[i.field]}
                                   onInput={(e) => this.onInput(e, i.field, index)}
-                                  onBlur={(e)=>{this.onBlur(e,i.field,index)}}
+                                  onBlur={(e) => {
+                                    this.onBlur(e, i.field, index)
+                                  }}
                                 /> :
                                 <View className='yc-addBusiness-baseInfo-input-content-selectTemp'
                                       onClick={() => {
@@ -269,7 +324,8 @@ export default class RelationBusiness extends Component<IProps, isState> {
                             }
                           </View>
                           {
-                            indexTemp !== relationBusinessConfig.length - 1 && <View className='yc-addBusiness-baseInfo-input-content-line'/>
+                            indexTemp !== relationBusinessConfig.length - 1 &&
+                            <View className='yc-addBusiness-baseInfo-input-content-line'/>
                           }
                         </View>
 
