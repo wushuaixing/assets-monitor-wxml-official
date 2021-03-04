@@ -61,6 +61,7 @@
 
 .auction{
   background-color: $page-bg-color;
+  height: 100vh;
   &-clues{
     margin-top: 23px;
     position: relative;
@@ -147,12 +148,8 @@
       }
     }
 
-    &-line{
-      background-color: $divider-color;
-      height: 1px;
-    }
-
     &-content{
+      border-top: 1px solid $divider-color;
       @include contentStyle;
     }
 

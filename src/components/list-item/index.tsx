@@ -2,8 +2,8 @@ import React, {useEffect, useState} from "react";
 import Taro from '@tarojs/taro';
 import moment from "moment";
 import {View, Text, Image} from '@tarojs/components';
-import { getPlot, getTitleTag, getRiskTag, getObligorName, getTime, getAuctionStatus, getAuctionRoleType, getJumpType, getCaseType } from './config';
-import { floatFormat } from '../../utils/tools/common';
+import { getPlot, getTitleTag, getRiskTag, getObligorName, getTime, getAuctionStatus, getAuctionRoleType, getJumpType, getCaseType, getRequestParams } from './config';
+import {dateToFormat, floatFormat} from '../../utils/tools/common';
 import './index.scss';
 
 
@@ -15,11 +15,11 @@ interface itemType{
   title: string
   time?: string
   status: number
-  roleType: number
+  roleType?: number
   obligorName: string
   valueLevel: number
   bankruptcyType?:number
-  consultPrice: number
+  consultPrice?: number
   auctionStatusTag?: number
   roundTag?: number
   caseType?: number
@@ -42,36 +42,42 @@ type IProps = {
 }
 
 const ListItem = (props: IProps) => {
-  const { dataType, updateTime, type, object, index} = props;
+  const { dataType, updateTime, type, index} = props;
   const [detail, setDetail] = useState(props.object);
   useEffect(() => {
     setDetail(props.object);
   }, [props.object]);
 
+  // 刷新页面
   const onRefresh = (objValue, type) => {
     const newDetail = {...detail};
     newDetail[type] = objValue[type];
     setDetail(newDetail);
   };
 
+  // 跳转详情页
+  const handleGoDetail = () => {
+    let detailString = JSON.stringify({...detail, dataType});
+    let url = getJumpType(dataType).url;
+    Taro.navigateTo({
+      url: `${url}?detail=${detailString}`,
+      success: function(res) {
+        res.eventChannel.emit('acceptDataFromOpenerPage', { ...detail, dataType})
+      }
+    });
+  };
 
+  // 点击已读未读
   const handleMarkRead = () => {
-    getJumpType(dataType).apiName({idList: [`${detail.id}`]})
+    getJumpType(dataType).apiName({...getRequestParams(dataType, detail.id)})
       .then(res => {
-        let url = getJumpType(dataType).url;
         if(res.code === 200 && res.data){
-          Taro.navigateTo({url: url})
+          const { id } = detail;
+          onRefresh({id, isRead: true, index}, 'isRead');
+          handleGoDetail();
         }
         else {
-          const { id, isRead } = detail;
-          onRefresh({id, isRead: !isRead, index}, 'isRead');
-          let detailString = JSON.stringify({...detail, dataType});
-          Taro.navigateTo({
-            url: `${url}?detail=${detailString}`,
-            success: function(res) {
-              res.eventChannel.emit('acceptDataFromOpenerPage', { ...detail, dataType})
-            }
-          })
+          handleGoDetail();
         }
     })
   };
@@ -141,7 +147,7 @@ const ListItem = (props: IProps) => {
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>开拍时间</View>
 						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{moment(detail.start).format('YYYY-MM-DD HH:mm:ss')}</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{dateToFormat(detail.start, 'YYYY-MM-DD HH:mm:ss')}</View>
 					</View>
 				</View>
       }
@@ -151,7 +157,7 @@ const ListItem = (props: IProps) => {
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>立案日期</View>
 						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.gmtCreate ? moment(detail.gmtCreate).format('YYYY-MM-DD') : '-'}</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{dateToFormat(detail.gmtCreate)}</View>
 					</View>
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>案号</View>
@@ -176,7 +182,7 @@ const ListItem = (props: IProps) => {
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>开庭日期</View>
 						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.gmtCreate ? moment(detail.gmtCreate * 1000).format('YYYY-MM-DD') : '-'}</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{dateToFormat(detail.gmtCreate)}</View>
 					</View>
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>案号</View>
@@ -196,7 +202,7 @@ const ListItem = (props: IProps) => {
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>发布日期</View>
 						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.gmtPublish ? moment(detail.gmtPublish).format('YYYY-MM-DD') : '-'}</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{dateToFormat(detail.gmtPublish)}</View>
 					</View>
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>案号</View>
@@ -221,7 +227,7 @@ const ListItem = (props: IProps) => {
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>发布日期</View>
 						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.publishDate ? moment(detail.publishDate).format('YYYY-MM-DD') : '-'}</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{dateToFormat(detail.publishDate)}</View>
 					</View>
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>申请人</View>
@@ -251,7 +257,7 @@ const ListItem = (props: IProps) => {
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>发布日期</View>
 						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.publishDate ? moment(detail.publishDate).format('YYYY-MM-DD') : '-'}</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{dateToFormat(detail.publishDate)}</View>
 					</View>
 	        <View className='item-content-info'>
 		        <View className='item-content-info-label'>破产法院</View>
@@ -266,7 +272,7 @@ const ListItem = (props: IProps) => {
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>立案日期</View>
 						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.gmtRegister ? moment(detail.gmtRegister).format('YYYY-MM-DD') : '-'}</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{dateToFormat(detail.gmtRegister)}</View>
 					</View>
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>案号</View>
@@ -291,7 +297,7 @@ const ListItem = (props: IProps) => {
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>开庭日期</View>
 						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.gmtTrial ? moment(detail.gmtTrial).format('YYYY-MM-DD') : '-'}</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.gmtTrial}</View>
 					</View>
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>案号</View>
@@ -311,7 +317,7 @@ const ListItem = (props: IProps) => {
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>发布日期</View>
 						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.gmtPublish ? moment(detail.gmtPublish).format('YYYY-MM-DD') : '-'}</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{dateToFormat(detail.gmtPublish)}</View>
 					</View>
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>案号</View>

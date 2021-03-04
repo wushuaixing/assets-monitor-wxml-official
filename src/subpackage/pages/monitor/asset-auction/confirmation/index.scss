@@ -1,8 +1,9 @@
 .confirmation{
   background-color: $page-bg-color;
+  height: 100vh;
   &-content{
     background-color: white;
-    padding: 0 24px;
+    padding: 0 24px 24px 24px;
     &-title{
       font-size: 36px;
       color: $common-text;
@@ -42,6 +43,7 @@
     }
   }
   &-plan{
+    background-color: white;
     color: $common-text;
     font-size: 30px;
     padding: 40px 24px;
