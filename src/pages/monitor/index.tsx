@@ -267,6 +267,7 @@ export default class Monitor extends Component <IProps, IState>{
       ]
     };
   }
+
   componentWillMount(): void {
     const onReadyEventId = this.$instance.router.onReady;
     eventCenter.once(onReadyEventId, () => {
@@ -296,7 +297,7 @@ export default class Monitor extends Component <IProps, IState>{
     if(Object.keys(monitorParams).length !== 0){
       let tabId = monitorParams.tabId > 0 ? monitorParams.tabId : currentId;
       let newStarId = monitorParams.starId > 0 ? monitorParams.starId : starId;
-      let assetAndRiskTypeValue = filterArray([monitorParams.value]).join();
+      let assetAndRiskTypeValue = monitorParams.value ? filterArray([monitorParams.value]).join() : filterArray(tabId === 1 ? assestRuleArray : riskRuleArray).join();
       let newParams = {
         ...params,
         assetAndRiskType: assetAndRiskTypeValue,
@@ -343,7 +344,6 @@ export default class Monitor extends Component <IProps, IState>{
       isClose: true,
     })
   }
-
 
   handleUpdataConfig = (params?: any) => {
     const { queryRiskConfig } = this.state;
@@ -495,7 +495,7 @@ export default class Monitor extends Component <IProps, IState>{
         isScroll: true
       })
     }
-  }
+  };
 
   backToTop = () => {
     Taro.pageScrollTo({
@@ -507,8 +507,7 @@ export default class Monitor extends Component <IProps, IState>{
   render () {
     const { isScroll, currentId, scrollHeight, listCount, starId, assetsList, riskList, queryAssetsConfig, queryRiskConfig} = this.state;
     let list = currentId === 1 ?  assetsList : riskList;
-    // console.log('assts === ', JSON.stringify(queryAssetsConfig));
-    // console.log('risk === ', JSON.stringify(queryRiskConfig));
+    console.log('props === ', JSON.stringify(starId), JSON.stringify(this.props));
     return (
       <View className='monitor'>
         <NavigationBar title={'源诚资产监控'} type={'blue'} color='white'/>

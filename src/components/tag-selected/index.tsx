@@ -44,15 +44,15 @@ class TagSelected extends Component<IProps, IState>{
     };
   }
 
-  componentWillMount () {
-    const onShowEventId = this.$instance.router.onShow;
-    eventCenter.on(onShowEventId, this.onShow)
-  }
-
-  componentWillUnmount () {
-    const onShowEventId = this.$instance.router.onShow;
-    eventCenter.off(onShowEventId, this.onShow)
-  }
+  // componentWillMount () {
+  //   const onShowEventId = this.$instance.router.onShow;
+  //   eventCenter.on(onShowEventId, this.onShow)
+  // }
+  //
+  // componentWillUnmount () {
+  //   const onShowEventId = this.$instance.router.onShow;
+  //   eventCenter.off(onShowEventId, this.onShow)
+  // }
 
   componentWillReceiveProps(nextProps: Readonly<IProps>): void {
     const { type } = this.props;
@@ -64,14 +64,15 @@ class TagSelected extends Component<IProps, IState>{
     }
   }
 
-  onShow = () => {
-    const { initId } = this.props;
-    if(initId > 0){
-      this.setState({
-        selected: initId,
-      })
-    }
-  };
+  // onShow = () => {
+  //   const { initId } = this.props;
+  //   console.log('this.props === ', JSON.stringify(this.props));
+  //   if(initId > 0){
+  //     this.setState({
+  //       selected: initId,
+  //     })
+  //   }
+  // };
 
   onClickTag = (item) => {
     const { onClick } = this.props;
@@ -83,13 +84,14 @@ class TagSelected extends Component<IProps, IState>{
   };
 
   render(){
-    const { selected, config } = this.state;
-    console.log('selected === ', selected);
+    const { initId } = this.props;
+    const { selected = initId, config } = this.state;
+    let activeId = initId || selected;
     return (
       <View className='tag'>
         {
           config.map((item) => {
-            const active = selected === item.id;
+            const active = activeId === item.id;
             return (
               <View
                 onClick={() => this.onClickTag(item)}

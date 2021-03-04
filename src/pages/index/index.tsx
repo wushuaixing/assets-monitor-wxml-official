@@ -77,16 +77,6 @@ class Index extends Component <IProps, IState>{
       caseArray: [
         {title: '排污权处置案例', time: '2020-10-10', text: '山东某分行通过“排污权”信息成功收回100万元山东某分行通过“排污权”信息成功收回100万元！'},
         {title: '排污权处置案例', time: '2020-10-10', text: '山东某分行通过“排污权”信息成功收回100万元山东某分行通过“排污权”信息成功收回100万元！'},
-        // {title: '排污权处置案例', time: '2020-10-10', text: '山东某分行通过“排污权”信息成功收回100万元山东某分行通过“排污权”信息成功收回100万元！'},
-        // {title: '排污权处置案例', time: '2020-10-10', text: '山东某分行通过“排污权”信息成功收回100万元山东某分行通过“排污权”信息成功收回100万元！'},
-        // {title: '排污权处置案例', time: '2020-10-10', text: '山东某分行通过“排污权”信息成功收回100万元山东某分行通过“排污权”信息成功收回100万元！'},
-        // {title: '排污权处置案例', time: '2020-10-10', text: '山东某分行通过“排污权”信息成功收回100万元山东某分行通过“排污权”信息成功收回100万元！'},
-        // {title: '排污权处置案例', time: '2020-10-10', text: '山东某分行通过“排污权”信息成功收回100万元山东某分行通过“排污权”信息成功收回100万元！'},
-        // {title: '排污权处置案例', time: '2020-10-10', text: '山东某分行通过“排污权”信息成功收回100万元山东某分行通过“排污权”信息成功收回100万元！'},
-        // {title: '排污权处置案例', time: '2020-10-10', text: '山东某分行通过“排污权”信息成功收回100万元山东某分行通过“排污权”信息成功收回100万元！'},
-        // {title: '排污权处置案例', time: '2020-10-10', text: '山东某分行通过“排污权”信息成功收回100万元山东某分行通过“排污权”信息成功收回100万元！'},
-        // {title: '排污权处置案例', time: '2020-10-10', text: '山东某分行通过“排污权”信息成功收回100万元山东某分行通过“排污权”信息成功收回100万元！'},
-        // {title: '排污权处置案例', time: '2020-10-10', text: '山东某分行通过“排污权”信息成功收回100万元山东某分行通过“排污权”信息成功收回100万元！'},
       ],
       scrollViewHeight: 0,
       loading: true,
@@ -133,7 +123,7 @@ class Index extends Component <IProps, IState>{
       if(res.code === 200){
         let ruleArray = handleDealAuthRule(res.data.orgPageGroups);
         setGlobalData('ruleArray', ruleArray);
-        this.handleClick({id: 1});
+        this.handleRequestAsstes();
       }
     }).catch(() => {});
   }
@@ -144,92 +134,104 @@ class Index extends Component <IProps, IState>{
   }
 
   // 点击资产或者风险tab
-  handleClick = (value) => {
-    const { dispatch } = this.props;
+  handleClick = (value?: any) => {
+    const { current } = this.state;
+    let activeId = value ? value.id : current;
+    if(value){
+      this.setState({
+        current: value.id,
+      });
+    }
+    if(activeId === 1){
+      this.handleRequestAsstes();
+    }
+    else {
+      this.handleRequestRisk();
+    }
+  };
+
+  handleRequestAsstes = () => {
     const { loading } = this.state;
+    const { dispatch } = this.props;
     if(loading){
       Taro.showLoading();
     }
-    if(value.id === 1){
-      dispatch({
-        type: 'home/getAssets',
-        payload: {}
-      }).then(res => {
+    dispatch({
+      type: 'home/getAssets',
+      payload: {}
+    }).then(res => {
+      Taro.hideLoading();
+      const { starLevel } = this.state;
+      let newStarLevel = {...starLevel};
+      const { code, data} = res;
+      if( code === 200){
         Taro.hideLoading();
-        const { starLevel } = this.state;
-        let newStarLevel = {...starLevel};
-        const { code, data} = res;
-        if( code === 200){
-          Taro.hideLoading();
-          let newAssetsArrary: dataItem[] =  [
-            { id: 1, name: '资产拍卖', num: data.auctionCount || 0, isRule: isRule('zcwjzcpm'), icon: 'icon-auction', value: 'zcwjzcpm'},
-            { id: 2, name: '代位权', num: data.subrogationCount || 0, isRule: isRule('zcwjdwq'), icon: 'icon-subrogation', value: 'zcwjdwq'},
-          ];
-          data.starLevelCounts.forEach(item => {
-            if(item.starLevel === 90){
-              newStarLevel.three = item.starLevelCount;
-            }
-            else if(item.starLevel === 80){
-              newStarLevel.two = item.starLevelCount;
-            }
-            else if(item.starLevel === 60){
-              newStarLevel.one = item.starLevelCount;
-            }
-          });
-          this.setState({
-            current: value.id,
-            starLevel: newStarLevel,
-            assetsArray: [...newAssetsArrary]
-          })
-        }
-      }).catch(()=>{
-        this.setState({
-          current: value.id,
+        let newAssetsArrary: dataItem[] =  [
+          { id: 1, name: '资产拍卖', num: data.auctionCount || 0, isRule: isRule('zcwjzcpm'), icon: 'icon-auction', value: 'zcwjzcpm'},
+          { id: 2, name: '代位权', num: data.subrogationCount || 0, isRule: isRule('zcwjdwq'), icon: 'icon-subrogation', value: 'zcwjdwq'},
+        ];
+        data.starLevelCounts.forEach(item => {
+          if(item.starLevel === 90){
+            newStarLevel.three = item.starLevelCount;
+          }
+          else if(item.starLevel === 80){
+            newStarLevel.two = item.starLevelCount;
+          }
+          else if(item.starLevel === 60){
+            newStarLevel.one = item.starLevelCount;
+          }
         });
-        Taro.hideLoading();
-      });
-    }
-    else {
-      dispatch({
-        type: 'home/getRisk',
-        payload: {}
-      }).then(res => {
-        Taro.hideLoading();
-        const { code, data} = res;
-        const { starLevel } = this.state;
-        let newStarLevel = {...starLevel};
-        if( code === 200){
-          let newRiskArrary = [
-            { id: 21, name: '破产重整', num: data.bankruptcyCount || 0, isRule: isRule('fxjkqypccz'), icon: 'icon-bankruptcy', value: 'fxjkqypccz'},
-            { id: 22, name: '涉诉', num: data.lawsuitCount  || 0, isRule: isRule('fxjkssjk'), icon: 'icon-litigation', value: 'fxjkssjk'},
-          ];
-          data.starLevelCounts.forEach(item => {
-            if(item.starLevel === 90){
-              newStarLevel.high = item.starLevelCount;
-            }
-            else if(item.starLevel === 80){
-              newStarLevel.warn = item.starLevelCount;
-            }
-            else if(item.starLevel === 60){
-              newStarLevel.tip = item.starLevelCount;
-            }
-            else{
-              newStarLevel.good = item.starLevelCount;
-            }
-          });
-          this.setState({
-            current: value.id,
-            starLevel: newStarLevel,
-            riskArray: [...newRiskArrary]
-          })
-        }
-      }).catch(() => {
-        Taro.hideLoading();
         this.setState({
-          current: value.id,
-        });
-      });
+          starLevel: newStarLevel,
+          assetsArray: [...newAssetsArrary]
+        })
+      }
+    }).catch(()=>{
+      Taro.hideLoading();
+    });
+  };
+
+  handleRequestRisk = () => {
+    const { loading } = this.state;
+    const { dispatch } = this.props;
+    if(loading){
+      Taro.showLoading();
     }
+    dispatch({
+      type: 'home/getRisk',
+      payload: {}
+    }).then(res => {
+      Taro.hideLoading();
+      const { code, data} = res;
+      const { starLevel } = this.state;
+      let newStarLevel = {...starLevel};
+      if( code === 200){
+        let newRiskArrary = [
+          { id: 21, name: '破产重整', num: data.bankruptcyCount || 0, isRule: isRule('fxjkqypccz'), icon: 'icon-bankruptcy', value: 'fxjkqypccz'},
+          { id: 22, name: '涉诉', num: data.lawsuitCount  || 0, isRule: isRule('fxjkssjk'), icon: 'icon-litigation', value: 'fxjkssjk'},
+        ];
+        data.starLevelCounts.forEach(item => {
+          if(item.starLevel === 90){
+            newStarLevel.high = item.starLevelCount;
+          }
+          else if(item.starLevel === 80){
+            newStarLevel.warn = item.starLevelCount;
+          }
+          else if(item.starLevel === 60){
+            newStarLevel.tip = item.starLevelCount;
+          }
+          else{
+            newStarLevel.good = item.starLevelCount;
+          }
+        });
+        this.setState({
+          starLevel: newStarLevel,
+          riskArray: [...newRiskArrary]
+        })
+      }
+    }).catch(() => {
+      Taro.hideLoading();
+    });
   };
 
   // 跳转添加业务
@@ -310,7 +312,7 @@ class Index extends Component <IProps, IState>{
       { title: '资产', id: 1 },
       { title: '风险', id: 2 },
     ];
-    const { current, caseArray, businessCount, assetsArray, riskArray, starLevel, scrollViewHeight} = this.state;
+    const { current, businessCount, assetsArray, riskArray, starLevel, scrollViewHeight} = this.state;
     console.log('index render === ', riskArray, JSON.stringify(riskArray));
     const assetsSum = getArraySum(assetsArray, 'num');
     const riskSum = getArraySum(riskArray, 'num');
@@ -541,29 +543,29 @@ class Index extends Component <IProps, IState>{
               }
             </View>
 
-            {/*目前线索使用案例只和资产有关*/}
-            {
-              assetsArray.length === 0 && <View className='home-case'>
-								<View className='home-case-title'>线索使用案例</View>
-								<View className='home-case-titleLine'/>
-                {
-                  caseArray.map((item, index) => {
-                    return (
-                      <View className='home-case-info'>
-                        <View className='home-case-info-title'>
-                          <View className='home-case-info-title-text'>{item.title}</View>
-                          <View className='home-case-info-title-time'>更新日期：{item.time}</View>
-                        </View>
-                        <View className='home-case-info-text'>{item.text}</View>
-                        {
-                          index !== caseArray.length - 1 && <View className='home-case-info-line'/>
-                        }
-                      </View>
-                    )
-                  })
-                }
-							</View>
-            }
+            {/*目前线索使用案例只和资产有关 线索使用案例目前先不展示2021-3-4*/}
+            {/*{*/}
+            {/*  assetsArray.length === 0 && <View className='home-case'>*/}
+						{/*		<View className='home-case-title'>线索使用案例</View>*/}
+						{/*		<View className='home-case-titleLine'/>*/}
+            {/*    {*/}
+            {/*      caseArray.map((item, index) => {*/}
+            {/*        return (*/}
+            {/*          <View className='home-case-info'>*/}
+            {/*            <View className='home-case-info-title'>*/}
+            {/*              <View className='home-case-info-title-text'>{item.title}</View>*/}
+            {/*              <View className='home-case-info-title-time'>更新日期：{item.time}</View>*/}
+            {/*            </View>*/}
+            {/*            <View className='home-case-info-text'>{item.text}</View>*/}
+            {/*            {*/}
+            {/*              index !== caseArray.length - 1 && <View className='home-case-info-line'/>*/}
+            {/*            }*/}
+            {/*          </View>*/}
+            {/*        )*/}
+            {/*      })*/}
+            {/*    }*/}
+						{/*	</View>*/}
+            {/*}*/}
 
             {
               assetsArray.length === 0 && <View className='home-bottom'>

@@ -27,7 +27,6 @@ const getPlot = (type: number) => {
   }
 };
 
-// const status = 1-即将开始、3-正在进行、5-已成交、7-已流拍、9-中止、11-撤回
 const getLevel = (type, status: number) => {
   let title: string = '即将开始';
   if(type === 1){
@@ -45,7 +44,6 @@ const getLevel = (type, status: number) => {
       case 40: title = '利好'; break;
     }
   }
-
   return title
 };
 
@@ -130,10 +128,14 @@ const getObligorName = (type: number, detail) => {
 
 
 const getTime = ( updateTime ) => {
-  let currentTime = moment();
-  let time = moment(updateTime * 1000);
-  let long = currentTime.diff(time, 'h');
-  return long < 24 ? moment(updateTime * 1000).startOf('hour').fromNow() : moment(updateTime * 1000).format('YYYY-MM-DD');
+  if(updateTime){
+    let currentTime = moment();
+    let time = moment(updateTime * 1000);
+    let long = currentTime.diff(time, 'h');
+    return long < 24 ? moment(updateTime * 1000).startOf('hour').fromNow() : moment(updateTime * 1000).format('YYYY-MM-DD');
+  }
+  return '-'
+
 };
 
 const getJumpType = (type) => {
