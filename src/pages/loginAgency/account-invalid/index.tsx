@@ -51,7 +51,8 @@ export default class ImageCode extends Component<any,isState> {
         <AtModal isOpened={isOpened}>
           <AtModalContent>
             <View className='yc-login-accountInvalid-text'>
-              账号已过期，建议联系客服<br />客服电话：133-7256-7936
+              <View>账号已过期，建议联系客服</View>
+              <View>客服电话：133-7256-7936</View>
             </View>
           </AtModalContent>
           <AtModalAction>
