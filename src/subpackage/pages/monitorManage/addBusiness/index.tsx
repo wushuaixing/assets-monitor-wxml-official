@@ -103,10 +103,16 @@ export default class BusinessDetail extends Component<IProps, isState> {
   onSubmit = () => {
     const {router: {params: {id, type, searchValue}}} = getCurrentInstance();
     console.log('type===', type)
+    const regNumber = /^[0-9a-zA-Z\uff08\uff09\(\)\*]+$/; // 证件号
+    const regName = /^[\u4e00-\u9fa5\uff08\uff090-9a-zA-Z·\(\)]+$/; // 借款人名称
     const {baseObj} = this.state;
     const relationList = this.obligorList;
     const relationObligorName = relationList.filter(i => i.obligorName === "") // 过滤关联债务人为空
-    const relationObligorNumber = relationList.filter(i => i.obligorNumber === "") // 过滤关联债务人证件号为空
+    const relationObligorNumber = relationList.filter(i => i.obligorNumber === "" && i.borrowType === 0) // 过滤关联债务人证件号为空
+    const relationCheckObligorNumber = relationList.filter(i => i.obligorNumber !== "" && !regNumber.test(i.obligorNumber));
+    const relationCheckObligorName = relationList.filter(i => i.obligorName !== "" && !regNumber.test(i.obligorName))
+    // const relationCheckObligorNumber = checkObligorNumber.filter(i=>i.field==='obligorNumber' && i.value === false) // 过滤关联债务人证件号为false
+    // const relationCheckObligorName = checkObligorNumber.filter(i=>i.field==='obligorName' && i.value === false) // 过滤关联债务人名称为false
     if (baseObj.obligorName === "") {
       Message('请填写借款人名称');
       return;
@@ -115,6 +121,18 @@ export default class BusinessDetail extends Component<IProps, isState> {
       Message('请填写借款人证件号');
       return;
     }
+    if (baseObj.obligorName !== "") {
+      if (!regName.test(baseObj.obligorName)) {
+        Message('请核对借款人名称');
+        return;
+      }
+    }
+    if (baseObj.borrowType === 0 && baseObj.obligorNumber !== "") {
+      if (!regNumber.test(baseObj.borrowType)) {
+        Message('请核对借款人证件号');
+        return;
+      }
+    }
     if (relationObligorName.length > 0) {
       relationList.forEach((i, index) => {
         if (i.obligorName === "") {
@@ -122,6 +140,7 @@ export default class BusinessDetail extends Component<IProps, isState> {
           return;
         }
       })
+      return;
     }
     if (relationObligorNumber.length > 0) {
       relationList.forEach((i, index) => {
@@ -130,7 +149,33 @@ export default class BusinessDetail extends Component<IProps, isState> {
           return;
         }
       })
+      return;
     }
+    if (relationCheckObligorNumber.length > 0) {
+      relationList.forEach((i, index) => {
+        if (i.borrowType === 0 && i.obligorNumber !== "") {
+          const reg = /^[0-9a-zA-Z\uff08\uff09\(\)\*]+$/;
+          if (!reg.test(i.obligorNumber)) {
+            Message(`请核对关联债务人${index + 1}的证件号`)
+            return;
+          }
+        }
+      })
+      return;
+    }
+    if (relationCheckObligorName.length > 0) {
+      relationList.forEach((i, index) => {
+        if (i.obligorName !== "") {
+          const reg = /^[\u4e00-\u9fa5\uff08\uff090-9a-zA-Z·\(\)]+$/;
+          if (!reg.test(i.obligorName)) {
+            Message(`请核对关联债务人${index + 1}的债务人名称`)
+            return;
+          }
+        }
+      })
+      return;
+    }
+
     const params = {
       'detail': baseObj,
       'obligorList': this.obligorList
@@ -186,7 +231,7 @@ export default class BusinessDetail extends Component<IProps, isState> {
 
   getValue = (value) => {
     console.log(636363, value)
-    this.obligorList = value
+    this.obligorList = value;
   }
 
   onInput = (e, field) => {
@@ -194,7 +239,7 @@ export default class BusinessDetail extends Component<IProps, isState> {
     const {value} = e.detail;
     if (field === 'caseNumber') {
       const curValue = value.slice(0, 32);
-      if (curValue.length <= 32) {
+      if (value.length <= 32) {
         baseObj[field] = curValue;
         this.setState({
           baseObj
@@ -205,15 +250,18 @@ export default class BusinessDetail extends Component<IProps, isState> {
     }
     if (field === 'obligorName') {
       const curValue = value.slice(0, 40);
-      if (curValue.length <= 40) {
+      if (value.length <= 40) {
         baseObj[field] = curValue;
+        this.setState({
+          baseObj
+        })
       } else {
         Message('最长输入40个字符');
       }
     }
     if (field === 'obligorNumber') {
       const curValue = value.slice(0, 18);
-      if (curValue.length <= 18) {
+      if (value.length <= 18) {
         baseObj[field] = curValue;
         this.setState({
           baseObj
@@ -238,6 +286,27 @@ export default class BusinessDetail extends Component<IProps, isState> {
         baseObj
       })
     }
+    if (field === 'obligorNumber') {
+      const {baseObj} = this.state;
+      const reg1 = /[\(]/g;
+      const reg2 = /[\)]/g;
+      const curValue = e.detail.value;
+      baseObj['obligorNumber'] = curValue.replace(reg1, "（").replace(reg2, "）");
+      this.setState({
+        baseObj
+      })
+    }
+    // const reg = /^[\u4e00-\u9fa5\uff08\uff090-9a-zA-Z·\(\)]+$/;
+    // if(!reg.test(curValue)){
+    //   Message('请填写正确的借款人名称');
+    // }
+    // if(field === 'obligorNumber'){
+    //   const reg = /^[0-9a-zA-Z\uff08\uff09\(\)\*]+$/;
+    //   const curValue = e.detail.value;
+    //   if(!reg.test(curValue)){
+    //     Message('请填写正确的借款人证件号');
+    //   }
+    // }
   }
 
   onSheetItemClick = (type, value) => {
