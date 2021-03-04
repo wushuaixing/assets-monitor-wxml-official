@@ -1,10 +1,9 @@
 import React, { Component } from 'react'
 import Taro, { getCurrentInstance } from '@tarojs/taro';
-import moment from "moment";
-import {View, Text} from '@tarojs/components'
+import {View, Text, RichText } from '@tarojs/components'
 import NavigationBar from "../../../../components/navigation-bar";
 import { getAuctionStatus, getLevel } from '../../../../components/list-item/config';
-import { floatFormat } from '../../../../utils/tools/common';
+import { floatFormat, dateToFormat } from '../../../../utils/tools/common';
 import './index.scss'
 
 interface historyAuctionType{
@@ -28,7 +27,7 @@ type IState = {
     status: number
     consultPrice: number
     initialPrice: number
-    start: Date
+    start: Date | number
     valueLevel: number
     obligorName: string
     remark: string
@@ -37,6 +36,11 @@ type IState = {
   }
 };
 
+// const example = [
+//   { consultPrice: 1000089, court:'人民法院', currentPrice: 89829898, initialPrice: 82983928392, round: 2, start: 1928738737, status:1, title: 'this is title', url: 'www.baidu.com'},
+//   { consultPrice: 1000089, court:'人民法院', currentPrice: 89829898, initialPrice: 82983928392, round: 2, start: 1928738737, status:1, title: 'this is title', url: 'www.baidu.com'},
+//   { consultPrice: 1000089, court:'人民法院', currentPrice: 89829898, initialPrice: 82983928392, round: 2, start: 1928738737, status:1, title: 'this is title', url: 'www.baidu.com'},
+// ];
 
 export default class AssetsAuction extends Component <IProps, IState>{
   $instance = getCurrentInstance();
@@ -73,12 +77,10 @@ export default class AssetsAuction extends Component <IProps, IState>{
   render () {
     const { detail } = this.state;
     const { historyAuction = [] } = detail;
-    const fisrtAuction: historyAuctionType = historyAuction[0] || {};
-    console.log('detail === ', detail);
+    // const newHistoryAuction = [...example];
     return (
       <View className='auction'>
         <NavigationBar border title='资产拍卖'/>
-
         {/*线索分析*/}
         <View className='auction-clues'>
           <View className='auction-clues-title'>线索分析</View>
@@ -95,8 +97,12 @@ export default class AssetsAuction extends Component <IProps, IState>{
             <View className='auction-clues-content-info'>
               <View className='auction-clues-content-info-label'>审核备注：</View>
               <View className='auction-clues-content-info-text'>
-                {detail.remark}
-                <Text className='auction-clues-content-info-text-link'>文书链接1。</Text>
+                {
+                  detail.remark ? <RichText nodes={detail && detail.remark && detail.remark.replace(
+                    /<a/gi,
+                    `<a style="font-style: normal; color: #0979E6"`
+                  )} /> : null
+                }
               </View>
             </View>
           </View>
@@ -129,7 +135,7 @@ export default class AssetsAuction extends Component <IProps, IState>{
             <View className='auction-clues-content-info'>
               <View className='auction-detail-content-info-justifylabel'>开拍时间</View>
               <View className='auction-detail-content-info-colon'>：</View>
-              <View className='auction-detail-content-info-value'>{moment(detail.start).format('YYYY-MM-DD')}</View>
+              <View className='auction-detail-content-info-value'>{dateToFormat(detail.start)}</View>
             </View>
           </View>
           <View className='auction-detail-arrow' >
@@ -139,41 +145,46 @@ export default class AssetsAuction extends Component <IProps, IState>{
 
 
         {/*历史拍卖*/}
-        <View className='auction-history'>
-          <View className='auction-history-title'>
-            <View className='auction-history-title-left'>历史拍卖</View>
-            <View className='auction-history-title-right'>{`${historyAuction.length}次`}</View>
+        {
+          historyAuction.length > 0 && <View className='auction-history'>
+	          <View className='auction-history-title'>
+		          <View className='auction-history-title-left'>历史拍卖</View>
+		          <View className='auction-history-title-right'>{`${historyAuction.length}次`}</View>
+	          </View>
+            {
+              historyAuction.map((item: {round:number, title: string, status: number, initialPrice: number, start: any, consultPrice: number, }) => {
+                return (
+                  <View className='auction-history-content'>
+                    <View className='auction-history-content-title'>【{item.round}】{item.title}</View>
+                    <View className='auction-history-content-info'>
+                      <View className='auction-history-content-info-justifylabel'>当前状态</View>
+                      <View className='auction-history-content-info-colon'>：</View>
+                      <View className='auction-history-content-info-value'>{getAuctionStatus(item.status)}</View>
+                    </View>
+                    <View className='auction-history-content-info'>
+                      <View className='auction-history-content-info-justifylabel'>评估价</View>
+                      <View className='auction-history-content-info-colon'>：</View>
+                      <View className='auction-history-content-info-value'>{`${floatFormat(item.consultPrice)}元`}</View>
+                    </View>
+                    <View className='auction-history-content-info'>
+                      <View className='auction-history-content-info-justifylabel'>起拍价</View>
+                      <View className='auction-history-content-info-colon'>：</View>
+                      <View className='auction-history-content-info-value'>{`${item.initialPrice > 0 ? floatFormat(item.initialPrice) + '元' : '-'}`}</View>
+                    </View>
+                    <View className='auction-history-content-info'>
+                      <View className='auction-history-content-info-justifylabel'>开拍时间</View>
+                      <View className='auction-history-content-info-colon'>：</View>
+                      <View className='auction-history-content-info-value'>{dateToFormat(item.start)}</View>
+                    </View>
+                  </View>
+                )
+              })
+            }
+            {/*<View className='auction-history-arrow' >*/}
+            {/*  <Text className='iconfont icon-right-arrow auction-history-arrow-icon'/>*/}
+            {/*</View>*/}
           </View>
-          <View className='auction-history-line'/>
-          <View className='auction-history-content'>
-            <View className='auction-history-content-title'>【{fisrtAuction.round}】{fisrtAuction.title}</View>
-            <View className='auction-history-content-info'>
-              <View className='auction-history-content-info-justifylabel'>当前状态</View>
-              <View className='auction-history-content-info-colon'>：</View>
-              <View className='auction-history-content-info-value'>{getAuctionStatus(fisrtAuction.status)}</View>
-            </View>
-            <View className='auction-history-content-info'>
-              <View className='auction-history-content-info-justifylabel'>评估价</View>
-              <View className='auction-history-content-info-colon'>：</View>
-              <View className='auction-history-content-info-value'>{`${floatFormat(fisrtAuction.consultPrice)}元`}</View>
-            </View>
-            <View className='auction-history-content-info'>
-              <View className='auction-history-content-info-justifylabel'>起拍价</View>
-              <View className='auction-history-content-info-colon'>：</View>
-              <View className='auction-history-content-info-value'>{`${floatFormat(fisrtAuction.initialPrice)}元`}</View>
-            </View>
-            <View className='auction-history-content-info'>
-              <View className='auction-history-content-info-justifylabel'>开拍时间</View>
-              <View className='auction-history-content-info-colon'>：</View>
-              <View className='auction-history-content-info-value'>{moment(fisrtAuction.start).format('YYYY-MM-DD')}</View>
-            </View>
-          </View>
-          <View className='auction-history-arrow' >
-            <Text className='iconfont icon-right-arrow auction-history-arrow-icon'/>
-          </View>
-
-        </View>
-
+        }
       </View>
     )
   }
