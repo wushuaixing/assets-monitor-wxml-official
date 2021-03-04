@@ -7,7 +7,7 @@ import loginFooterImg from "../../../assets/img/login/logo_bottom_black.png";
 import {connect} from 'react-redux';
 import {getGlobalData, setGlobalData} from '../../../utils/const/global';
 
-function handleDealAuthRule(authRule){
+function handleDealAuthRule(authRule) {
   let ruleArray: string[] = [];
   authRule.forEach(item => {
     ruleArray.push(item.rule)
@@ -119,7 +119,7 @@ export default class AuthCode extends Component<IProps, isState> {
             this.setState({
               againStatus: true,
               captcha: '',
-              focus:true
+              focus: true
             })
           }
         }).catch(() => {
@@ -159,6 +159,7 @@ export default class AuthCode extends Component<IProps, isState> {
 
   render() {
     const {captcha, focus, phone, second, againStatus} = this.state;
+    const phoneText = phone.slice(0, 3) + " " + phone.slice(3, 7) + " " + phone.slice(7,);
     return (
       <View className='yc-login'>
         <View className='yc-login-header'>
@@ -170,11 +171,11 @@ export default class AuthCode extends Component<IProps, isState> {
         <View className='yc-login-authCode'>
           <View className='yc-login-authCode-phoneText'>
             <View className='yc-login-authCode-phoneText-text'>验证码已发送至：</View>
-            <View className='yc-login-authCode-phoneText-phone'>{phone}</View>
+            <View className='yc-login-authCode-phoneText-phone'>{phoneText}</View>
           </View>
           <View className='yc-login-authCode-container' onClick={this.onClick}>
             <Input className='yc-login-authCode-container-input' type='number' maxlength={4} focus={focus}
-                   onInput={this.onChangeCaptcha} value={captcha} />
+                   onInput={this.onChangeCaptcha} value={captcha}/>
             {
               [0, 1, 2, 3].map((_value, index) => {
                 return <View
@@ -189,9 +190,9 @@ export default class AuthCode extends Component<IProps, isState> {
           </View>
           {
             againStatus && second !== 59 && captcha === '' ?
-            <View>
-              <View className='yc-login-authCode-errorText'>验证码输入错误</View>
-            </View> : null
+              <View>
+                <View className='yc-login-authCode-errorText'>验证码输入错误</View>
+              </View> : null
           }
           {
             againStatus && second === 59 ?
@@ -199,11 +200,11 @@ export default class AuthCode extends Component<IProps, isState> {
                 <View className='yc-login-authCode-againContent-againText'>
                   点击重新获取验证码
                 </View>
-                <Text className="iconfont icon-refresh" style={{fontSize: '32rpx', color: '#0979E6'}}/>
+                <Text className="iconfont icon-refresh" style={{fontSize: '26rpx', color: '#0979E6',marginTop:'3rpx'}}/>
               </View> :
               <View className='yc-login-authCode-secondText'>{`${second}s后重新获取验证码`}</View>
           }
-          <View className='yc-login-footer' style={{height:'61vh'}}>
+          <View className='yc-login-footer' style={{height: '61vh'}}>
             <Image className='yc-login-footer-footerImg' src={loginFooterImg} style={{opacity: '0.15'}}/>
           </View>
         </View>

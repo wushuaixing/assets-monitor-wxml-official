@@ -64,6 +64,7 @@
     vertical-align: top;
     margin-top:3px;
     & input{
+      width:475px;
       height: 34px;
       font-size: 34px;
       font-weight: 400;
@@ -110,6 +111,7 @@
           margin-top:3px;
         }
         &-input input{
+          width:475px;
           height: 34px;
           font-size: 34px;
           font-weight: 400;
@@ -261,6 +263,7 @@
     }
     &-againContent{
       margin:32px 0 0 88px;
+      display: flex;
       &-againText{
         display: inline-block;
         width: 234px;
