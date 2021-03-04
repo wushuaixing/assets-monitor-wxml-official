@@ -110,7 +110,7 @@ export default class BusinessDetail extends Component<IProps, isState> {
     const relationObligorName = relationList.filter(i => i.obligorName === "") // 过滤关联债务人为空
     const relationObligorNumber = relationList.filter(i => i.obligorNumber === "" && i.borrowType === 0) // 过滤关联债务人证件号为空
     const relationCheckObligorNumber = relationList.filter(i => i.obligorNumber !== "" && !regNumber.test(i.obligorNumber));
-    const relationCheckObligorName = relationList.filter(i => i.obligorName !== "" && !regNumber.test(i.obligorName))
+    const relationCheckObligorName = relationList.filter(i => i.obligorName !== "" && !regName.test(i.obligorName));
     // const relationCheckObligorNumber = checkObligorNumber.filter(i=>i.field==='obligorNumber' && i.value === false) // 过滤关联债务人证件号为false
     // const relationCheckObligorName = checkObligorNumber.filter(i=>i.field==='obligorName' && i.value === false) // 过滤关联债务人名称为false
     if (baseObj.obligorName === "") {
