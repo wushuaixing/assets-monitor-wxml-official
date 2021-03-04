@@ -200,7 +200,7 @@ export default class BusinessListItem extends Component<any, isState> {
                       </View>
                     </View>
                     {
-                      searchValue !== "" ?
+                      searchValue !== "" && i.guarantorNameList.length > 0?
                         <View className='yc-businessListItem-content-middleRight-guarantor'>
                           <View className='yc-businessListItem-content-middleRight-guarantor-contentLine'/>
                           <View className='yc-businessListItem-content-middleRight-guarantor-detail'>
