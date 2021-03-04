@@ -231,7 +231,7 @@ class QueryDrop extends Component<IProps, IState>{
 
   render(){
     const { config, currentTab, isMask, maskHeight } = this.state;
-    console.log('drop render === ', JSON.stringify(config));
+    // console.log('drop render === ', JSON.stringify(config));
     return (
       <View className='drop'>
         <View className='drop-box' id='drop-box'>

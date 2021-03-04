@@ -49,7 +49,7 @@ const getLevel = (type, status: number) => {
 
 // const status = 1-即将开始、3-正在进行、5-已成交、7-已流拍、9-中止、11-撤回
 const getAuctionStatus = (status: number) => {
-  let title: string = '即将开始';
+  let title: string = '-';
   switch (status) {
     case 1: title = '即将开始'; break;
     case 3: title = '正在进行'; break;
@@ -75,7 +75,6 @@ const getAuctionRoleType = (role: number) => {
   }
   return roleType
 };
-
 
 
 const getRiskTag = (valueLevel: number) => {
@@ -143,13 +142,13 @@ const getJumpType = (type) => {
   let url: string = '';
   switch (type) {
     case 1: apiName = auctionMarkReadApi; url = '/subpackage/pages/monitor/asset-auction/index'; break;
-    case 2: apiName = subrogationTrialMarkReadApi; url = '/subpackage/pages/monitor/subrogation/index'; break;
-    case 3: apiName = subrogationCourtMarkReadApi; url = '/subpackage/pages/monitor/subrogation/index'; break;
-    case 4: apiName = subrogationJudgmentMarkReadApi; url = '/subpackage/pages/monitor/subrogation/index'; break;
+    case 2: apiName = subrogationTrialMarkReadApi; url = '/subpackage/pages/monitor/subrogation/index?type=2'; break;
+    case 3: apiName = subrogationCourtMarkReadApi; url = '/subpackage/pages/monitor/subrogation/index?type=3'; break;
+    case 4: apiName = subrogationJudgmentMarkReadApi; url = '/subpackage/pages/monitor/subrogation/index?type=4'; break;
     case 5: apiName = bankruptcyMarkReadApi; url = '/subpackage/pages/monitor/bankruptcy/index'; break;
-    case 6: apiName = lawsuitTrialMarkReadApi; url = '/subpackage/pages/monitor/involve-info/index'; break;
-    case 7: apiName = lawsuitCourtMarkReadApi; url = '/subpackage/pages/monitor/involve-info/index'; break;
-    case 8: apiName = lawsuitJudgmentMarkReadApi; url = '/subpackage/pages/monitor/involve-info/index'; break;
+    case 6: apiName = lawsuitTrialMarkReadApi; url = '/subpackage/pages/monitor/involve-info/index?type=6'; break;
+    case 7: apiName = lawsuitCourtMarkReadApi; url = '/subpackage/pages/monitor/involve-info/index?type=7'; break;
+    case 8: apiName = lawsuitJudgmentMarkReadApi; url = '/subpackage/pages/monitor/involve-info/index?type=8'; break;
   }
   return { apiName, url}
 };
@@ -166,4 +165,51 @@ const getCaseType = (type) => {
   return caseType;
 };
 
-export { getPlot, getTitleTag, getRiskTag, getObligorName, getTime, getAuctionStatus, getAuctionRoleType, getJumpType, getCaseType, getLevel}
+/**
+ *  * 已读未读的请求字段
+ * @param type
+ * @param id
+ */
+
+const getRequestParams = (type, id) => {
+  let arrayParams = {
+    idList: [`${id}`]
+  };
+  let stringParams = {
+    id: id
+  };
+  let params = {};
+  switch (type) {
+    case 1:
+      params = stringParams;
+      break;
+    case 2:
+    case 3:
+    case 4:
+      params = arrayParams;
+      break;
+    case 5:
+      params = stringParams;
+      break;
+    case 6:
+    case 7:
+    case 8:
+      params = arrayParams;
+      break;
+  }
+  return params;
+};
+
+export {
+  getPlot,
+  getTitleTag,
+  getRiskTag,
+  getObligorName,
+  getTime,
+  getAuctionStatus,
+  getAuctionRoleType,
+  getJumpType,
+  getCaseType,
+  getLevel,
+  getRequestParams
+}
