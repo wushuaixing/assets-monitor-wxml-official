@@ -289,10 +289,6 @@ class Index extends Component <IProps, IState>{
   navigateToMonitor = (tabId: number, star: number, value: string) => {
     const { dispatch  } = this.props;
     dispatch({
-      type: 'home/getAuthRule',
-      payload: {}
-    });
-    dispatch({
       type: 'home/updateMonitorParams',
       payload: {
         params: {
@@ -302,6 +298,7 @@ class Index extends Component <IProps, IState>{
         }
       }
     });
+    setGlobalData('refreshMonitor', true);
     Taro.switchTab({
       url:'/pages/monitor/index'
     });
@@ -313,7 +310,7 @@ class Index extends Component <IProps, IState>{
       { title: '风险', id: 2 },
     ];
     const { current, businessCount, assetsArray, riskArray, starLevel, scrollViewHeight} = this.state;
-    console.log('index render === ', riskArray, JSON.stringify(riskArray));
+    // console.log('index render === ', riskArray, JSON.stringify(riskArray));
     const assetsSum = getArraySum(assetsArray, 'num');
     const riskSum = getArraySum(riskArray, 'num');
     return (
@@ -365,13 +362,13 @@ class Index extends Component <IProps, IState>{
                 <View className='home-middle-tab-logo'>
                   <Image className='home-middle-tab-logo-img' src={collection}/>
                 </View>
-                <Text className='home-middle-tab-text'>我的收藏</Text>
+                <Text className='home-middle-tab-noText'>我的收藏</Text>
               </View>
               <View className='home-middle-tab' onClick={this.navigateToFollow}>
                 <View className='home-middle-tab-logo'>
                   <Image className='home-middle-tab-logo-img' src={follow}/>
                 </View>
-                <Text className='home-middle-tab-text'>我的跟进</Text>
+                <Text className='home-middle-tab-noText'>我的跟进</Text>
               </View>
             </View>
 
