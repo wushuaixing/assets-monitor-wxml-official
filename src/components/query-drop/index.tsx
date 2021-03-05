@@ -69,13 +69,15 @@ class QueryDrop extends Component<IProps, IState>{
   componentWillMount(): void {
     // console.log('componentWillMount ===', JSON.stringify(this.props.initConfig), JSON.stringify(this.state.config));
     const { initConfig } = this.props;
-    this.setState({
-      config: initConfig
-    });
+    if(Array.isArray(initConfig) && initConfig.length){
+      this.setState({
+        config: initConfig
+      });
+    }
     const onReadyEventId = this.$instance.router.onReady;
     eventCenter.once(onReadyEventId, this.onRady);
-    const onShowEventId = this.$instance.router.onShow;
-    eventCenter.on(onShowEventId, this.onShow);
+    // const onShowEventId = this.$instance.router.onShow;
+    // eventCenter.on(onShowEventId, this.onShow);
   }
 
   shouldComponentUpdate(nextProps: Readonly<IProps>, nextState: Readonly<IState>): boolean {
@@ -130,7 +132,7 @@ class QueryDrop extends Component<IProps, IState>{
     });
   };
 
-  onShow = () => {
+  // onShow = () => {
     // console.log('onShow  ===', JSON.stringify(this.props.initConfig), JSON.stringify(this.state.config));
     // const { initConfig } = this.props;
     // Taro.nextTick(() => {
@@ -138,7 +140,7 @@ class QueryDrop extends Component<IProps, IState>{
     //    config: [...initConfig]
     //  })
     // })
-  };
+  // };
 
   // 点击切换筛选条件Tab
   handleClick = (info) => {
@@ -193,6 +195,7 @@ class QueryDrop extends Component<IProps, IState>{
       }
     });
     let newParams = {...params, [currentTab.field] : info.value.join()};
+    // console.log('line newParams === ', newParams, JSON.stringify(newParams), info, JSON.stringify(info));
     this.handleRequestParmas(newParams);
     this.setState({
       params: newParams,
@@ -237,7 +240,7 @@ class QueryDrop extends Component<IProps, IState>{
 
   render(){
     const { config, currentTab, isMask, maskHeight } = this.state;
-    // console.log('drop render === ', JSON.stringify(config), JSON.stringify(this.props.initConfig));
+    // console.log('drop render === ', config, JSON.stringify(config) );
     return (
       <View className='drop' >
         <View className='drop-box' id='drop-box'>
