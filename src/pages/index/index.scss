@@ -172,7 +172,7 @@
         &-noText{
           margin-top: 12px;
           font-size: 28px;
-          color: $light-text-color;
+          color: $label-color;
         }
       }
     }
@@ -204,6 +204,11 @@
         font-size: 24px;
         color: $common-text;
       }
+      &-noText{
+        margin-top: 12px;
+        font-size: 24px;
+        color: $label-color;
+      }
     }
   }
 
@@ -213,6 +218,7 @@
     background-color: white;
     padding-bottom: 24px;
     &-box{
+      width: 702px;
       background-color: white;
       border-bottom-left-radius: 24px;
       border-bottom-right-radius: 24px;

@@ -3,6 +3,7 @@ import Taro from '@tarojs/taro';
 import {View, Text, Image} from '@tarojs/components';
 import { getPlot, getTitleTag, getRiskTag, getObligorName, getTime, getAuctionStatus, getAuctionRoleType, getJumpType, getCaseType, getRequestParams } from './config';
 import {dateToFormat, floatFormat} from '../../utils/tools/common';
+import { setGlobalData } from "../../utils/const/global";
 import './index.scss';
 
 
@@ -38,10 +39,11 @@ type IProps = {
   object: itemType
   onMarkRead: any
   index: number
+  loading: boolean
 }
 
 const ListItem = (props: IProps) => {
-  const { dataType, updateTime, type, index} = props;
+  const { dataType, updateTime, type, index, loading} = props;
   const [detail, setDetail] = useState(props.object);
   useEffect(() => {
     setDetail(props.object);
@@ -61,6 +63,7 @@ const ListItem = (props: IProps) => {
     Taro.navigateTo({
       url: `${url}?detail=${detailString}`,
       success: function(res) {
+        setGlobalData('refreshMonitor', false);
         res.eventChannel.emit('acceptDataFromOpenerPage', { ...detail, dataType})
       }
     });
@@ -68,17 +71,19 @@ const ListItem = (props: IProps) => {
 
   // 点击已读未读
   const handleMarkRead = () => {
-    getJumpType(dataType).apiName({...getRequestParams(dataType, detail.id)})
-      .then(res => {
-        if(res.code === 200 && res.data){
-          const { id } = detail;
-          onRefresh({id, isRead: true, index}, 'isRead');
-          handleGoDetail();
-        }
-        else {
-          handleGoDetail();
-        }
-    })
+    if(!loading){
+      getJumpType(dataType).apiName({...getRequestParams(dataType, detail.id)})
+        .then(res => {
+          if(res.code === 200 && res.data){
+            const { id } = detail;
+            onRefresh({id, isRead: true, index}, 'isRead');
+            handleGoDetail();
+          }
+          else {
+            handleGoDetail();
+          }
+        })
+    }
   };
 
   return (

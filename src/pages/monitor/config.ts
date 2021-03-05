@@ -125,8 +125,7 @@ const getUpdateRuleConfig = (config) => {
     newConditions.push({...item, childrenName: [...newChildrenName]});
   });
   config[1].conditions = newConditions;
-  console.log('config === ', config);
-  return [...config];
+  return JSON.parse(JSON.stringify(config));
 };
 
 export {
