@@ -27,7 +27,7 @@
 
     &-content {
       //padding-top: 24px;
-      padding:24px 24px 0;
+      padding:18px 24px 0;
       &-info {
         display: flex;
         font-size: 28px;
@@ -73,10 +73,10 @@
           font-weight: 500;
         }
       }
-
-      &-line {
-        height: 20px;
-      }
+      //
+      //&-line {
+      //  height: 6px;
+      //}
     }
   }
 
