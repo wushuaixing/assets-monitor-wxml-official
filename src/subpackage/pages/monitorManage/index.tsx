@@ -87,7 +87,7 @@ export default class MonitorManage extends Component<IProps, isState> {
     if (e.detail.value.length > 40) {
       Message('最长输入40个字');
     } else {
-      if (e.detail.value !== "") {
+      // if (e.detail.value !== "") {
         this.setState({
           dataSource: []
         })
@@ -96,7 +96,7 @@ export default class MonitorManage extends Component<IProps, isState> {
         } else {
           this.handleBusinessList(1, e.detail.value, 0)
         }
-      }
+      // }
     }
     this.setState({
       searchValue: e.detail.value.slice(0, 40),
