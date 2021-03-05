@@ -633,7 +633,10 @@ export default class Monitor extends Component <IProps, IState>{
 			          <Text className='monitor-tips-notice-text'>
 				          为您找到
 				          <Text className='monitor-tips-notice-text-count'>{listCount}</Text>
-				          条线索
+				          条
+                  {
+                    currentId === 1 ? '资产线索' : '风险信息'
+                  }
 			          </Text>
 		          </View>
 	          </View>

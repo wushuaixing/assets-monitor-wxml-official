@@ -98,7 +98,7 @@ const getTitleTag = (type: number, bankruptcyType?: number) => {
     case 5: title = bankruptcyType === 1 ? '破产重整立案' : '破产重整公告'; break;
     case 6: title = '涉诉-立案'; break;
     case 7: title = '涉诉-开庭'; break;
-    case 8: title = '涉诉-立案'; break;
+    case 8: title = '涉诉-文书'; break;
   }
   return title
 };
@@ -131,7 +131,7 @@ const getTime = ( updateTime ) => {
     let currentTime = moment();
     let time = moment(updateTime * 1000);
     let long = currentTime.diff(time, 'h');
-    return long < 24 ? moment(updateTime * 1000).startOf('hour').fromNow() : moment(updateTime * 1000).format('YYYY-MM-DD');
+    return long < 24 ? (long < 1 ? '刚刚' : moment(updateTime * 1000).startOf('hour').fromNow()) : moment(updateTime * 1000).format('YYYY-MM-DD');
   }
   return '-'
 
@@ -157,10 +157,10 @@ const getJumpType = (type) => {
 const getCaseType = (type) => {
   let caseType = '普通案件';
   switch (type) {
-    case 1: caseType = '普通'; break;
-    case 2: caseType = '破产'; break;
-    case 3: caseType = '执行'; break;
-    case 4: caseType = '终本'; break;
+    case 1: caseType = '普通案件'; break;
+    case 2: caseType = '破产案件'; break;
+    case 3: caseType = '执行案件'; break;
+    case 4: caseType = '终本案件'; break;
   }
   return caseType;
 };

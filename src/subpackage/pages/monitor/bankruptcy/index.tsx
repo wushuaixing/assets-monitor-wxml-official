@@ -26,6 +26,7 @@ type IState = {
     url: string
     publishDate?: Date | number
     court: string
+    ah: string
   }
   associatedCase: {
     title?: string
@@ -183,7 +184,7 @@ export default class Bankruptcy extends Component <IProps, IState>{
                 <View className='bankruptcy-baseInfo-content-info'>
                   <View className='bankruptcy-baseInfo-content-info-justifylabel'>案号</View>
                   <View className='bankruptcy-baseInfo-content-info-colon'>：</View>
-                  <View className='bankruptcy-baseInfo-content-info-value'> {associatedCase.title} </View>
+                  <View className='bankruptcy-baseInfo-content-info-value'> {detail.ah} </View>
                 </View>
                 <View className='bankruptcy-baseInfo-content-info'>
                   <View className='bankruptcy-baseInfo-content-info-justifylabel'>经办法院</View>

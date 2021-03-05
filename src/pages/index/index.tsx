@@ -376,7 +376,7 @@ class Index extends Component <IProps, IState>{
               <Tab type={'homeTab'} config={tabList} onClick={this.handleClick} initId={current} />
               {
                 current === 1 && (
-                  assetsArray.length > 0 ? ( assetsSum > 0 ? <View className='home-data-box'>
+                  assetsArray.length > 0 && assetsSum > 0 ? <View className='home-data-box'>
                     <View className='home-data-box-level'>
                       <Text>线索等级</Text>
                       <Text className='iconfont icon-question home-data-box-level-icon' onClick={this.navigateToRule}/>
@@ -448,12 +448,11 @@ class Index extends Component <IProps, IState>{
                     <View className='home-data-noData-tips'>暂未发现债务人相关的资产线索</View>
                     <View className='home-data-noData-advice'>建议添加监控业务</View>
                   </View>
-                  ) : null
                 )
               }
               {
                 current === 2 && (
-                  riskArray.length > 0 ? (riskSum > 0 ? <View className='home-data-box'>
+                  riskArray.length > 0  && riskSum > 0 ? <View className='home-data-box'>
                     <View className='home-data-box-level'>
                       <Text>风险等级</Text>
                       <Text className='iconfont icon-question home-data-box-level-icon' onClick={this.navigateToRule} />
@@ -534,7 +533,7 @@ class Index extends Component <IProps, IState>{
                     </View>
                     <View className='home-data-noData-tips'>暂未发现债务人相关的风险线索</View>
                     <View className='home-data-noData-advice'>建议添加监控业务</View>
-                  </View>) : null
+                  </View>
                 )
               }
             </View>
