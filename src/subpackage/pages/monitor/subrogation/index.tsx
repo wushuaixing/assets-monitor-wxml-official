@@ -80,9 +80,9 @@ export default class Subrogation extends Component <IProps, IState> {
       3: '开庭',
     }
     const levelType = {
-      60: '1星',
-      80: '2星',
-      90: '3星'
+      60: '一星',
+      80: '二星',
+      90: '三星'
     }
     const caseType = {
       1: '普通',
