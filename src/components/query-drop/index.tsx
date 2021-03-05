@@ -67,36 +67,40 @@ class QueryDrop extends Component<IProps, IState>{
   }
 
   componentWillMount(): void {
+    // console.log('componentWillMount ===', JSON.stringify(this.props.initConfig), JSON.stringify(this.state.config));
+    const { initConfig } = this.props;
+    this.setState({
+      config: initConfig
+    });
     const onReadyEventId = this.$instance.router.onReady;
     eventCenter.once(onReadyEventId, this.onRady);
     const onShowEventId = this.$instance.router.onShow;
     eventCenter.on(onShowEventId, this.onShow);
   }
 
-  componentDidMount(): void {
-    const { initConfig } = this.props;
-    this.setState(() => ({
-      config: initConfig
-    }));
-  }
-
-  componentDidShow(): void {
-    console.log('componentDidShow');
-  }
-
   shouldComponentUpdate(nextProps: Readonly<IProps>, nextState: Readonly<IState>): boolean {
-    const { config, isMask } = this.state;
+    // console.log('shouldComponentUpdate props ===', JSON.stringify(this.props.initConfig), JSON.stringify(nextProps.initConfig));
+    // console.log('shouldComponentUpdate state ===', JSON.stringify(this.state.config), JSON.stringify(nextState.config));
+    const { isMask } = this.state;
     const { type, initConfig } = this.props;
-    return JSON.stringify(config) !== JSON.stringify(nextState.config) || type !== nextProps.type || isMask !== nextState.isMask || JSON.stringify(initConfig) !== JSON.stringify(nextProps.initConfig)
+    return type !== nextProps.type || isMask !== nextState.isMask || JSON.stringify(initConfig) !== JSON.stringify(nextProps.initConfig);
   }
 
   componentWillReceiveProps(nextProps: Readonly<IProps> ): void {
-    const { type } = this.props;
+    // 强制刷新
+    // console.log('componentWillReceiveProps props ', JSON.stringify(this.props.initConfig), JSON.stringify(nextProps.initConfig));
+    const { initConfig, type } = this.props;
     if(type !== nextProps.type){
       this.setState({
         isMask: false,
         config: nextProps.initConfig
       });
+    }
+    if(JSON.stringify(initConfig) !== JSON.stringify(nextProps.initConfig)){
+      this.setState({
+        config: nextProps.initConfig
+      });
+      // this.forceUpdate();
     }
   }
 
@@ -127,11 +131,13 @@ class QueryDrop extends Component<IProps, IState>{
   };
 
   onShow = () => {
-    const { initConfig } = this.props;
-    console.log('onShow  props', JSON.stringify(initConfig));
-    this.setState(() => ({
-      config: initConfig
-    }));
+    // console.log('onShow  ===', JSON.stringify(this.props.initConfig), JSON.stringify(this.state.config));
+    // const { initConfig } = this.props;
+    // Taro.nextTick(() => {
+    //  this.setState({
+    //    config: [...initConfig]
+    //  })
+    // })
   };
 
   // 点击切换筛选条件Tab
@@ -231,9 +237,9 @@ class QueryDrop extends Component<IProps, IState>{
 
   render(){
     const { config, currentTab, isMask, maskHeight } = this.state;
-    // console.log('drop render === ', JSON.stringify(config));
+    // console.log('drop render === ', JSON.stringify(config), JSON.stringify(this.props.initConfig));
     return (
-      <View className='drop'>
+      <View className='drop' >
         <View className='drop-box' id='drop-box'>
           {
             config.length > 0 && config.map((item, index) => {

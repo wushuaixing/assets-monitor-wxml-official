@@ -29,26 +29,34 @@ class Tab extends Component<IProps, IState>{
   }
 
 
-
-  componentWillMount(): void {
-    const onShowEventId = this.$instance.router.onShow;
-    eventCenter.on(onShowEventId, this.onShow);
-  }
-
-  componentWillUnmount(): void {
-    const onShowEventId = this.$instance.router.onShow;
-    // 卸载
-    eventCenter.off(onShowEventId, this.onShow);
-  }
-
-  onShow = () => {
+  componentWillReceiveProps(nextProps: Readonly<IProps>): void {
     const { initId } = this.props;
-    if(initId > 0){
+    if(initId !== nextProps.initId){
       this.setState({
-        selected: initId,
+        selected: nextProps.initId,
       })
     }
-  };
+  }
+
+  // componentWillMount(): void {
+  //   const onShowEventId = this.$instance.router.onShow;
+  //   eventCenter.on(onShowEventId, this.onShow);
+  // }
+  //
+  // componentWillUnmount(): void {
+  //   const onShowEventId = this.$instance.router.onShow;
+  //   // 卸载
+  //   eventCenter.off(onShowEventId, this.onShow);
+  // }
+  //
+  // onShow = () => {
+  //   const { initId } = this.props;
+  //   if(initId > 0){
+  //     this.setState({
+  //       selected: initId,
+  //     })
+  //   }
+  // };
 
   onClickTab = (item) => {
     const { onClick } = this.props;
