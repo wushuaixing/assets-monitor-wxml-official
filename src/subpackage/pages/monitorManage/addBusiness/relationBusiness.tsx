@@ -249,7 +249,7 @@ export default class RelationBusiness extends Component<IProps, isState> {
       {
         id: '2',
         title: '债务人名称',
-        placeHolder: '请填写借款人名称（必填）',
+        placeHolder: '请填写债务人名称（必填）',
         value: '',
         field: 'obligorName',
         type: 'input',
@@ -396,7 +396,7 @@ export default class RelationBusiness extends Component<IProps, isState> {
         <View className='yc-addBusiness-deleteModal'>
           <AtModal isOpened={isDeleteOpendModal}>
             <AtModalContent>
-              <View>确定删除该条业务？</View>
+              <View>确定删除该债务人的信息？</View>
             </AtModalContent>
             <AtModalAction>
               <Button onClick={this.onDeleteCancel}>取消</Button>
