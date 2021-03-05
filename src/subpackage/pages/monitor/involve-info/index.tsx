@@ -148,7 +148,7 @@ export default class InvolveInfo extends Component <IProps, IState> {
                     style={{color: handlePlaintiffData && handleDefendantData.join('，') ? '#0979E6' : '#666666'}}>{handlePlaintiffData && handleDefendantData.join('，') || '-'}</View>
             </View>
 
-            <View className='yc-subrogation-baseInfo-line' style={{margin: '24rpx 0'}}/>
+            <View className='yc-subrogation-baseInfo-line' style={{margin: '24rpx 0 18rpx 0'}}/>
 
             <View className='yc-subrogation-baseInfo-content-info'>
               <View className='yc-subrogation-baseInfo-content-info-justifylabel'>案号</View>
@@ -214,7 +214,7 @@ export default class InvolveInfo extends Component <IProps, IState> {
 
           </View>
 
-          <View className='yc-subrogation-baseInfo-line' style={{marginTop: '24rpx'}}/>
+          <View className='yc-subrogation-baseInfo-line' style={{margin: '24rpx 0 18rpx 0'}}/>
 
           {/*{*/}
           {/*  detail.dataType === 8 ?*/}
@@ -229,7 +229,7 @@ export default class InvolveInfo extends Component <IProps, IState> {
           {/*    </View> : null*/}
           {/*}*/}
 
-          <View className='yc-subrogation-baseInfo-content'>
+          <View className='yc-subrogation-baseInfo-content' style={{padding:'0 24rpx 0'}}>
             <View className='yc-subrogation-baseInfo-content-info'>
               <View
                 className='yc-subrogation-baseInfo-content-info-label yc-subrogation-baseInfo-content-info-sourceLinkLabel'>源链接：</View>

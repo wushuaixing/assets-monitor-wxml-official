@@ -140,7 +140,7 @@ export default class Subrogation extends Component <IProps, IState> {
               <View className='yc-subrogation-baseInfo-content-info-value'>{handleDefendantData && handleDefendantData.join('，') || '-'}</View>
             </View>
 
-            <View className='yc-subrogation-baseInfo-line' style={{margin: '24rpx 0'}}/>
+            <View className='yc-subrogation-baseInfo-line' style={{margin: '24rpx 0 18rpx 0'}}/>
 
             <View className='yc-subrogation-baseInfo-content-info'>
               <View className='yc-subrogation-baseInfo-content-info-justifylabel'>案号</View>
