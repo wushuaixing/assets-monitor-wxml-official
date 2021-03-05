@@ -29,6 +29,8 @@ export default class DefaultPage extends Component<IProps,isState>{
   componentWillMount() {
     Taro.showLoading({ title : '加载中...' });
     const token = Taro.getStorageSync('token');
+    // 设置第一次进入监控页触发加载
+    setGlobalData('refreshMonitor', true);
     if (token){
       console.log('token存在',token);
       this.props.dispatch({
