@@ -6,6 +6,7 @@ import ObligorListItem from "../obligorListItem";
 import DeleteModal from "../deleteModal";
 import './index.scss'
 import {dateToFormat} from '../../../../utils/tools/common';
+import NavigationBar from "../../../../components/navigation-bar";
 
 type isState = {
   busBaseInfo: object,
@@ -89,6 +90,7 @@ export default class BusinessDetail extends Component<IProps, isState> {
     const {busBaseInfo, relationObligorList,saveSearchValue} = this.state;
     return (
       <View className='yc-businessDetail'>
+        <NavigationBar title='业务详情'/>
         <View className='yc-businessDetail-line'/>
         <View className='yc-businessDetail-top'>
           <View className='yc-businessDetail-top-topInfo'>

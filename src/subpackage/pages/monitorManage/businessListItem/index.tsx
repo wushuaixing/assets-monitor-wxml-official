@@ -231,7 +231,7 @@ export default class BusinessListItem extends Component<any, isState> {
             )
           })
         }
-        <DeleteModal handleBusinessList={handleBusinessList}/>
+        {/*<DeleteModal handleBusinessList={handleBusinessList}/>*/}
       </View>
     )
   }

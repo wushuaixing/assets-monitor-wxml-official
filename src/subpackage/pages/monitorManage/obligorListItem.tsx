@@ -172,17 +172,17 @@ export default class ObligorListItem extends Component<any, isState> {
                   </View>
                   <View className='yc-monitorManage-bottom-content-right'>
                     <View
-                      className={i.pushState ? 'yc-monitorManage-bottom-content-right-yes' : 'yc-monitorManage-bottom-content-right-no'}
+                      className={i.pushState || i.obligorPushType ? 'yc-monitorManage-bottom-content-right-yes' : 'yc-monitorManage-bottom-content-right-no'}
                       onClick={() => {
-                        this.onPushStateClick(i.pushState, i.id, index)
+                        this.onPushStateClick(i.pushState || i.obligorPushType, i.id, index)
                       }}>
                       {
-                        i.pushState ?
+                        i.pushState || i.obligorPushType ?
                           <Text className="iconfont icon-selected yc-monitorManage-bottom-content-right-yesIcon"/> :
                           <Text className="iconfont icon-user_add yc-monitorManage-bottom-content-right-noIcon"/>
                       }
                       {
-                        i.pushState ?
+                        i.pushState || i.obligorPushType?
                           <Text className='yc-monitorManage-bottom-content-right-yesText'>已监控</Text> :
                           <Text className='yc-monitorManage-bottom-content-right-noText'>加监控</Text>
                       }

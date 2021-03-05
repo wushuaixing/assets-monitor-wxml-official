@@ -6,6 +6,7 @@ import RelationBusiness from './relationBusiness';
 import './index.scss'
 import {Message} from "../../../../utils/tools/common";
 import Taro, {getCurrentInstance} from "@tarojs/taro";
+import NavigationBar from "../../../../components/navigation-bar";
 
 type isState = {
   isBaseOpened: boolean,
@@ -404,6 +405,7 @@ export default class BusinessDetail extends Component<IProps, isState> {
     // ]
     return (
       <View className='yc-addBusiness'>
+        <NavigationBar title='添加业务'/>
         <View className='yc-addBusiness-baseInfoText'>基础信息</View>
         <View className='yc-addBusiness-baseInfo'>
           <Form
