@@ -146,7 +146,7 @@ export default class Bankruptcy extends Component <IProps, IState>{
               </View>
               {
                 detail.url ? <View>
-                  <View className='bankruptcy-baseInfo-line' />
+                  <View className='bankruptcy-baseInfo-line' style={{margin: '0 24rpx'}} />
                   <View className='bankruptcy-baseInfo-content'>
                     <View className='bankruptcy-baseInfo-content-info'>
                       <View className='bankruptcy-baseInfo-content-info-justifylabel'>源链接</View>
@@ -193,7 +193,7 @@ export default class Bankruptcy extends Component <IProps, IState>{
               </View>
               {
                 detail.url ? <View>
-                  <View className='bankruptcy-baseInfo-line' />
+                  <View className='bankruptcy-baseInfo-line' style={{margin: '0 24rpx'}} />
                   <View className='bankruptcy-baseInfo-content'>
                     <View className='bankruptcy-baseInfo-content-info'>
                       <View className='bankruptcy-baseInfo-content-info-justifylabel'>源链接</View>

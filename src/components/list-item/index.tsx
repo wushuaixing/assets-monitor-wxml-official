@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from "react";
 import Taro from '@tarojs/taro';
-import moment from "moment";
 import {View, Text, Image} from '@tarojs/components';
 import { getPlot, getTitleTag, getRiskTag, getObligorName, getTime, getAuctionStatus, getAuctionRoleType, getJumpType, getCaseType, getRequestParams } from './config';
 import {dateToFormat, floatFormat} from '../../utils/tools/common';
@@ -235,9 +234,9 @@ const ListItem = (props: IProps) => {
 						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.obligorName || '-'}</View>
 					</View>
 					<View className='item-content-info'>
-						<View className='item-content-info-label'>案由</View>
+						<View className='item-content-info-label'>案号</View>
 						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.obligorName || '-'}</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.title || '-'}</View>
 					</View>
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>破产法院</View>

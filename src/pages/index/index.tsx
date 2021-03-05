@@ -208,7 +208,7 @@ class Index extends Component <IProps, IState>{
       if( code === 200){
         let newRiskArrary = [
           { id: 21, name: '破产重整', num: data.bankruptcyCount || 0, isRule: isRule('fxjkqypccz'), icon: 'icon-bankruptcy', value: 'fxjkqypccz'},
-          { id: 22, name: '涉诉', num: data.lawsuitCount  || 0, isRule: isRule('fxjkssjk'), icon: 'icon-litigation', value: 'fxjkssjk'},
+          { id: 22, name: '涉诉信息', num: data.lawsuitCount  || 0, isRule: isRule('fxjkssjk'), icon: 'icon-litigation', value: 'fxjkssjk'},
         ];
         data.starLevelCounts.forEach(item => {
           if(item.starLevel === 90){
@@ -316,7 +316,6 @@ class Index extends Component <IProps, IState>{
     console.log('index render === ', riskArray, JSON.stringify(riskArray));
     const assetsSum = getArraySum(assetsArray, 'num');
     const riskSum = getArraySum(riskArray, 'num');
-
     return (
       <View className='home'>
         <View className='home-title'>
