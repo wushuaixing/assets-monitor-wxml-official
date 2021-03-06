@@ -113,7 +113,7 @@
           &-selectText {
             width: 493px;
             display: inline-block;
-            font-size: 30px;
+            font-size: 32px;
             font-weight: 400;
             color: #CCCCCC;
             line-height: 96px;
@@ -135,12 +135,20 @@
         &-inputTemp {
           width: 480px;
           display: inline-block;
-          font-size: 30px;
+          font-size: 32px;
           font-weight: 400;
-          color: #CCCCCC;
+          color: #666666;
           line-height: 96px;
+          vertical-align: sub;
         }
       }
     }
   }
+}
+.input-placeholder{
+  height:96px;
+  line-height: 96px;
+  color:#CCCCCC;
+  font-size: 32px;
+  vertical-align: sub;
 }

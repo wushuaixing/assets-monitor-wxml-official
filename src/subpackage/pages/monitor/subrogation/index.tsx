@@ -235,12 +235,13 @@ export default class Subrogation extends Component <IProps, IState> {
                       style={{
                         color: detail.url ? '#0979E6' : '#666666',
                         display: 'inline-block'
-                      }}>{detail.url || '-'}</View>
-                {
-                  detail.url ?
-                    <Text className='iconfont icon-copy yc-subrogation-baseInfo-content-info-copyIcon'/> : null
-                }
-
+                      }}>
+                  {detail.url || '-'}
+                  {
+                    detail.url ?
+                      <Text className='iconfont icon-copy yc-subrogation-baseInfo-content-info-copyIcon'/> : null
+                  }
+                </View>
               </View>
               {/*<View className='yc-subrogation-baseInfo-content-info-label' style={{marginLeft: 'auto'}}>（来源：诉讼网）</View>*/}
             </View>
