@@ -432,24 +432,24 @@ export default class BusinessDetail extends Component<IProps, isState> {
                             style={{letterSpacing: i.id === '1' ? '11rpx' : '0'}}>{i.title}</View>
                       {
                         i.type === 'input' ?
-                          <Input
-                            className='yc-addBusiness-baseInfo-input-content-inputTemp'
-                            name={i.field}
-                            type='text'
-                            placeholder={i.placeHolder}
-                            onInput={(e) => {
-                              this.onInput(e, i.field)
-                            }}
-                            onBlur={(e) => {
-                              this.onBlur(e, i.field)
-                            }}
-                            value={baseObj[i.field]}
-                            maxlength={i.field === 'caseNumber' ? 32 : i.field === 'obligorName' ? 40 : i.field === 'obligorNumber' ? 18 : -1}
-                          /> :
+                            <Input
+                              className='yc-addBusiness-baseInfo-input-content-inputTemp'
+                              name={i.field}
+                              type='text'
+                              placeholder={i.placeHolder}
+                              onInput={(e) => {
+                                this.onInput(e, i.field)
+                              }}
+                              onBlur={(e) => {
+                                this.onBlur(e, i.field)
+                              }}
+                              value={baseObj[i.field]}
+                              maxlength={i.field === 'caseNumber' ? 32 : i.field === 'obligorName' ? 40 : i.field === 'obligorNumber' ? 18 : -1}
+                            />:
                           <View className='yc-addBusiness-baseInfo-input-content-selectTemp'
                                 onClick={this.onOpenActionSheetClick}>
                             <View
-                              className='yc-addBusiness-baseInfo-input-content-selectTemp-selectText'>{handleBorrowType[baseObj.borrowType] || i.placeHolder}</View>
+                              className='yc-addBusiness-baseInfo-input-content-selectTemp-selectText' style={{color:handleBorrowType[baseObj.borrowType] ? '#666666' : '#CCCCCC'}}>{handleBorrowType[baseObj.borrowType] || i.placeHolder}</View>
                             <View className='yc-addBusiness-baseInfo-input-content-selectTemp-arrow'>
                               <Text
                                 className="iconfont icon-right-arrow yc-addBusiness-baseInfo-input-content-selectTemp-arrow-text"/>

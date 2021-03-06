@@ -126,13 +126,20 @@ export default class FeedBack extends Component<IProps, isState> {
         <View className='yc-feedBack-content'>
           <View className='yc-feedBack-content-idea'>
             <View className='yc-feedBack-content-idea-text'>请提出您宝贵的意见</View>
-            <AtTextarea
-              height={240}
-              value={value}
-              onChange={this.onTextAreaChange}
-              maxLength={150}
-              placeholder='您的意见，是我们改进的动力！'
-            />
+            <View style={{position:'relative'}}>
+              <AtTextarea
+                height={240}
+                value={value}
+                onChange={this.onTextAreaChange}
+                maxLength={150}
+                placeholder='您的意见，是我们改进的动力！'
+                count={false}
+              />
+              <View className='at-textarea__counter' style={{position:'absolute',bottom:'18rpx',right:'18rpx'}}>
+                {value.length}/150
+              </View>
+            </View>
+
           </View>
           <View className='yc-feedBack-content-image'>
             <View className='yc-feedBack-content-image-text'>上传图片(可选)</View>
