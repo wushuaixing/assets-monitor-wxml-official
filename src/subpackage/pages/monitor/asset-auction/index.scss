@@ -10,19 +10,23 @@
   &-info{
     font-size: 28px;
     line-height: 28px;
-    margin-top: 20px;
+    margin-top: 6px;
     display: flex;
     &-label{
       color: $label-color;
       word-break: keep-all;
-      height: 28px;
+      line-height: 42px;
+      height: 42px;
     }
     &-colon{
+      height: 42px;
+      line-height: 42px;
       color: $label-color;
       word-break: keep-all;
     }
     &-justifylabel{
-      height: 28px;
+      height: 42px;
+      line-height: 42px;
       color: $label-color;
       word-break: keep-all;
       max-width: 110px;
@@ -38,6 +42,7 @@
       }
     }
     &-value{
+      line-height: 42px;
       color: $text-color;
       &-link{
         color: $primary-color;
@@ -81,13 +86,27 @@
       @include contentStyle;
     }
 
-    &-type{
+    &-accurate{
       display: inline-block;
       position: absolute;
       right: 0;
-      top: 114px;
+      top: 102px;
       color: #FF3B30;
       background-color: #FFE7E6;
+      font-size: 24px;
+      line-height: 24px;
+      padding: 8px 12px;
+      border-radius: 20px 0 0 20px;
+      font-weight: 400;
+    }
+
+    &-fuzzy{
+      display: inline-block;
+      position: absolute;
+      right: 0;
+      top: 102px;
+      color: $text-color;
+      background-color: $border-color;
       font-size: 24px;
       line-height: 24px;
       padding: 8px 12px;
@@ -101,8 +120,8 @@
     position: relative;
     &-title{
       background-color: white;
-      font-size: 32px;
-      line-height: 32px;
+      font-size: 45px;
+      line-height: 45px;
       padding: 28px 0 29px 24px;
     }
 

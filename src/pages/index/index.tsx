@@ -79,7 +79,7 @@ class Index extends Component <IProps, IState>{
         {title: '排污权处置案例', time: '2020-10-10', text: '山东某分行通过“排污权”信息成功收回100万元山东某分行通过“排污权”信息成功收回100万元！'},
       ],
       scrollViewHeight: 0,
-      loading: true,
+      loading: false,
       businessCount: 0,
       assetsArray: [],
       riskArray: [],
@@ -153,85 +153,102 @@ class Index extends Component <IProps, IState>{
   handleRequestAsstes = () => {
     const { loading } = this.state;
     const { dispatch } = this.props;
-    if(loading){
-      Taro.showLoading();
-    }
-    dispatch({
-      type: 'home/getAssets',
-      payload: {}
-    }).then(res => {
-      Taro.hideLoading();
-      const { starLevel } = this.state;
-      let newStarLevel = {...starLevel};
-      const { code, data} = res;
-      if( code === 200){
-        Taro.hideLoading();
-        let newAssetsArrary: dataItem[] =  [
-          { id: 1, name: '资产拍卖', num: data.auctionCount || 0, isRule: isRule('zcwjzcpm'), icon: 'icon-auction', value: 'zcwjzcpm'},
-          { id: 2, name: '代位权', num: data.subrogationCount || 0, isRule: isRule('zcwjdwq'), icon: 'icon-subrogation', value: 'zcwjdwq'},
-        ];
-        data.starLevelCounts.forEach(item => {
-          if(item.starLevel === 90){
-            newStarLevel.three = item.starLevelCount;
-          }
-          else if(item.starLevel === 80){
-            newStarLevel.two = item.starLevelCount;
-          }
-          else if(item.starLevel === 60){
-            newStarLevel.one = item.starLevelCount;
-          }
-        });
+    if(!loading){
+      this.setState({
+        loading: true,
+      });
+      dispatch({
+        type: 'home/getAssets',
+        payload: {}
+      }).then(res => {
+        const { starLevel } = this.state;
+        let newStarLevel = {...starLevel};
+        const { code, data} = res;
+        if( code === 200){
+          let newAssetsArrary: dataItem[] =  [
+            { id: 1, name: '资产拍卖', num: data.auctionCount || 0, isRule: isRule('zcwjzcpm'), icon: 'icon-auction', value: 'zcwjzcpm'},
+            { id: 2, name: '代位权', num: data.subrogationCount || 0, isRule: isRule('zcwjdwq'), icon: 'icon-subrogation', value: 'zcwjdwq'},
+          ];
+          data.starLevelCounts.forEach(item => {
+            if(item.starLevel === 90){
+              newStarLevel.three = item.starLevelCount;
+            }
+            else if(item.starLevel === 80){
+              newStarLevel.two = item.starLevelCount;
+            }
+            else if(item.starLevel === 60){
+              newStarLevel.one = item.starLevelCount;
+            }
+          });
+          this.setState({
+            loading: false,
+            starLevel: newStarLevel,
+            assetsArray: [...newAssetsArrary]
+          })
+        }
+        else {
+          this.setState({
+            loading: false,
+          })
+        }
+      }).catch(()=>{
         this.setState({
-          starLevel: newStarLevel,
-          assetsArray: [...newAssetsArrary]
+          loading: false,
         })
-      }
-    }).catch(()=>{
-      Taro.hideLoading();
-    });
+      });
+    }
   };
 
   handleRequestRisk = () => {
     const { loading } = this.state;
     const { dispatch } = this.props;
-    if(loading){
-      Taro.showLoading();
-    }
-    dispatch({
-      type: 'home/getRisk',
-      payload: {}
-    }).then(res => {
-      Taro.hideLoading();
-      const { code, data} = res;
-      const { starLevel } = this.state;
-      let newStarLevel = {...starLevel};
-      if( code === 200){
-        let newRiskArrary = [
-          { id: 21, name: '破产重整', num: data.bankruptcyCount || 0, isRule: isRule('fxjkqypccz'), icon: 'icon-bankruptcy', value: 'fxjkqypccz'},
-          { id: 22, name: '涉诉信息', num: data.lawsuitCount  || 0, isRule: isRule('fxjkssjk'), icon: 'icon-litigation', value: 'fxjkssjk'},
-        ];
-        data.starLevelCounts.forEach(item => {
-          if(item.starLevel === 90){
-            newStarLevel.high = item.starLevelCount;
-          }
-          else if(item.starLevel === 80){
-            newStarLevel.warn = item.starLevelCount;
-          }
-          else if(item.starLevel === 60){
-            newStarLevel.tip = item.starLevelCount;
-          }
-          else{
-            newStarLevel.good = item.starLevelCount;
-          }
-        });
+    if(!loading){
+      this.setState({
+        loading: true,
+      });
+      dispatch({
+        type: 'home/getRisk',
+        payload: {}
+      }).then(res => {
+        const { code, data} = res;
+        const { starLevel } = this.state;
+        let newStarLevel = {...starLevel};
+        if( code === 200){
+          let newRiskArrary = [
+            { id: 21, name: '破产重整', num: data.bankruptcyCount || 0, isRule: isRule('fxjkqypccz'), icon: 'icon-bankruptcy', value: 'fxjkqypccz'},
+            { id: 22, name: '涉诉信息', num: data.lawsuitCount  || 0, isRule: isRule('fxjkssjk'), icon: 'icon-litigation', value: 'fxjkssjk'},
+          ];
+          data.starLevelCounts.forEach(item => {
+            if(item.starLevel === 90){
+              newStarLevel.high = item.starLevelCount;
+            }
+            else if(item.starLevel === 80){
+              newStarLevel.warn = item.starLevelCount;
+            }
+            else if(item.starLevel === 60){
+              newStarLevel.tip = item.starLevelCount;
+            }
+            else{
+              newStarLevel.good = item.starLevelCount;
+            }
+          });
+          this.setState({
+            loading: false,
+            starLevel: newStarLevel,
+            riskArray: [...newRiskArrary]
+          })
+        }
+        else {
+          this.setState({
+            loading: false,
+          })
+        }
+      }).catch(() => {
         this.setState({
-          starLevel: newStarLevel,
-          riskArray: [...newRiskArrary]
+          loading: false,
         })
-      }
-    }).catch(() => {
-      Taro.hideLoading();
-    });
+      });
+    }
   };
 
   // 跳转添加业务

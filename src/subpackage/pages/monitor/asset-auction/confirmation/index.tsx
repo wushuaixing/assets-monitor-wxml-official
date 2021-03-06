@@ -83,10 +83,12 @@ export default class Confirmation extends Component <IProps, IState>{
             <View className='confirmation-content-info-text'>{dateToFormat(detail.end, 'YYYY-MM-DD HH:mm:ss')}</View>
           </View>
         </View>
-        <View className='confirmation-plan'>
-          <View className='confirmation-plan-title'>【网络拍卖竞价结果】</View>
-          <View className='confirmation-plan-text'>{detail.auctionSuccessConfirmation || '-'}</View>
-        </View>
+        {
+          detail.auctionSuccessConfirmation && <View className='confirmation-plan'>
+	          <View className='confirmation-plan-title'>【网络拍卖竞价结果】</View>
+	          <View className='confirmation-plan-text'>{detail.auctionSuccessConfirmation}</View>
+          </View>
+        }
       </View>
     )
   }

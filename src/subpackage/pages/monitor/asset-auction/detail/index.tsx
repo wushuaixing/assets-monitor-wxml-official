@@ -97,7 +97,7 @@ export default class AssetsDetail extends Component <IProps, IState>{
         <NavigationBar border title='拍卖详情'/>
         {/*拍卖详情*/}
         <View className='detail-info'>
-          <View className='detail-info-title'>【二拍】(破) 浙AD6U68的别克小型普通客车的别克小型普通客车</View>
+          <View className='detail-info-title'>{detail.title}</View>
           <View className='detail-info-item'>
             <View className='detail-info-item-label'>当前状态</View>
             <View className='detail-info-item-colon'>：</View>

@@ -127,14 +127,28 @@ const getObligorName = (type: number, detail) => {
 
 
 const getTime = ( updateTime ) => {
-  if(updateTime){
-    let currentTime = moment();
-    let time = moment(updateTime * 1000);
-    let long = currentTime.diff(time, 'h');
-    return long < 24 ? (long < 1 ? '刚刚' : moment(updateTime * 1000).startOf('hour').fromNow()) : moment(updateTime * 1000).format('YYYY-MM-DD');
+  let showTime: string = '-';
+  if(!updateTime){
+    return showTime;
   }
-  return '-'
-
+  let currentTime = moment();
+  let time = moment(updateTime * 1000);
+  let long = currentTime.diff(time, 'h');
+  if(currentTime.isSame(time, 'd')){
+    if(long < 1) {
+      showTime = '刚刚';
+    }
+    else if(long >= 1 && long < 24){
+      showTime = moment(updateTime * 1000).startOf('hour').fromNow();
+    }
+    else{
+      showTime = moment(updateTime * 1000).format('YYYY-MM-DD');
+    }
+  }
+  else{
+    showTime = moment(updateTime * 1000).format('YYYY-MM-DD');
+  }
+  return showTime;
 };
 
 const getJumpType = (type) => {

@@ -322,6 +322,8 @@ export default class Monitor extends Component <IProps, IState>{
   }
 
   componentWillMount(): void {
+    // 设置第一次进入监控页触发加载
+    setGlobalData('refreshMonitor', true);
     const onReadyEventId = this.$instance.router.onReady;
     eventCenter.once(onReadyEventId, () => {
       let height = 0;
