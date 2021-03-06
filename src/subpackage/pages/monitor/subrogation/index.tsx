@@ -10,19 +10,19 @@ type IProps = {}
 
 type IState = {
   detail: {
-    parties:any,
-    informationExplain:string,
-    valueLevel:number,
-    caseNumber:string,
-    gmtJudgment:any,
-    gmtPublish:any,
-    gmtRegister:any,
-    caseReason:string,
-    caseType:number,
-    court:string,
-    url:string,
-    gmtTrial:any,
-    dataType:number,
+    parties: any,
+    informationExplain: string,
+    valueLevel: number,
+    caseNumber: string,
+    gmtJudgment: any,
+    gmtPublish: any,
+    gmtRegister: any,
+    caseReason: string,
+    caseType: number,
+    court: string,
+    url: string,
+    gmtTrial: any,
+    dataType: number,
   }
 };
 
@@ -37,14 +37,15 @@ export default class Subrogation extends Component <IProps, IState> {
   }
 
 
-  onLoad(option){
+  onLoad(option) {
     console.log('onLoad===')
     const _this = Taro.getCurrentInstance().page;
     const eventChannel = _this.getOpenerEventChannel();
     // 监听acceptDataFromOpenerPage事件，获取上一页面通过eventChannel传送到当前页面的数据
     eventChannel.on('acceptDataFromOpenerPage', (detail) => {
-      console.log('detail',detail)
-      this.handleState(detail)})
+      console.log('detail', detail)
+      this.handleState(detail)
+    })
   }
 
   handleState = (detail) => {
@@ -73,7 +74,7 @@ export default class Subrogation extends Component <IProps, IState> {
     const handleType = {
       2: '代位-立案信息',
       3: '代位-开庭信息',
-      4: '涉诉-文书信息',
+      4: '代位-文书信息',
     }
     const dateType = {
       2: '立案',
@@ -137,7 +138,8 @@ export default class Subrogation extends Component <IProps, IState> {
 
             <View className='yc-subrogation-baseInfo-content-info'>
               <View className='yc-subrogation-baseInfo-content-info-label'>被告：</View>
-              <View className='yc-subrogation-baseInfo-content-info-value'>{handleDefendantData && handleDefendantData.join('，') || '-'}</View>
+              <View
+                className='yc-subrogation-baseInfo-content-info-value'>{handleDefendantData && handleDefendantData.join('，') || '-'}</View>
             </View>
 
             <View className='yc-subrogation-baseInfo-line' style={{margin: '24rpx 0 18rpx 0'}}/>
@@ -167,7 +169,8 @@ export default class Subrogation extends Component <IProps, IState> {
                   </View>
                 </View> :
                 <View className='yc-subrogation-baseInfo-content-info'>
-                  <View className='yc-subrogation-baseInfo-content-info-justifylabel'>{dateType[detail.dataType]}日期</View>
+                  <View
+                    className='yc-subrogation-baseInfo-content-info-justifylabel'>{dateType[detail.dataType]}日期</View>
                   <View className='yc-subrogation-baseInfo-content-info-colon'>：</View>
                   <View
                     className='yc-subrogation-baseInfo-content-info-value'>{detail.dataType === 2 ? dateToFormat(detail.gmtRegister, 'YYYY-MM-DD') : detail.dataType === 3 ? dateToFormat(detail.gmtTrial, 'YYYY-MM-DD') : '-'}</View>
@@ -191,7 +194,7 @@ export default class Subrogation extends Component <IProps, IState> {
                   <View className='yc-subrogation-baseInfo-content-info-justifylabel'>案件类型</View>
                   <View className='yc-subrogation-baseInfo-content-info-colon'>：</View>
                   <View
-                    className='yc-subrogation-baseInfo-content-info-value'>{caseType[detail.caseType] ? `${caseType[detail.caseType]}案件` : '-'}</View>
+                    className='yc-subrogation-baseInfo-content-info-value'>{caseType[Number(detail.caseType)] ? `${caseType[Number(detail.caseType)]}案件` : '-'}</View>
                 </View>
                 : null
             }
@@ -229,9 +232,13 @@ export default class Subrogation extends Component <IProps, IState> {
                 this.onCopyClick(detail.url)
               }}>
                 <View className='yc-subrogation-baseInfo-content-info-value'
-                      style={{color: detail.url ? '#0979E6' : '#666666', display: 'inline-block'}}>{detail.url || '-'}</View>
+                      style={{
+                        color: detail.url ? '#0979E6' : '#666666',
+                        display: 'inline-block'
+                      }}>{detail.url || '-'}</View>
                 {
-                  detail.url ? <Text className='iconfont icon-copy yc-subrogation-baseInfo-content-info-copyIcon'/> : null
+                  detail.url ?
+                    <Text className='iconfont icon-copy yc-subrogation-baseInfo-content-info-copyIcon'/> : null
                 }
 
               </View>

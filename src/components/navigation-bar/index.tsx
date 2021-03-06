@@ -7,11 +7,13 @@ import './index.scss';
 type IProps = {
   border?: boolean,
   title?: string,
-  type?: string
-  color?: string
+  type?: string,
+  color?: string,
+  url?:string,
+  isTab?:boolean,
 }
 
-const NavigationBar: FC<IProps> = ({border, title, type = 'white', color = 'black'}) => {
+const NavigationBar: FC<IProps> = ({border, title, type = 'white', color = 'black',url,isTab}) => {
   const statusBarHeight = getGlobalData('statusBarHeight') || 20;
   const style = {
     paddingTop : `${statusBarHeight}px`,
@@ -19,7 +21,15 @@ const NavigationBar: FC<IProps> = ({border, title, type = 'white', color = 'blac
   const backStates = Taro.getCurrentPages().length > 1;
 
   const goback = () => {
-    Taro.navigateBack();
+    if(url){
+      if(isTab){
+        Taro.switchTab({url})
+      }else{
+        Taro.navigateTo({url})
+      }
+    }else{
+      Taro.navigateBack();
+    }
   };
 
   return(

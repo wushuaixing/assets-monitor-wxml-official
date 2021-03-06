@@ -37,6 +37,7 @@
           font-weight: 400;
           color: #333333;
           line-height: 28px;
+          min-height:28px;
         }
 
         &-obligorDetail {
@@ -92,6 +93,7 @@
       display: inline-block;
       float: right;
       text-align: right;
+      min-width: 123px;
 
       &-circleContent {
         &-circle {

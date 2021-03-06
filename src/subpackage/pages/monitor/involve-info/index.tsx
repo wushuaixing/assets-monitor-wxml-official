@@ -10,19 +10,19 @@ type IProps = {}
 
 type IState = {
   detail: {
-    parties:any,
-    informationExplain:string,
-    valueLevel:number,
-    caseNumber:string,
-    gmtJudgment:any,
-    gmtPublish:any,
-    gmtRegister:any,
-    caseReason:string,
-    caseType:number,
-    court:string,
-    url:string,
-    gmtTrial:any,
-    dataType:number,
+    parties: any,
+    informationExplain: string,
+    valueLevel: number,
+    caseNumber: string,
+    gmtJudgment: any,
+    gmtPublish: any,
+    gmtRegister: any,
+    caseReason: string,
+    caseType: number,
+    court: string,
+    url: string,
+    gmtTrial: any,
+    dataType: number,
   }
 };
 
@@ -44,12 +44,12 @@ export default class InvolveInfo extends Component <IProps, IState> {
   };
 
 
-  onLoad(option){
+  onLoad(option) {
     const _this = Taro.getCurrentInstance().page;
     const eventChannel = _this.getOpenerEventChannel();
     // 监听acceptDataFromOpenerPage事件，获取上一页面通过eventChannel传送到当前页面的数据
     eventChannel.on('acceptDataFromOpenerPage', (detail) => {
-      console.log('detail',detail)
+      console.log('detail', detail)
       this.handleState(detail)
     })
   }
@@ -118,7 +118,8 @@ export default class InvolveInfo extends Component <IProps, IState> {
             <View className='yc-subrogation-baseInfo-content-info'>
               <View className='yc-subrogation-baseInfo-content-info-label'>价值等级：</View>
               <View
-                className='yc-subrogation-baseInfo-content-info-value yc-subrogation-baseInfo-content-info-valueStar' style={{color:levelColor[detail.valueLevel]}}>{levelType[detail.valueLevel] || '-'}</View>
+                className='yc-subrogation-baseInfo-content-info-value yc-subrogation-baseInfo-content-info-valueStar'
+                style={{color: levelColor[detail.valueLevel]}}>{levelType[detail.valueLevel] || '-'}</View>
             </View>
             <View className='yc-subrogation-baseInfo-content-line'/>
             <View className='yc-subrogation-baseInfo-content-info'>
@@ -137,7 +138,8 @@ export default class InvolveInfo extends Component <IProps, IState> {
           <View className='yc-subrogation-baseInfo-content'>
             <View className='yc-subrogation-baseInfo-content-info'>
               <View className='yc-subrogation-baseInfo-content-info-label'>原告：</View>
-              <View className='yc-subrogation-baseInfo-content-info-value'>{handlePlaintiffData && handlePlaintiffData.join('，') || '-'}</View>
+              <View
+                className='yc-subrogation-baseInfo-content-info-value'>{handlePlaintiffData && handlePlaintiffData.join('，') || '-'}</View>
             </View>
 
             <View className='yc-subrogation-baseInfo-content-line'/>
@@ -175,7 +177,8 @@ export default class InvolveInfo extends Component <IProps, IState> {
                   </View>
                 </View> :
                 <View className='yc-subrogation-baseInfo-content-info'>
-                  <View className='yc-subrogation-baseInfo-content-info-justifylabel'>{dateType[detail.dataType]}日期</View>
+                  <View
+                    className='yc-subrogation-baseInfo-content-info-justifylabel'>{dateType[detail.dataType]}日期</View>
                   <View className='yc-subrogation-baseInfo-content-info-colon'>：</View>
                   <View
                     className='yc-subrogation-baseInfo-content-info-value'>{detail.dataType === 6 ? dateToFormat(detail.gmtRegister, 'YYYY-MM-DD') : detail.dataType === 7 ? dateToFormat(detail.gmtTrial, 'YYYY-MM-DD') : '-'}</View>
@@ -199,7 +202,7 @@ export default class InvolveInfo extends Component <IProps, IState> {
                   <View className='yc-subrogation-baseInfo-content-info-justifylabel'>案件类型</View>
                   <View className='yc-subrogation-baseInfo-content-info-colon'>：</View>
                   <View
-                    className='yc-subrogation-baseInfo-content-info-value'>{`${caseType[detail.caseType]}案件` || '-'}</View>
+                    className='yc-subrogation-baseInfo-content-info-value'>{`${caseType[Number(detail.caseType)]}案件` || '-'}</View>
                 </View>
                 : null
             }
@@ -229,7 +232,7 @@ export default class InvolveInfo extends Component <IProps, IState> {
           {/*    </View> : null*/}
           {/*}*/}
 
-          <View className='yc-subrogation-baseInfo-content' style={{padding:'0 24rpx 0'}}>
+          <View className='yc-subrogation-baseInfo-content' style={{padding: '0 24rpx 0'}}>
             <View className='yc-subrogation-baseInfo-content-info'>
               <View
                 className='yc-subrogation-baseInfo-content-info-label yc-subrogation-baseInfo-content-info-sourceLinkLabel'>源链接：</View>

@@ -309,6 +309,7 @@ export default class RelationBusiness extends Component<IProps, isState> {
                                   onBlur={(e) => {
                                     this.onBlur(e, i.field, index)
                                   }}
+                                  maxlength={i.field === 'obligorName' ? 40 : i.field === 'obligorNumber' ? 18 : -1}
                                 /> :
                                 <View className='yc-addBusiness-baseInfo-input-content-selectTemp'
                                       onClick={() => {
