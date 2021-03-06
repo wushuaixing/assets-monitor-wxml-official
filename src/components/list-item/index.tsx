@@ -30,6 +30,7 @@ interface itemType{
   publishDate?: Date
   gmtTrial?: Date
   court?: string
+  parties?: []
 }
 
 type IProps = {
@@ -84,6 +85,11 @@ const ListItem = (props: IProps) => {
           }
         })
     }
+  };
+
+  const handleGetName = (parties?: any = [], field, name) => {
+    const applicantName = parties.filter(item =>item[field] === name) || [];
+    return applicantName.length > 0 ? applicantName.map(item => { return item.name }).join() : '-';
   };
 
   return (
@@ -161,7 +167,7 @@ const ListItem = (props: IProps) => {
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>立案日期</View>
 						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{dateToFormat(detail.gmtCreate)}</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{dateToFormat(detail.gmtRegister)}</View>
 					</View>
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>案号</View>
@@ -186,7 +192,7 @@ const ListItem = (props: IProps) => {
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>开庭日期</View>
 						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{dateToFormat(detail.gmtCreate)}</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{dateToFormat(detail.gmtTrial)}</View>
 					</View>
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>案号</View>
@@ -221,7 +227,7 @@ const ListItem = (props: IProps) => {
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>案件类型</View>
 						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.caseType ? getCaseType(detail.caseType) : '-'}</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.caseType || '-'}</View>
 					</View>
 				</View>
       }
@@ -236,7 +242,7 @@ const ListItem = (props: IProps) => {
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>申请人</View>
 						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.obligorName || '-'}</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{handleGetName(detail.parties, 'role', '申请人')}</View>
 					</View>
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>案号</View>
@@ -336,7 +342,7 @@ const ListItem = (props: IProps) => {
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>案件类型</View>
 						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.caseType ? getCaseType(detail.caseType) : '-'}</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.caseType || '-'}</View>
 					</View>
 				</View>
       }

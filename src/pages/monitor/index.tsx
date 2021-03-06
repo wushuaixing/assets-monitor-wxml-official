@@ -322,6 +322,8 @@ export default class Monitor extends Component <IProps, IState>{
   }
 
   componentWillMount(): void {
+    // 设置第一次进入监控页触发加载
+    setGlobalData('refreshMonitor', true);
     const onReadyEventId = this.$instance.router.onReady;
     eventCenter.once(onReadyEventId, () => {
       let height = 0;
@@ -633,7 +635,10 @@ export default class Monitor extends Component <IProps, IState>{
 			          <Text className='monitor-tips-notice-text'>
 				          为您找到
 				          <Text className='monitor-tips-notice-text-count'>{listCount}</Text>
-				          条线索
+				          条
+                  {
+                    currentId === 1 ? '资产线索' : '风险信息'
+                  }
 			          </Text>
 		          </View>
 	          </View>
