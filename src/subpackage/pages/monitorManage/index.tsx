@@ -87,16 +87,19 @@ export default class MonitorManage extends Component<IProps, isState> {
     if (e.detail.value.length > 40) {
       Message('最长输入40个字');
     } else {
-      // if (e.detail.value !== "") {
+      if (e.detail.value === "" && this.state.searchValue === "") {
+        console.log('no')
+      } else {
+        console.log('yes')
         this.setState({
-          dataSource: []
+          dataSource: [],
         })
         if (current) {
           this.handleObligorList(1, e.detail.value, 0)
         } else {
           this.handleBusinessList(1, e.detail.value, 0)
         }
-      // }
+      }
     }
     this.setState({
       searchValue: e.detail.value.slice(0, 40),
@@ -226,7 +229,7 @@ export default class MonitorManage extends Component<IProps, isState> {
     const placeholderText = current ? '请输入债务人名称' : '请输入业务编号或业务中的债务人姓名';
     return (
       <View className='yc-monitorManage'>
-        <NavigationBar title='监控管理'/>
+        <NavigationBar title='监控管理' url='/pages/index/index' isTab/>
         <View className='yc-monitorManage-header'>
           <View className='yc-monitorManage-top'
                 style={{height: dataSource.length > 0 || searchValue !== "" ? '181rpx' : '89rpx'}}>

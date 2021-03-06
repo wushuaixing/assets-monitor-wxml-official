@@ -4,7 +4,7 @@ import {Button, View, Input, Form, Text} from '@tarojs/components';
 import {AtActionSheet, AtActionSheetItem, AtButton} from 'taro-ui';
 import RelationBusiness from './relationBusiness';
 import './index.scss'
-import {Message} from "../../../../utils/tools/common";
+import {Message, throttle} from "../../../../utils/tools/common";
 import Taro, {getCurrentInstance} from "@tarojs/taro";
 import NavigationBar from "../../../../components/navigation-bar";
 
@@ -152,28 +152,28 @@ export default class BusinessDetail extends Component<IProps, isState> {
       })
       return;
     }
-    if (relationCheckObligorNumber.length > 0) {
-      relationList.forEach((i, index) => {
-        if (i.borrowType === 0 && i.obligorNumber !== "") {
-          const reg = /^[0-9a-zA-Z\uff08\uff09\(\)\*]+$/;
-          if (!reg.test(i.obligorNumber)) {
-            Message(`请核对关联债务人${index + 1}的证件号`)
-            return;
+    if (relationCheckObligorName.length > 0) {
+      for (var i = 0; i < relationList.length; i++) {
+        if (relationList[i].obligorName !== "") {
+          const reg = /^[\u4e00-\u9fa5\uff08\uff090-9a-zA-Z·\(\)]+$/;
+          if (!reg.test(relationList[i].obligorName)) {
+            Message(`请核对关联债务人${i + 1}的债务人名称`);
+            break;
           }
         }
-      })
+      }
       return;
     }
-    if (relationCheckObligorName.length > 0) {
-      relationList.forEach((i, index) => {
-        if (i.obligorName !== "") {
-          const reg = /^[\u4e00-\u9fa5\uff08\uff090-9a-zA-Z·\(\)]+$/;
-          if (!reg.test(i.obligorName)) {
-            Message(`请核对关联债务人${index + 1}的债务人名称`)
-            return;
+    if (relationCheckObligorNumber.length > 0) {
+      for (var i = 0; i < relationList.length; i++) {
+        if (relationList[i].borrowType === 0 && relationList[i].obligorNumber !== "") {
+          const reg = /^[0-9a-zA-Z\uff08\uff09\(\)\*]+$/;
+          if (!reg.test(relationList[i].obligorNumber)) {
+            Message(`请核对关联债务人${i + 1}的证件号`)
+            break;
           }
         }
-      })
+      }
       return;
     }
 
@@ -182,6 +182,18 @@ export default class BusinessDetail extends Component<IProps, isState> {
       'obligorList': this.obligorList
     }
     console.log('params===', params)
+    if (id) {
+      // 编辑业务
+      console.log('编辑')
+      throttle(this.editBusiness(params, type, id, searchValue), 5000)
+    } else {
+      console.log('添加')
+      throttle(this.addBusiness(params, type, searchValue), 5000)
+    }
+  }
+
+  // 编辑业务
+  editBusiness = (params, type, id, searchValue) => {
     if (id) {
       // 编辑业务
       console.log('编辑')
@@ -202,32 +214,33 @@ export default class BusinessDetail extends Component<IProps, isState> {
       }).catch(() => {
         Message('网络异常请稍后再试！')
       })
-    } else {
-      console.log('添加')
-      // 添加业务
-      this.props.dispatch({
-        type: 'monitorManage/getBusinessSave',
-        payload: {...params}
-      }).then(res => {
-        console.log('onSubmitonSubmitonSubmit', res)
-        Message(res.message);
-        if (res.code === 200) {
-          setTimeout(() => {
-            if (type === 'addBus') {
-              Taro.navigateTo({url: `/subpackage/pages/monitorManage/index?type=business&searchValue=${searchValue}`})
-            }
-            if (type === 'homeAddBus') {
-              Taro.navigateTo({url: '/subpackage/pages/monitorManage/index?type=business'})
-            }
-            if (type === 'homeEmptyBus') {
-              Taro.switchTab({url: '/pages/index/index'});
-            }
-          }, 500)
-        }
-      }).catch(() => {
-        Message('网络异常请稍后再试！')
-      })
     }
+  }
+
+// 添加业务
+  addBusiness = (params, type, searchValue) => {
+    this.props.dispatch({
+      type: 'monitorManage/getBusinessSave',
+      payload: {...params}
+    }).then(res => {
+      console.log('onSubmitonSubmitonSubmit', res)
+      Message(res.message);
+      if (res.code === 200) {
+        setTimeout(() => {
+          if (type === 'addBus') {
+            Taro.navigateTo({url: `/subpackage/pages/monitorManage/index?type=business&searchValue=${searchValue}`})
+          }
+          if (type === 'homeAddBus') {
+            Taro.navigateTo({url: '/subpackage/pages/monitorManage/index?type=business'})
+          }
+          if (type === 'homeEmptyBus') {
+            Taro.switchTab({url: '/pages/index/index'});
+          }
+        }, 500)
+      }
+    }).catch(() => {
+      Message('网络异常请稍后再试！')
+    })
   }
 
   getValue = (value) => {
@@ -431,6 +444,7 @@ export default class BusinessDetail extends Component<IProps, isState> {
                               this.onBlur(e, i.field)
                             }}
                             value={baseObj[i.field]}
+                            maxlength={i.field === 'caseNumber' ? 32 : i.field === 'obligorName' ? 40 : i.field === 'obligorNumber' ? 18 : -1}
                           /> :
                           <View className='yc-addBusiness-baseInfo-input-content-selectTemp'
                                 onClick={this.onOpenActionSheetClick}>
@@ -457,7 +471,7 @@ export default class BusinessDetail extends Component<IProps, isState> {
             }
 
             <View className='yc-addBusiness-addBtn'>
-              <AtButton type='primary' onClick={this.onSubmit}>确认添加</AtButton>
+              <AtButton type='primary' onClick={throttle(this.onSubmit, 5000)}>确认添加</AtButton>
             </View>
 
           </Form>

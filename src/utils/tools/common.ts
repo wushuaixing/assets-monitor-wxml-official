@@ -204,3 +204,24 @@ export const getArraySum = (arr, field) => {
   return sum;
 };
 
+// 节流
+export const throttle = (fn, Interval) => {
+
+  // 定时器；
+  let last = 0;
+  return function() {
+    // 保存上下文的this
+    let context = this;
+    // 保存传入的参数
+    let args = arguments;
+    // 保存调用时的时间;
+    let now = + new Date;
+    // 判断上一次调用时间和当前调用时间对比
+    if (now - last > Interval) {
+      // 更新最后一次调用时间;
+      last = now;
+      fn.apply(context, args);
+    }
+  };
+};
+
