@@ -21,16 +21,27 @@
     flex-direction: row;
     justify-content: space-between;
     &-left{
+      display: flex;
+      flex-direction: column;
+      text-align: left;
       font-size: 24px;
-      padding: 5px 0 16px 24px;
+      padding: 5px 0 16px 20px;
       &-title{
         margin-top: 12px;
+        font-size: 30px;
+      }
+      &-value{
+        font-size: 32px;
+        margin-top: 13px;
       }
     }
+
     &-right{
+      width: 18px;
       font-size: 24px;
       padding-right: 22px;
       line-height: 106px;
+      opacity: 0.65;
     }
   }
 }
@@ -58,16 +69,26 @@
     flex-direction: row;
     justify-content: space-between;
     &-left{
+      display: flex;
+      text-align: left;
+      flex-direction: column;
       font-size: 24px;
-      padding: 5px 0 16px 20px;
+      padding: 5px 0 16px 18px;
       &-title{
         margin-top: 12px;
+        font-size: 30px;
+      }
+      &-value{
+        font-size: 32px;
+        margin-top: 13px;
       }
     }
     &-right{
+      width: 18px;
       font-size: 24px;
       padding-right: 12px;
       line-height: 100px;
+      opacity: 0.65;
     }
   }
 }
@@ -92,7 +113,7 @@
     &-name{
       font-size: 28px;
       line-height: 28px;
-      color: #666666;
+      color: $text-color;
     }
     &-num{
       margin-top: 16px;
@@ -153,19 +174,19 @@
           }
           &-tag{
             position: absolute;
-            top: 0;
+            top: 2px;
             left: 117px;
-            color: white;
-            padding: 5px;
+            height: 30px;
             font-size: 20px;
-            line-height: 20px;
+            line-height: 30px;
+            padding: 0 5px;
             background: #000000;
             border-radius: 4px;
             opacity: 0.6;
+            color: white;
           }
         }
         &-text{
-          margin-top: 12px;
           font-size: 28px;
           color: $common-text;
         }
@@ -200,7 +221,7 @@
         }
       }
       &-text{
-        margin-top: 12px;
+        margin-top: 4px;
         font-size: 24px;
         color: $common-text;
       }
@@ -239,6 +260,7 @@
       &-star{
         display: flex;
         margin: 25px 24px 0 24px;
+        justify-content: space-around;
         &-three{
           background-image: linear-gradient(to right, #0CBC47, #00DF7E);
           @include starBox;
@@ -262,7 +284,6 @@
         &-warn{
           background-image: linear-gradient(to right, #FF5414, #FFA349);
           @include riskLogo;
-          margin: 0 10px;
           .home-data-box-star-warn-icon{
             width: 102px;
           }
@@ -270,7 +291,6 @@
         &-tip{
           background-image: linear-gradient(to right, #00A7FA, #36C5FF);
           @include riskLogo;
-          margin: 0 10px;
           .home-data-box-star-tip-icon{
             width: 86px;
           }
@@ -288,6 +308,7 @@
         color: $common-text;
         font-size: 30px;
         margin: 48px 0 0 24px;
+        font-weight: 500;
       }
       &-firstLine{
         background-color: $divider-color;

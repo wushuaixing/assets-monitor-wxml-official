@@ -404,7 +404,7 @@ class Index extends Component <IProps, IState>{
                         <View className='home-data-box-star-three-text'>
                           <View className='home-data-box-star-three-text-left'>
                             <View className='home-data-box-star-three-text-left-title'>三星</View>
-                            <View className='home-data-box-star-three-text-left-title'>{starLevel.three}</View>
+                            <View className='home-data-box-star-three-text-left-value'>{starLevel.three}</View>
                           </View>
                           <Text className='iconfont icon-right-arrow home-data-box-star-three-text-right' />
                         </View>
@@ -414,7 +414,7 @@ class Index extends Component <IProps, IState>{
                         <View className='home-data-box-star-two-text'>
                           <View className='home-data-box-star-two-text-left'>
                             <View className='home-data-box-star-two-text-left-title'>二星</View>
-                            <View className='home-data-box-star-two-text-left-title'>{starLevel.two}</View>
+                            <View className='home-data-box-star-three-text-left-value'>{starLevel.two}</View>
                           </View>
                           <Text className='iconfont icon-right-arrow home-data-box-star-three-text-right' />
                         </View>
@@ -424,7 +424,7 @@ class Index extends Component <IProps, IState>{
                         <View className='home-data-box-star-one-text'>
                           <View className='home-data-box-star-one-text-left'>
                             <View className='home-data-box-star-one-text-left-title'>一星</View>
-                            <View className='home-data-box-star-one-text-left-title'>{starLevel.one}</View>
+                            <View className='home-data-box-star-three-text-left-value'>{starLevel.one}</View>
                           </View>
                           <Text className='iconfont icon-right-arrow home-data-box-star-three-text-right' />
                         </View>
@@ -480,7 +480,7 @@ class Index extends Component <IProps, IState>{
                         <View className='home-data-box-star-high-text'>
                           <View className='home-data-box-star-high-text-left'>
                             <View className='home-data-box-star-high-text-left-title'>高风险</View>
-                            <View className='home-data-box-star-high-text-left-title'>{starLevel.high}</View>
+                            <View className='home-data-box-star-high-text-left-value'>{starLevel.high}</View>
                           </View>
                           <Text className='iconfont icon-right-arrow home-data-box-star-three-text-right' />
                         </View>
@@ -490,7 +490,7 @@ class Index extends Component <IProps, IState>{
                         <View className='home-data-box-star-warn-text'>
                           <View className='home-data-box-star-warn-text-left'>
                             <View className='home-data-box-star-warn-text-left-title'>警示</View>
-                            <View className='home-data-box-star-warn-text-left-title'>{starLevel.warn}</View>
+                            <View className='home-data-box-star-high-text-left-value'>{starLevel.warn}</View>
                           </View>
                           <Text className='iconfont icon-right-arrow home-data-box-star-three-text-right' />
                         </View>
@@ -500,7 +500,7 @@ class Index extends Component <IProps, IState>{
                         <View className='home-data-box-star-tip-text'>
                           <View className='home-data-box-star-tip-text-left'>
                             <View className='home-data-box-star-tip-text-left-title'>提示</View>
-                            <View className='home-data-box-star-tip-text-left-title'>{starLevel.tip}</View>
+                            <View className='home-data-box-star-high-text-left-value'>{starLevel.tip}</View>
                           </View>
                           <Text className='iconfont icon-right-arrow home-data-box-star-three-text-right' />
                         </View>
@@ -510,7 +510,7 @@ class Index extends Component <IProps, IState>{
                         <View className='home-data-box-star-good-text'>
                           <View className='home-data-box-star-good-text-left'>
                             <View className='home-data-box-star-good-text-left-title'>利好</View>
-                            <View className='home-data-box-star-good-text-left-title'>{starLevel.good}</View>
+                            <View className='home-data-box-star-high-text-left-value'>{starLevel.good}</View>
                           </View>
                           <Text className='iconfont icon-right-arrow home-data-box-star-three-text-right' />
                         </View>

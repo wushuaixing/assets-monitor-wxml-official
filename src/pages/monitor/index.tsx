@@ -50,6 +50,7 @@ type IState = {
   page: number
   hasNext: boolean
   isClose: boolean
+  scrollTop: number
 };
 
 const tabList = [
@@ -200,6 +201,7 @@ export default class Monitor extends Component <IProps, IState>{
       page: 1,
       hasNext: false,
       isClose: false,
+      scrollTop: 0,
       queryAssetsConfig: [
         {
           id: 1,
@@ -394,8 +396,8 @@ export default class Monitor extends Component <IProps, IState>{
   }
 
   shouldComponentUpdate(nextProps: Readonly<IProps>, nextState: Readonly<IState>): boolean {
-    const { listCount, currentId, page } = this.state;
-    return listCount !== nextState.listCount || currentId !== nextState.currentId || page !== nextState.page;
+    const { listCount, currentId, page, isScroll} = this.state;
+    return listCount !== nextState.listCount || currentId !== nextState.currentId || page !== nextState.page || isScroll !== nextState.isScroll;
   }
 
   componentWillReceiveProps(nextProps: Readonly<IProps>, nextContext: any): void {
@@ -436,6 +438,9 @@ export default class Monitor extends Component <IProps, IState>{
     }
     const { dispatch } = this.props;
     if(currentId === 1){
+      this.setState({
+        loading: true,
+      });
       dispatch({
         type:'monitor/assetList',
         payload: {
@@ -462,6 +467,9 @@ export default class Monitor extends Component <IProps, IState>{
       });
     }
     else {
+      this.setState({
+        loading: true,
+      });
       dispatch({
         type:'monitor/riskList',
         payload: {
@@ -506,6 +514,7 @@ export default class Monitor extends Component <IProps, IState>{
         page: 1,
         starId: 1,
       }, () => {
+        this.backToTop();
         this.handleRequestList({assetAndRiskType: assetAndRiskTypeParams}, true)
       });
     }
@@ -524,6 +533,7 @@ export default class Monitor extends Component <IProps, IState>{
         page: 1,
         starId: info.id
       }, () => {
+        this.backToTop();
         this.handleRequestList({...newParams}, true);
       });
     }
@@ -541,33 +551,11 @@ export default class Monitor extends Component <IProps, IState>{
         params: newParams,
         page: 1,
       }, () => {
+        this.backToTop();
         this.handleRequestList({...newParams}, true)
       });
     }
   };
-
-  // 点击已读和跳转详情页
-  // handleReadListItem = (id, index) => {
-  //   const { dispatch } = this.props;
-  //   dispatch({
-  //     type:'monitor/auctionMarkRead',
-  //     payload: {
-  //       idList: [`${id}`],
-  //     }
-  //   }).then(res => {
-  //     if(res.code === 200 && res.data){
-  //       this.handleUpdateList(1, index);
-  //       Taro.navigateTo({
-  //         url: `/subpackage/pages/monitor/asset-auction/index`,
-  //       })
-  //     }
-  //     else {
-  //       Taro.navigateTo({
-  //         url: `/subpackage/pages/monitor/asset-auction/index`,
-  //       })
-  //     }
-  //   })
-  // };
 
   // 可视化滚动的触底函数
   handleScrollToLower = (event) => {
@@ -577,25 +565,29 @@ export default class Monitor extends Component <IProps, IState>{
     }
   };
 
+  // 监听滚动条
   handleScroll = (event) => {
     const { detail } = event;
-    if(detail.scrollHeight > 0){
+    if(detail.scrollTop > 100){
       this.setState({
         isScroll: true
       })
     }
   };
 
+  // 回到顶部
   backToTop = () => {
-    Taro.pageScrollTo({
+    this.setState({
+      isScroll: false,
       scrollTop: 0,
-      duration: 300
     })
   };
 
+
   render () {
-    const { isScroll, currentId, scrollHeight, listCount, starId, assetsList, riskList, queryAssetsConfig, queryRiskConfig, loading} = this.state;
+    const { scrollTop, isScroll, currentId, scrollHeight, listCount, starId, assetsList, riskList, queryAssetsConfig, queryRiskConfig, loading} = this.state;
     let list = currentId === 1 ? assetsList : riskList;
+    // console.log('scrollTop === ', scrollTop);
     // console.log('monitor === ',  JSON.stringify(queryAssetsConfig));
     return (
       <View className='monitor'>
@@ -622,12 +614,14 @@ export default class Monitor extends Component <IProps, IState>{
         }
         {
           listCount > 0 && <ScrollView
-            scrollY
             className='monitor-scroll'
-            enableBackToTop
+            scrollY={true}
+            enableBackToTop={true}
             style={{height: scrollHeight}}
-            onScrollToLower={this.handleScrollToLower}
+            scrollTop={scrollTop}
             onScroll={this.handleScroll}
+            onScrollToLower={this.handleScrollToLower}
+            scrollWithAnimation={true}
           >
 	          <View className='monitor-tips'>
 		          <View className='monitor-tips-notice'>
@@ -661,6 +655,7 @@ export default class Monitor extends Component <IProps, IState>{
 	          <Image src={backTop} className='monitor-back-pic' />
           </View>
         }
+
       </View>
     )
   }
