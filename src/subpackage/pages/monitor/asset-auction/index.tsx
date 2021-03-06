@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Taro, { getCurrentInstance } from '@tarojs/taro';
 import {View, Text, RichText } from '@tarojs/components'
 import NavigationBar from "../../../../components/navigation-bar";
-import { getAuctionStatus, getLevel } from '../../../../components/list-item/config';
+import { getAuctionStatus, getLevel, getAuctionRoleType } from '../../../../components/list-item/config';
 import { floatFormat, dateToFormat } from '../../../../utils/tools/common';
 import './index.scss'
 
@@ -28,19 +28,17 @@ type IState = {
     consultPrice: number
     initialPrice: number
     start: Date | number
+    end: Date | number
     valueLevel: number
     obligorName: string
     remark: string
     important: number
+    roleType: number
+    currentPrice: number
     historyAuction: historyAuctionType[]
   }
 };
 
-// const example = [
-//   { consultPrice: 1000089, court:'人民法院', currentPrice: 89829898, initialPrice: 82983928392, round: 2, start: 1928738737, status:1, title: 'this is title', url: 'www.baidu.com'},
-//   { consultPrice: 1000089, court:'人民法院', currentPrice: 89829898, initialPrice: 82983928392, round: 2, start: 1928738737, status:1, title: 'this is title', url: 'www.baidu.com'},
-//   { consultPrice: 1000089, court:'人民法院', currentPrice: 89829898, initialPrice: 82983928392, round: 2, start: 1928738737, status:1, title: 'this is title', url: 'www.baidu.com'},
-// ];
 
 export default class AssetsAuction extends Component <IProps, IState>{
   $instance = getCurrentInstance();
@@ -74,6 +72,14 @@ export default class AssetsAuction extends Component <IProps, IState>{
     })
   };
 
+  // const status = 1-即将开始、3-正在进行、5-已成交、7-已流拍、9-中止、11-撤回
+  /**
+   即将开始：评估价、起拍价、开拍时间
+   正在进行：评估价、起拍价、拍卖结束时间
+   已成交：评估价、成交价、拍卖结束时间
+   其他状态：评估价、起拍价、开拍时间
+   */
+
   render () {
     const { detail } = this.state;
     const { historyAuction = [] } = detail;
@@ -87,15 +93,20 @@ export default class AssetsAuction extends Component <IProps, IState>{
           <View className='auction-clues-line'/>
           <View className='auction-clues-content'>
             <View className='auction-clues-content-info'>
-              <View className='auction-clues-content-info-label'>价值等级：</View>
+              <View className='auction-detail-content-info-justifylabel'>价值等级</View>
+              <View className='auction-detail-content-info-colon'>：</View>
               <View className='auction-clues-content-info-value blod'>{getLevel(1, detail.valueLevel)}</View>
             </View>
+            {
+              detail.important === 1 && <View className='auction-clues-content-info'>
+	              <View className='auction-clues-content-info-label'>{detail.roleType > 0 ? getAuctionRoleType(detail.roleType) : '未知角色'}</View>
+	              <View className='auction-detail-content-info-colon'>：</View>
+                <View className='auction-clues-content-info-value link'>{detail.obligorName}</View>
+              </View>
+            }
             <View className='auction-clues-content-info'>
-              <View className='auction-clues-content-info-label'>资产所有人：</View>
-              <View className='auction-clues-content-info-value link'>{detail.obligorName}</View>
-            </View>
-            <View className='auction-clues-content-info'>
-              <View className='auction-clues-content-info-label'>审核备注：</View>
+              <View className='auction-clues-content-info-label'>审核备注</View>
+              <View className='auction-detail-content-info-colon'>：</View>
               <View className='auction-clues-content-info-text'>
                 {
                   detail.remark ? <RichText nodes={detail && detail.remark && detail.remark.replace(
@@ -106,9 +117,7 @@ export default class AssetsAuction extends Component <IProps, IState>{
               </View>
             </View>
           </View>
-          {
-            detail.important === 1 && <View className='auction-clues-type'>精准匹配</View>
-          }
+          <View className={`auction-clues-${detail.important === 1 ? 'accurate' : 'fuzzy'}`}>{detail.important === 1 ? '精准匹配' : '模糊匹配'}</View>
         </View>
 
         {/*线索详情*/}
@@ -127,23 +136,33 @@ export default class AssetsAuction extends Component <IProps, IState>{
               <View className='auction-detail-content-info-colon'>：</View>
               <View className='auction-detail-content-info-value'>{`${floatFormat(detail.consultPrice)}元`}</View>
             </View>
-            <View className='auction-clues-content-info'>
-              <View className='auction-detail-content-info-justifylabel'>起拍价</View>
-              <View className='auction-detail-content-info-colon'>：</View>
-              <View className='auction-detail-content-info-value'>{`${floatFormat(detail.initialPrice)}元`}</View>
-            </View>
-            <View className='auction-clues-content-info'>
-              <View className='auction-detail-content-info-justifylabel'>开拍时间</View>
-              <View className='auction-detail-content-info-colon'>：</View>
-              <View className='auction-detail-content-info-value'>{dateToFormat(detail.start)}</View>
-            </View>
+            {
+              detail.status === 5 ? <View className='auction-clues-content-info'>
+	              <View className='auction-detail-content-info-justifylabel'>成交价</View>
+	              <View className='auction-detail-content-info-colon'>：</View>
+	              <View className='auction-detail-content-info-value'>{`${floatFormat(detail.currentPrice)}元`}</View>
+              </View> : <View className='auction-clues-content-info'>
+                <View className='auction-detail-content-info-justifylabel'>起拍价</View>
+                <View className='auction-detail-content-info-colon'>：</View>
+                <View className='auction-detail-content-info-value'>{`${floatFormat(detail.initialPrice)}元`}</View>
+              </View>
+            }
+            {
+              detail.status === 3 || detail.status === 5 ? <View className='auction-clues-content-info'>
+                <View className='auction-detail-content-info-label'>拍卖结束时间</View>
+                <View className='auction-detail-content-info-colon'>：</View>
+                <View className='auction-detail-content-info-value'>{dateToFormat(detail.end)}</View>
+              </View> : <View className='auction-clues-content-info'>
+                <View className='auction-detail-content-info-label'>开拍时间</View>
+                <View className='auction-detail-content-info-colon'>：</View>
+                <View className='auction-detail-content-info-value'>{dateToFormat(detail.start)}</View>
+              </View>
+            }
           </View>
           <View className='auction-detail-arrow' >
             <Text className='iconfont icon-right-arrow auction-detail-arrow-icon'/>
           </View>
         </View>
-
-
         {/*历史拍卖*/}
         {
           historyAuction.length > 0 && <View className='auction-history'>
@@ -164,7 +183,7 @@ export default class AssetsAuction extends Component <IProps, IState>{
                     <View className='auction-history-content-info'>
                       <View className='auction-history-content-info-justifylabel'>评估价</View>
                       <View className='auction-history-content-info-colon'>：</View>
-                      <View className='auction-history-content-info-value'>{`${floatFormat(item.consultPrice)}元`}</View>
+                      <View className='auction-history-content-info-value'>{`${item.consultPrice > 0 ? floatFormat(item.consultPrice) + '元' : '-'}`}</View>
                     </View>
                     <View className='auction-history-content-info'>
                       <View className='auction-history-content-info-justifylabel'>起拍价</View>
