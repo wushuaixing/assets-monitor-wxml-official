@@ -47,7 +47,7 @@ type optionType = {
   header: object,
   // mode: string,
   success: any,
-  error: any,
+  fail: any,
 }
 
 
@@ -103,7 +103,7 @@ const baseOptions = (params: {[propName: string] : any}, method?: string = 'GET'
     success(res: resType) {
       handleStatusCode(res);
     },
-    error(e) {
+    fail(e) {
       logError('api', '请求接口出现问题', e);
     }
   };
@@ -133,7 +133,7 @@ export default {
     let option = { url, data, isToken };
     return baseOptions(option);
   },
-  get: function(url: string, data: object = {}, isToken: boolean = true) {
+  get: function(url: string, data: any, isToken: boolean = true) {
     let customUrl: string = '';
     if (!isToken){
       const token: string = Taro.getStorageSync('token');
