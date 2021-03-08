@@ -67,6 +67,7 @@ export default {
       }
     ],
     // custom: true,
+    borderStyle: 'white',
     color: "#7D8699",
     selectedColor: "#1C80E1",
     backgroundColor: "#FFFFFF",

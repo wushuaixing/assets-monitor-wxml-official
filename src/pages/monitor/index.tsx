@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Taro, { eventCenter, getCurrentInstance } from '@tarojs/taro'
 import {View, Text, Image, ScrollView} from '@tarojs/components'
 import { connect } from 'react-redux';
-import {handleDealAuthRule, isRule, Message} from '../../utils/tools/common';
+import {handleDealAuthRule, isRule } from '../../utils/tools/common';
 import NavigationBar from '../../components/navigation-bar';
 import TagSelected from '../../components/tag-selected';
 import QueryDrop from '../../components/query-drop';
@@ -188,7 +188,7 @@ export default class Monitor extends Component <IProps, IState>{
     this.state = {
       currentId: 1,
       isScroll: false,
-      loading: false,
+      loading: true,
       listCount: 0,
       count: 0,
       params: {
@@ -411,6 +411,7 @@ export default class Monitor extends Component <IProps, IState>{
     }
   }
 
+  // 手动更新下拉框的配置
   handleUpdataConfig = (config, params?: any) => {
     const { tabId, value} = params;
     if( tabId === 1 && value){
@@ -431,16 +432,13 @@ export default class Monitor extends Component <IProps, IState>{
   // 请求资产或者风险列表
   handleRequestList = (payload, isNew: boolean) => {
     const { loading, currentId, assetsList, riskList, page } = this.state;
-    if(!loading){
+    if(loading){
       Taro.showLoading({
         title: '正在加载',
       })
     }
     const { dispatch } = this.props;
     if(currentId === 1){
-      this.setState({
-        loading: true,
-      });
       dispatch({
         type:'monitor/assetList',
         payload: {
@@ -467,9 +465,6 @@ export default class Monitor extends Component <IProps, IState>{
       });
     }
     else {
-      this.setState({
-        loading: true,
-      });
       dispatch({
         type:'monitor/riskList',
         payload: {
@@ -500,56 +495,48 @@ export default class Monitor extends Component <IProps, IState>{
   // 资产/ 风险tab的切换
   handleClick = (info) => {
     const { loading, params } = this.state;
-    if(loading){
-      Message('正在加载中')
-    }
-    else {
-      let assetAndRiskTypeParams = filterArray(info.id === 1 ? assestRuleArray : riskRuleArray).join();
-      let newParams = {...params, assetAndRiskType: assetAndRiskTypeParams};
-      this.setState({
-        queryAssetsConfig: getUpdateRuleConfig(JSON.parse(JSON.stringify(initialAssetsConfig))),
-        queryRiskConfig: getUpdateRuleConfig(JSON.parse(JSON.stringify(initialRiskConfig))),
-        currentId: info.id,
-        params: newParams,
-        page: 1,
-        starId: 1,
-      }, () => {
-        this.backToTop();
-        this.handleRequestList({assetAndRiskType: assetAndRiskTypeParams}, true)
-      });
-    }
+    let assetAndRiskTypeParams = filterArray(info.id === 1 ? assestRuleArray : riskRuleArray).join();
+    let newParams = {...params, assetAndRiskType: assetAndRiskTypeParams};
+    this.setState({
+      queryAssetsConfig: getUpdateRuleConfig(JSON.parse(JSON.stringify(initialAssetsConfig))),
+      queryRiskConfig: getUpdateRuleConfig(JSON.parse(JSON.stringify(initialRiskConfig))),
+      currentId: info.id,
+      loading: true,
+      params: newParams,
+      page: 1,
+      starId: 1,
+    }, () => {
+      this.backToTop();
+      this.handleRequestList({assetAndRiskType: assetAndRiskTypeParams}, true)
+    });
   };
 
   // 资产里面切换星级，风险里面切风险程度
   handleChangeTab = (info) => {
     const { loading, params, currentId } = this.state;
-    if(loading){
-      Message('正在加载中')
-    }
-    else {
+    if(!loading){
       let newParams = {...params, score: getStarValue(currentId, info.id)};
       this.setState({
         params: newParams,
         page: 1,
-        starId: info.id
+        starId: info.id,
+        loading: true,
       }, () => {
         this.backToTop();
         this.handleRequestList({...newParams}, true);
       });
     }
-
   };
 
+  // 子组件向上传的参数
   handleSetParams = (queryParams) => {
     const { loading, params} = this.state;
-    if(loading){
-      Message('正在加载中')
-    }
-    else {
+    if(!loading){
       let newParams = {...params, ...queryParams};
       this.setState({
         params: newParams,
         page: 1,
+        loading: true,
       }, () => {
         this.backToTop();
         this.handleRequestList({...newParams}, true)
@@ -583,7 +570,6 @@ export default class Monitor extends Component <IProps, IState>{
     })
   };
 
-
   render () {
     const { scrollTop, isScroll, currentId, scrollHeight, listCount, starId, assetsList, riskList, queryAssetsConfig, queryRiskConfig, loading} = this.state;
     let list = currentId === 1 ? assetsList : riskList;
@@ -592,17 +578,19 @@ export default class Monitor extends Component <IProps, IState>{
     return (
       <View className='monitor'>
         <NavigationBar title={'源诚资产监控'} type={'blue'} color='white'/>
-        <Tab config={tabList} onClick={this.handleClick} initId={currentId}/>
+        <Tab config={tabList} onClick={this.handleClick} initId={currentId} loading={loading}/>
         <TagSelected
           initId={starId}
           type={currentId === 1 ? 'assets' : 'risk' }
           onClick={this.handleChangeTab}
+          loading={loading}
         />
         <View id='drop' className='monitor-drop'>
           <QueryDrop
             type={currentId === 1 ? 'assets' : 'risk' }
             initConfig={currentId === 1 ? queryAssetsConfig : queryRiskConfig}
             onsetParams={this.handleSetParams}
+            loading={loading}
           />
         </View>
         {

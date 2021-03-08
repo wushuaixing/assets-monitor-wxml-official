@@ -150,6 +150,7 @@ class Index extends Component <IProps, IState>{
     }
   };
 
+  // 请求资产列表的数据
   handleRequestAsstes = () => {
     const { loading } = this.state;
     const { dispatch } = this.props;
@@ -199,6 +200,7 @@ class Index extends Component <IProps, IState>{
     }
   };
 
+  // 请求风险列表的数据
   handleRequestRisk = () => {
     const { loading } = this.state;
     const { dispatch } = this.props;
@@ -279,21 +281,21 @@ class Index extends Component <IProps, IState>{
     })
   };
 
-  // 跳转拍卖查询
+  // 跳转我的收藏
   navigateToCollection = () => {
     Taro.showToast({
+      duration: 300,
       title: '即将上线',
-      icon: 'loading',
-      duration: 1500
+      icon: 'none',
     })
   };
 
   // 跳转跟进
   navigateToFollow = () => {
     Taro.showToast({
+      duration: 300,
       title: '即将上线',
-      icon: 'loading',
-      duration: 1500
+      icon: 'none',
     })
   };
 

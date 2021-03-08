@@ -36,6 +36,7 @@ type IProps = {
   initConfig: configType[]
   onsetParams: (params?: any) => void
   dropParams: {}
+  loading: boolean
 }
 
 type IState = {
@@ -234,8 +235,10 @@ class QueryDrop extends Component<IProps, IState>{
 
   // 收集子组件传来的参数
   handleRequestParmas = (params) => {
-    const { onsetParams } = this.props;
-    onsetParams(params);
+    const { onsetParams, loading} = this.props;
+    if(!loading){
+      onsetParams(params);
+    }
   };
 
   render(){
