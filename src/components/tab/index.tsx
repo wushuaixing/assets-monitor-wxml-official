@@ -13,6 +13,7 @@ type IProps = {
   onClick: (item: configType) => void
   config: configType[]
   type?: string
+  loading: boolean
 }
 
 type IState = {
@@ -38,39 +39,21 @@ class Tab extends Component<IProps, IState>{
     }
   }
 
-  // componentWillMount(): void {
-  //   const onShowEventId = this.$instance.router.onShow;
-  //   eventCenter.on(onShowEventId, this.onShow);
-  // }
-  //
-  // componentWillUnmount(): void {
-  //   const onShowEventId = this.$instance.router.onShow;
-  //   // 卸载
-  //   eventCenter.off(onShowEventId, this.onShow);
-  // }
-  //
-  // onShow = () => {
-  //   const { initId } = this.props;
-  //   if(initId > 0){
-  //     this.setState({
-  //       selected: initId,
-  //     })
-  //   }
-  // };
-
   onClickTab = (item) => {
-    const { onClick } = this.props;
-    this.setState({
-      selected: item.id
-    }, () => {
-      onClick(item);
-    })
+    const { onClick, loading} = this.props;
+    if(!loading){
+      this.setState({
+        selected: item.id
+      }, () => {
+        onClick(item);
+      })
+    }
   };
 
 
   render(){
     const { selected } = this.state;
-    const { config, type } = this.props;
+    const { config, type, loading } = this.props;
     const typeName = type || 'tab';
     return (
       <View className={`${typeName}`} >
