@@ -22,6 +22,12 @@ export default class Index extends Component<any,isState> {
     };
   }
 
+  componentWillMount() {
+    // Taro.setNavigationBarColor({
+    //   frontColor: '#ffffff'
+    // })
+  }
+
 
   // 切换登录方式 1.手机号登录 2. 账号密码登录
   changeLoginType = (loginType) => {

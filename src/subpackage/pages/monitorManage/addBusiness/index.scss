@@ -37,9 +37,12 @@
 
   &-addBtn {
     position: fixed;
-    bottom: 84px;
+    bottom: 0;
     padding: 0 24px;
     width: calc(100% - 48px);
+    height:198px;
+    background: #F5F5F5;
+    z-index:99999999;
   }
 
   &-baseInfoText {
@@ -75,7 +78,7 @@
   }
 
   &-empty {
-    height: 100Px;
+    height: 230px;
     background: #F5F5F5;
   }
 
@@ -101,7 +104,7 @@
           margin-left: 24px;
           display: inline-block;
           min-width: 182px;
-          font-size: 34px;
+          font-size: 32px;
           font-weight: 400;
           color: #333333;
           line-height: 96px;
@@ -153,5 +156,5 @@
   line-height: 96px;
   color:#CCCCCC;
   font-size: 32px;
-  vertical-align: sub;
+  vertical-align: middle;
 }
