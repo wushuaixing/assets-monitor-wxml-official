@@ -378,6 +378,7 @@ export default class Monitor extends Component <IProps, IState>{
               currentId: tabId,
               starId: newStarId,
               params: {...newParams},
+              loading: true,
             }, () => {
               this.handleRequestList({...newParams}, true);
             });
@@ -386,6 +387,7 @@ export default class Monitor extends Component <IProps, IState>{
             this.setState({
               queryAssetsConfig: JSON.parse(JSON.stringify(assetsConfig)),
               queryRiskConfig: JSON.parse(JSON.stringify(riskConfig)),
+              loading: true,
             }, () => {
               this.handleRequestList({...params}, true);
             });

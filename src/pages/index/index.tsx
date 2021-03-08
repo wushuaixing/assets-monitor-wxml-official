@@ -581,13 +581,13 @@ class Index extends Component <IProps, IState>{
 						{/*	</View>*/}
             {/*}*/}
 
-            {
-              assetsArray.length === 0 && <View className='home-bottom'>
-								<View className='home-bottom-left'/>
-								<View className='home-bottom-text'>我也是有底线的</View>
-								<View className='home-bottom-right'/>
-							</View>
-            }
+            {/*{*/}
+            {/*  assetsArray.length === 0 && <View className='home-bottom'>*/}
+						{/*		<View className='home-bottom-left'/>*/}
+						{/*		<View className='home-bottom-text'>我也是有底线的</View>*/}
+						{/*		<View className='home-bottom-right'/>*/}
+						{/*	</View>*/}
+            {/*}*/}
           </ScrollView> : <ScrollView style={{ height: scrollViewHeight }} className='home-noBusiness'>
             <View className='home-noBusiness-box'>
               <Image className='home-noBusiness-box-pic' src={noData} />
