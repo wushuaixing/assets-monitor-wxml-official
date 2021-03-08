@@ -202,7 +202,7 @@ export default class InvolveInfo extends Component <IProps, IState> {
                   <View className='yc-subrogation-baseInfo-content-info-justifylabel'>案件类型</View>
                   <View className='yc-subrogation-baseInfo-content-info-colon'>：</View>
                   <View
-                    className='yc-subrogation-baseInfo-content-info-value'>{`${caseType[Number(detail.caseType)]}案件` || '-'}</View>
+                    className='yc-subrogation-baseInfo-content-info-value'>{caseType[detail.caseType] ? `${caseType[detail.caseType]}案件` : typeof (detail.caseType) === 'string' ? detail.caseType : '-'}</View>
                 </View>
                 : null
             }
