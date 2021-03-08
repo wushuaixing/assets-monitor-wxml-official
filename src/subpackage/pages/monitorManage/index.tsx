@@ -271,7 +271,7 @@ export default class MonitorManage extends Component<IProps, isState> {
 
 
           {
-            dataSource.length > 0 ?
+            dataSource.length > 0 && !listLoading ?
               <View className='yc-monitorManage-middle' onClick={this.onMiddleClick}>
                 <Text className='yc-monitorManage-middle-text'>共有&nbsp;
                   <Text className='yc-monitorManage-middle-text-number'>{total}</Text>

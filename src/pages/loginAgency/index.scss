@@ -230,6 +230,17 @@
         caret-color: #FFF;
         left: -100%;
         top: 0;
+        &-boxActive{
+          width:98px;
+          height:60px;
+          border-bottom: solid 5px red;
+          box-sizing: border-box;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size:48px;
+          color: #333333;
+        }
         &-box{
           width:98px;
           height:60px;
@@ -241,10 +252,10 @@
           font-size:48px;
           color: #333333;
           &-at{
-            font-size: 24px;
+            font-size: 32px;
             &:after{
               content:'|';
-              color:#000;
+              color:#CCCCCC;
               height:40px;
             }
           }
@@ -254,7 +265,7 @@
     &-errorText{
       margin:24px 0 0 88px;
       display: inline-block;
-      width: 182px;
+      //width: 182px;
       height: 26px;
       font-size: 26px;
       font-weight: 400;
@@ -267,7 +278,7 @@
       line-height: 34px;
       &-againText{
         display: inline-block;
-        width: 234px;
+        //width: 234px;
         height: 26px;
         font-size: 26px;
         font-weight: 400;
@@ -281,7 +292,7 @@
     &-secondText{
       margin:32px 0 0 88px;
       display: inline-block;
-      width: 253px;
+      //width: 253px;
       height: 26px;
       font-size: 26px;
       font-weight: 400;

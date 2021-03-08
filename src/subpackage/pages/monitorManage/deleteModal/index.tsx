@@ -66,7 +66,7 @@ export default class DeleteModal extends Component<any, isState> {
     const {isDeleteOpendModal} = this.props.monitorManage;
     return (
       <View className='yc-deleteModal'>
-        <AtModal isOpened={isDeleteOpendModal}>
+        <AtModal isOpened={isDeleteOpendModal} onClose={this.onCancel}>
           <AtModalContent>
             <View>确定删除该条业务？</View>
           </AtModalContent>
