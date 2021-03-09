@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { View} from '@tarojs/components';
-import { eventCenter, getCurrentInstance }from '@tarojs/taro';
+import { getCurrentInstance }from '@tarojs/taro';
 import './index.scss';
 
 interface configType{
@@ -13,6 +13,7 @@ type IProps = {
   type: string
   initId: number
   onClick: (item: configType) => void
+  loading: boolean
 }
 
 type IState = {
@@ -44,16 +45,6 @@ class TagSelected extends Component<IProps, IState>{
     };
   }
 
-  // componentWillMount () {
-  //   const onShowEventId = this.$instance.router.onShow;
-  //   eventCenter.on(onShowEventId, this.onShow)
-  // }
-  //
-  // componentWillUnmount () {
-  //   const onShowEventId = this.$instance.router.onShow;
-  //   eventCenter.off(onShowEventId, this.onShow)
-  // }
-
   componentWillReceiveProps(nextProps: Readonly<IProps>): void {
     const { type } = this.props;
     if(type !== nextProps.type){
@@ -64,23 +55,15 @@ class TagSelected extends Component<IProps, IState>{
     }
   }
 
-  // onShow = () => {
-  //   const { initId } = this.props;
-  //   console.log('this.props === ', JSON.stringify(this.props));
-  //   if(initId > 0){
-  //     this.setState({
-  //       selected: initId,
-  //     })
-  //   }
-  // };
-
   onClickTag = (item) => {
-    const { onClick } = this.props;
-    this.setState({
-      selected: item.id,
-    }, () => {
-      onClick(item);
-    })
+    const { onClick, loading} = this.props;
+    if(!loading){
+      this.setState({
+        selected: item.id,
+      }, () => {
+        onClick(item);
+      })
+    }
   };
 
   render(){

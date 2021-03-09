@@ -70,7 +70,7 @@ export default class Confirmation extends Component <IProps, IState>{
           {/*<View className='confirmation-content-info'>*/}
           {/*  <View className='confirmation-content-info-label'>网拍公告时间</View>*/}
           {/*  <View className='confirmation-content-info-colon'>：</View>*/}
-          {/*  <View className='confirmation-content-info-text'>{detail.createTime ? moment(detail.createTime * 1000).format('YYYY-MM-DD HH:mm:ss') : '-'}</View>*/}
+          {/*  <View className='confirmation-content-info-text'>{detail.createTime ? moment(detail.createTime * 1000).format('YYYY-MM-DD HH:mm:ss') : '--'}</View>*/}
           {/*</View>*/}
           <View className='confirmation-content-info'>
             <View className='confirmation-content-info-label'>网拍开始时间</View>

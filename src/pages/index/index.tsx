@@ -150,6 +150,7 @@ class Index extends Component <IProps, IState>{
     }
   };
 
+  // 请求资产列表的数据
   handleRequestAsstes = () => {
     const { loading } = this.state;
     const { dispatch } = this.props;
@@ -199,6 +200,7 @@ class Index extends Component <IProps, IState>{
     }
   };
 
+  // 请求风险列表的数据
   handleRequestRisk = () => {
     const { loading } = this.state;
     const { dispatch } = this.props;
@@ -279,21 +281,21 @@ class Index extends Component <IProps, IState>{
     })
   };
 
-  // 跳转拍卖查询
+  // 跳转我的收藏
   navigateToCollection = () => {
     Taro.showToast({
+      duration: 300,
       title: '即将上线',
-      icon: 'loading',
-      duration: 1500
+      icon: 'none',
     })
   };
 
   // 跳转跟进
   navigateToFollow = () => {
     Taro.showToast({
+      duration: 300,
       title: '即将上线',
-      icon: 'loading',
-      duration: 1500
+      icon: 'none',
     })
   };
 
@@ -327,7 +329,7 @@ class Index extends Component <IProps, IState>{
       { title: '风险', id: 2 },
     ];
     const { current, businessCount, assetsArray, riskArray, starLevel, scrollViewHeight} = this.state;
-    // console.log('index render === ', riskArray, JSON.stringify(riskArray));
+    // console.log('businessCount ===', businessCount, JSON.stringify(businessCount));
     const assetsSum = getArraySum(assetsArray, 'num');
     const riskSum = getArraySum(riskArray, 'num');
     return (
@@ -388,7 +390,6 @@ class Index extends Component <IProps, IState>{
                 <Text className='home-middle-tab-noText'>我的跟进</Text>
               </View>
             </View>
-
             <View className='home-data'>
               <Tab type={'homeTab'} config={tabList} onClick={this.handleClick} initId={current} />
               {
@@ -579,14 +580,14 @@ class Index extends Component <IProps, IState>{
 						{/*	</View>*/}
             {/*}*/}
 
-            {
-              assetsArray.length === 0 && <View className='home-bottom'>
-								<View className='home-bottom-left'/>
-								<View className='home-bottom-text'>我也是有底线的</View>
-								<View className='home-bottom-right'/>
-							</View>
-            }
-          </ScrollView> : <ScrollView style={{ height: scrollViewHeight }} className='home-noBusiness'>
+            {/*{*/}
+            {/*  assetsArray.length === 0 && <View className='home-bottom'>*/}
+						{/*		<View className='home-bottom-left'/>*/}
+						{/*		<View className='home-bottom-text'>我也是有底线的</View>*/}
+						{/*		<View className='home-bottom-right'/>*/}
+						{/*	</View>*/}
+            {/*}*/}
+          </ScrollView> : <View className='home-noBusiness'>
             <View className='home-noBusiness-box'>
               <Image className='home-noBusiness-box-pic' src={noData} />
             </View>
@@ -594,7 +595,7 @@ class Index extends Component <IProps, IState>{
             <View className='home-noBusiness-btn' onClick={()=>{this.onAddBusClick('homeEmptyBus')}}>
               <View className='home-noBusiness-btn-text'>添加业务</View>
             </View>
-          </ScrollView>
+          </View>
         }
       </View>
     )

@@ -27,6 +27,7 @@ type IState = {
     publishDate?: Date | number
     court: string
     ah: string
+    obligorName: string
   }
   associatedCase: {
     title?: string
@@ -84,9 +85,9 @@ export default class Bankruptcy extends Component <IProps, IState>{
     });
   };
 
-  handleGetName = (parties?: any = [], field, name) => {
+  handleGetName = (parties?: any = [], field, name, replaceName?: string) => {
     const applicantName = parties.filter(item =>item[field] === name) || [];
-    return applicantName.length > 0 ? applicantName.map(item => { return item.name }).join() : '-';
+    return applicantName.length > 0 ? applicantName.map(item => { return item.name }).join() : (replaceName || '--');
   };
 
   render () {
@@ -120,7 +121,7 @@ export default class Bankruptcy extends Component <IProps, IState>{
                 <View className='bankruptcy-baseInfo-content-info'>
                   <View className='bankruptcy-baseInfo-content-info-justifylabel'>被申请人</View>
                   <View className='bankruptcy-baseInfo-content-info-colon'>：</View>
-                  <View className='bankruptcy-baseInfo-content-info-value link'>{this.handleGetName(detail.parties, 'role', '被申请人')}</View>
+                  <View className='bankruptcy-baseInfo-content-info-value link'>{this.handleGetName(detail.parties, 'role', '被申请人', detail.obligorName)}</View>
                 </View>
                 <View className='bankruptcy-baseInfo-content-line'/>
                 <View className='bankruptcy-baseInfo-content-info'>
