@@ -180,7 +180,7 @@ export default class AuthCode extends Component<IProps, isState> {
             {
               [0, 1, 2, 3].map((_value, index) => {
                 return <View
-                  className={index === captcha.length ? 'yc-login-authCode-container-input-box yc-login-authCode-container-input-box-at' : 'yc-login-authCode-container-input-box'}
+                  className={index === captcha.length ? 'yc-login-authCode-container-input-boxActive yc-login-authCode-container-input-box-at' : index < captcha.length ? 'yc-login-authCode-container-input-boxActive':'yc-login-authCode-container-input-box'}
                   key={index}>
                   {
                     captcha[index]

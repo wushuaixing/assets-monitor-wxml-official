@@ -14,6 +14,7 @@
     &-logoTop {
       width: 100%;
       height: 100%;
+      opacity: 0.05;
     }
     &-logo{
       width:106px;
@@ -241,10 +242,21 @@
           font-size:48px;
           color: #333333;
         }
-        &-box{
+        &-boxActive{
           width:98px;
           height:60px;
           border-bottom: solid 2px #333333;
+          box-sizing: border-box;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size:48px;
+          color: #333333;
+        }
+        &-box{
+          width:98px;
+          height:60px;
+          border-bottom: solid 2px #CCCCCC;
           box-sizing: border-box;
           display: flex;
           align-items: center;
@@ -255,7 +267,7 @@
             font-size: 32px;
             &:after{
               content:'|';
-              color:#CCCCCC;
+              color:#000000;
               height:40px;
             }
           }
