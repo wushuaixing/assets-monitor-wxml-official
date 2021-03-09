@@ -157,7 +157,7 @@ export default class RelationBusiness extends Component<IProps, isState> {
         // checkObligorNumber
       })
     }
-    if(type === 'obligorNumber'){
+    if (type === 'obligorNumber') {
       const {dataSource} = this.state;
       const curValue = e.detail.value;
       const reg1 = /[\(]/g;
@@ -316,7 +316,8 @@ export default class RelationBusiness extends Component<IProps, isState> {
                                         this.onOpenActionSheetClick(indexTemp, index)
                                       }}>
                                   <View
-                                    className='yc-addBusiness-baseInfo-input-content-selectTemp-selectText' style={{color:indexTemp ? handleBorrowType[res.borrowType] ? '#666666' : '#CCCCCC' : handleRole[res.role] ? '#666666' : '#CCCCCC'}}>{indexTemp ? handleBorrowType[res.borrowType] ? handleBorrowType[res.borrowType] : i.placeHolder : handleRole[res.role] || i.placeHolder}</View>
+                                    className='yc-addBusiness-baseInfo-input-content-selectTemp-selectText'
+                                    style={{color: indexTemp ? handleBorrowType[res.borrowType] ? '#666666' : '#CCCCCC' : handleRole[res.role] ? '#666666' : '#CCCCCC'}}>{indexTemp ? handleBorrowType[res.borrowType] ? handleBorrowType[res.borrowType] : i.placeHolder : handleRole[res.role] || i.placeHolder}</View>
                                   <View className='yc-addBusiness-baseInfo-input-content-selectTemp-arrow'>
                                     <Text
                                       className="iconfont icon-right-arrow yc-addBusiness-baseInfo-input-content-selectTemp-arrow-text"/>
@@ -359,39 +360,26 @@ export default class RelationBusiness extends Component<IProps, isState> {
             企业
           </AtActionSheetItem>
         </AtActionSheet>
-        <AtActionSheet isOpened={isRoleOpened} cancelText='取消' onCancel={() => {
-          this.onCancel('isRoleOpened')
-        }}
-                       onClose={() => {
-                         this.onCancel('isRoleOpened')
-                       }}
+        <AtActionSheet
+          isOpened={isRoleOpened}
+          cancelText='取消'
+          onCancel={() => {
+            this.onCancel('isRoleOpened')
+          }}
+          onClose={() => {
+            this.onCancel('isRoleOpened')
+          }}
         >
-
-          {/*<AtActionSheetItem onClick={() => {*/}
-          {/*  this.onSheetItemClick('role', 1)*/}
-          {/*}}>*/}
-          {/*  借款人*/}
-          {/*</AtActionSheetItem>*/}
           <AtActionSheetItem onClick={() => {
             this.onSheetItemClick('role', 2)
           }}>
             担保人
           </AtActionSheetItem>
-          {/*<AtActionSheetItem onClick={() => {*/}
-          {/*  this.onSheetItemClick('role', 3)*/}
-          {/*}}>*/}
-          {/*  抵质押人*/}
-          {/*</AtActionSheetItem>*/}
           <AtActionSheetItem onClick={() => {
             this.onSheetItemClick('role', 4)
           }}>
             共同借款人
           </AtActionSheetItem>
-          {/*<AtActionSheetItem onClick={() => {*/}
-          {/*  this.onSheetItemClick('role', 5)*/}
-          {/*}}>*/}
-          {/*  未知*/}
-          {/*</AtActionSheetItem>*/}
         </AtActionSheet>
 
         <View className='yc-addBusiness-deleteModal'>
