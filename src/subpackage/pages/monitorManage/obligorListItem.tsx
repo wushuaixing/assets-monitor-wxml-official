@@ -34,7 +34,7 @@ export default class ObligorListItem extends Component<any, isState> {
   componentDidHide() {
   }
 
-  onPushStateClick = (pushState, id, index,obligorId) => {
+  onPushStateClick = (pushState, id, index, obligorId) => {
     const {type} = this.props;
     this.setState({
       curData: this.props.data
@@ -125,14 +125,14 @@ export default class ObligorListItem extends Component<any, isState> {
                     {
                       i.obligorName.length > 4 && i.obligorNumber === '' ?
                         <View className='yc-monitorManage-bottom-content-baseInfo-company'>
-                          {i.obligorName}
+                          {i.obligorName || '--'}
                         </View> :
                         <View className='yc-monitorManage-bottom-content-baseInfo-personal'>
-                          <Text>{i.obligorName}&nbsp;&nbsp;</Text>
+                          <Text>{i.obligorName || '--'}&nbsp;&nbsp;</Text>
                           <Text style={{
                             display: i.obligorName.length === 4 ? 'block' : 'inline-block',
                             marginTop: i.obligorName.length === 4 ? '16rpx' : '0',
-                          }}>({i.obligorNumber})</Text>
+                          }}>{i.obligorNumber && `(${i.obligorNumber})` }</Text>
                         </View>
                     }
 
@@ -182,7 +182,7 @@ export default class ObligorListItem extends Component<any, isState> {
                     <View
                       className={i.pushState || i.obligorPushType ? 'yc-monitorManage-bottom-content-right-yes' : 'yc-monitorManage-bottom-content-right-no'}
                       onClick={() => {
-                        this.onPushStateClick(i.pushState || i.obligorPushType, i.id, index,i.obligorId || undefined)
+                        this.onPushStateClick(i.pushState || i.obligorPushType, i.id, index, i.obligorId || undefined)
                       }}>
                       {
                         i.pushState || i.obligorPushType ?
@@ -192,7 +192,7 @@ export default class ObligorListItem extends Component<any, isState> {
                       {
                         i.pushState || i.obligorPushType ?
                           <Text className='yc-monitorManage-bottom-content-right-yesText'>已监控</Text> :
-                          <Text className='yc-monitorManage-bottom-content-right-noText'>加监控</Text>
+                          <Text className='yc-monitorManage-bottom-content-right-noText'>监控</Text>
                       }
                     </View>
                   </View>

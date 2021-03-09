@@ -81,7 +81,7 @@ export default class BusinessListItem extends Component<any, isState> {
     // this.focusComponents = new Set([
     //   'View',
     // ])
-    const reg = new RegExp(searchValue, 'gi')
+    const reg = new RegExp(searchValue, 'g')
     const bgRandomColor = {
       0: '#FF5454',
       1: '#FF8F1F',
@@ -111,7 +111,7 @@ export default class BusinessListItem extends Component<any, isState> {
                     <View className='yc-businessListItem-content-middleRight'>
                       <View className='yc-businessListItem-content-middleRight-middle'>
                         <View
-                          className='yc-businessListItem-content-middleRight-middle-caseNumber'>{i.caseNumber}</View>
+                          className='yc-businessListItem-content-middleRight-middle-caseNumber'>{i.caseNumber || '--'}</View>
                         <View className='yc-businessListItem-content-middleRight-middle-obligorDetail'>
                           <View
                             className='yc-businessListItem-content-middleRight-middle-obligorDetail-obligorName'>借款人：</View>
@@ -120,7 +120,7 @@ export default class BusinessListItem extends Component<any, isState> {
                               reg,
                               `<em style="color:#FF3B30;font-style: normal;">${searchValue}</em>`
                             )}
-                            /> : '-'}
+                            /> : '--'}
                           </View>
                         </View>
                       </View>

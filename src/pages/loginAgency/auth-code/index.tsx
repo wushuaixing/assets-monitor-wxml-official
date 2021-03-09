@@ -6,6 +6,7 @@ import loginTopImg from "../../../assets/img/login/logo_black.png";
 import loginFooterImg from "../../../assets/img/login/logo_bottom_black.png";
 import {connect} from 'react-redux';
 import {getGlobalData, setGlobalData} from '../../../utils/const/global';
+import NavigationBar from "../../../components/navigation-bar";
 
 function handleDealAuthRule(authRule) {
   let ruleArray: string[] = [];
@@ -156,12 +157,12 @@ export default class AuthCode extends Component<IProps, isState> {
     })
   }
 
-
   render() {
     const {captcha, focus, phone, second, againStatus} = this.state;
     const phoneText = phone.slice(0, 3) + " " + phone.slice(3, 7) + " " + phone.slice(7,);
     return (
       <View className='yc-login'>
+        <NavigationBar isAuthCode/>
         <View className='yc-login-header'>
           <View className="yc-login-header-logoTopView">
             <Image className='yc-login-header-logoTop' src={loginTopImg}/>
