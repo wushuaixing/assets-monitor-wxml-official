@@ -135,7 +135,8 @@ export default class LineChoose extends Component <IProps, IState>{
     });
     this.setState({
       conditions: JSON.parse(JSON.stringify(newConditions)),
-      childrenName: JSON.parse(JSON.stringify(newChildrenName))
+      childrenName: JSON.parse(JSON.stringify(newChildrenName)),
+      info: newChildrenName.filter(item => item.id === 1)[0],
     });
   };
 
