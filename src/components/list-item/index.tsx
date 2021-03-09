@@ -44,7 +44,7 @@ type IProps = {
 }
 
 const ListItem = (props: IProps) => {
-  const { dataType, updateTime, type, index, loading} = props;
+  const { dataType, updateTime, type, index} = props;
   const [detail, setDetail] = useState(props.object);
   useEffect(() => {
     setDetail(props.object);
@@ -72,19 +72,17 @@ const ListItem = (props: IProps) => {
 
   // 点击已读未读
   const handleMarkRead = () => {
-    if(!loading){
-      getJumpType(dataType).apiName({...getRequestParams(dataType, detail.id)})
-        .then(res => {
-          if(res.code === 200 && res.data){
-            const { id } = detail;
-            onRefresh({id, isRead: true, index}, 'isRead');
-            handleGoDetail();
-          }
-          else {
-            handleGoDetail();
-          }
-        })
-    }
+    getJumpType(dataType).apiName({...getRequestParams(dataType, detail.id)})
+      .then(res => {
+        if(res.code === 200 && res.data){
+          const { id } = detail;
+          onRefresh({id, isRead: true, index}, 'isRead');
+          handleGoDetail();
+        }
+        else {
+          handleGoDetail();
+        }
+      })
   };
 
   const handleGetName = (parties?: any = [], field, name) => {

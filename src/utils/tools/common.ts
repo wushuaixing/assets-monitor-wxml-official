@@ -180,15 +180,15 @@ export const floatFormat = (item) => {
 
 export const dateToFormat = (date, format = 'YYYY-MM-DD') => {
   if (date && typeof (date) === 'string') {
-    console.log('string')
+    // console.log('string')
     return moment(date).format(format);
   }
   if (date && typeof (date) === 'number') {
     const handleDate = date * 1000;
     return moment(handleDate).format(format);
   }
-  return '-';
-}
+  return '--';
+};
 /**
  * 数组根据某个对象的值去重
  * @param arr

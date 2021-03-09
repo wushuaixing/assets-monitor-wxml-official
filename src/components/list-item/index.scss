@@ -76,7 +76,8 @@
             @include starItem;
           }
           &-normal{
-            color: $warning-bg-color;
+            color: #F57A00;
+            opacity: 0.15;
             @include starItem;
           }
         }
