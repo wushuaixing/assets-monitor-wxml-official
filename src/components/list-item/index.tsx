@@ -85,9 +85,9 @@ const ListItem = (props: IProps) => {
       })
   };
 
-  const handleGetName = (parties?: any = [], field, name, replaceName?: string) => {
-    const applicantName = parties.filter(item =>item[field] === name) || [];
-    return applicantName.length > 0 ? applicantName.map(item => { return item.name }).join() : (replaceName || '--');
+  const handleGetName = (parties, field, name ) => {
+    const applicantName = (parties || []).filter(item =>item[field] === name) || [];
+    return applicantName.length > 0 ? (applicantName.map(item => { return item.name }) || []).join() : '--';
   };
 
   return (

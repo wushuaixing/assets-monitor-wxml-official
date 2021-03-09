@@ -7,7 +7,6 @@
 .drop{
   background-color: white;
   position: relative;
-  padding-bottom: 24px;
   &-content{
     background-color: white;
     z-index: 10; // mask的层级是10
@@ -21,7 +20,7 @@
     background: #000;
     height: 100%;
     width: 100%;
-    top: 28px;
+    top: 82px;
     z-index: 5;
   }
 
@@ -39,6 +38,7 @@
       color: $common-text;
       position: relative;
       justify-content: center;
+      padding: 30px 0 24px 0;
       &-text{
         height: 28px;
         color: #333333;
@@ -73,7 +73,7 @@
         background-color: $border-divider-color;
         height: 24px;
         width: 1px;
-        top: 2px;
+        top: 32px;
       }
     }
 }

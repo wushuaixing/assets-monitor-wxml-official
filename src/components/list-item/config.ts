@@ -110,15 +110,15 @@ const getObligorName = (type: number, detail) => {
     case 2:
     case 3:
     case 4:
-      let subrogationParties = detail.parties && detail.parties.length > 0 && detail.parties.filter(item => item.roleType === 1 && item.obligorId > 0) || [];
-      name = subrogationParties.length > 0 ? subrogationParties.map(it => { return it.name}).join() : '';
+      let subrogationParties = (detail.parties || []).filter(item => item.roleType === 1 && item.obligorId > 0) || [];
+      name = subrogationParties.length > 0 ? (subrogationParties.map(it => { return it.name}) || []).join() : '';
       break;
     case 5: name = detail.obligorName; break;
     case 6:
     case 7:
     case 8:
-      let litigationParties = detail.parties && detail.parties.filter(item => item.roleType === 2 && item.obligorId > 0);
-      name = litigationParties.length > 0 ? litigationParties.map(item => { return item.name}).join() : '';
+      let litigationParties = (detail.parties || []).filter(item => item.roleType === 2 && item.obligorId > 0);
+      name = litigationParties.length > 0 ? (litigationParties.map(item => { return item.name}) || []).join() : '';
       break;
   }
   // console.log('name === ', name);

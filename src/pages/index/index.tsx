@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Taro from '@tarojs/taro';
+import Taro, {eventCenter, getCurrentInstance}from '@tarojs/taro';
 import {View, Text, Image, ScrollView} from '@tarojs/components';
 import { connect } from 'react-redux';
 import NavigationBar from '../../components/navigation-bar';
@@ -68,6 +68,7 @@ type IState = {
 
 @connect(({ home }) => ({ ...home }))
 class Index extends Component <IProps, IState>{
+  $instance = getCurrentInstance();
   constructor(props) {
     super(props);
     this.state = {
@@ -96,11 +97,18 @@ class Index extends Component <IProps, IState>{
   }
 
   componentWillMount () {
-    Taro.getSystemInfo().then(res => {
-      setGlobalData('statusBarHeight', res.statusBarHeight);
-      this.setState({
-        scrollViewHeight: res.windowHeight - res.statusBarHeight
-      })
+    const onReadyEventId = this.$instance.router.onReady;
+    eventCenter.once(onReadyEventId, () => {
+      Taro.getSystemInfo({
+        success: res => {
+          // console.log('index res === ', res);
+          setGlobalData('screenHeight', res.screenHeight);
+          setGlobalData('statusBarHeight', res.statusBarHeight);
+          this.setState({
+            scrollViewHeight: res.windowHeight - res.statusBarHeight
+          })
+        }
+      });
     });
   }
 
