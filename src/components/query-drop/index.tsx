@@ -172,7 +172,7 @@ class QueryDrop extends Component<IProps, IState>{
     let newConfig: configType[] = [];
     config.forEach(item => {
       if(item.id === currentTab.id){
-        newConfig.push({...item, conditions: [...conditions], title: info.name ? info.name : item.title, value: info.value})
+        newConfig.push({...item, conditions: [...conditions], title: info.name, value: info.value})
       }
       else {
         newConfig.push({...item})
