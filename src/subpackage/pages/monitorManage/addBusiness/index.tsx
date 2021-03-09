@@ -1,13 +1,22 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux';
 import {Button, View, Input, Form, Text, ScrollView} from '@tarojs/components';
-import {AtActionSheet, AtActionSheetItem, AtButton} from 'taro-ui';
+import {AtActionSheet, AtActionSheetItem, AtButton, AtModal, AtModalAction, AtModalContent} from 'taro-ui';
 import RelationBusiness from './relationBusiness';
 import './index.scss'
 import {Message, throttle} from "../../../../utils/tools/common";
 import Taro, {eventCenter, getCurrentInstance} from "@tarojs/taro";
 import NavigationBar from "../../../../components/navigation-bar";
 import {getGlobalData} from "../../../../utils/const/global";
+
+
+const handleRole = {
+  1: '借款人',
+  2: '担保人',
+  3: '抵质押人',
+  4: '共同借款人',
+  5: '未知'
+}
 
 type isState = {
   isBaseOpened: boolean,
@@ -17,6 +26,14 @@ type isState = {
   isClickActionSheet: boolean,
   scrollHeight: number,
   navBarHeight: number,
+  isOpened: boolean,
+  isRoleOpened: boolean,
+  dataSource: any,
+  curItem: number,
+  curActionSheetType: number,
+  isDeleteOpendModal: boolean,
+  deleteIndex: number,
+  saveClickRole: any,
 }
 
 type IProps = {
@@ -53,9 +70,16 @@ export default class BusinessDetail extends Component<IProps, isState> {
       showLoading: false,
       isClickActionSheet: false,
       scrollHeight: 0,
-      navBarHeight: 0
+      navBarHeight: 0,
+      isOpened: false,
+      isRoleOpened: false,
+      dataSource: [],
+      curItem: 0,
+      curActionSheetType: 0,
+      isDeleteOpendModal: false,
+      deleteIndex: 0,
+      saveClickRole: [],
     };
-    this.obligorList = [];
   }
 
   componentWillMount() {
@@ -72,7 +96,8 @@ export default class BusinessDetail extends Component<IProps, isState> {
           this.setState({
             baseObj: detail,
             relationList: buildData,
-            showLoading: true
+            showLoading: true,
+            dataSource:buildData
           })
         }
       })
@@ -141,8 +166,8 @@ export default class BusinessDetail extends Component<IProps, isState> {
     console.log('type===', type)
     const regNumber = /^[0-9a-zA-Z\uff08\uff09\(\)\*]+$/; // 证件号
     const regName = /^[\u4e00-\u9fa5\uff08\uff090-9a-zA-Z·\(\)]+$/; // 借款人名称
-    const {baseObj} = this.state;
-    const relationList = this.obligorList;
+    const {baseObj,dataSource} = this.state;
+    const relationList = dataSource;
     const relationObligorName = relationList.filter(i => i.obligorName === "") // 过滤关联债务人为空
     const relationObligorNumber = relationList.filter(i => i.obligorNumber === "" && i.borrowType === 0) // 过滤关联债务人证件号为空
     const relationCheckObligorNumber = relationList.filter(i => i.obligorNumber !== "" && !regNumber.test(i.obligorNumber));
@@ -214,7 +239,7 @@ export default class BusinessDetail extends Component<IProps, isState> {
 
     const params = {
       'detail': baseObj,
-      'obligorList': this.obligorList
+      'obligorList': this.state.dataSource
     }
     console.log('params===', params)
     if (id) {
@@ -238,13 +263,15 @@ export default class BusinessDetail extends Component<IProps, isState> {
         payload: {...params}
       }).then(res => {
         console.log('编辑res', res)
-        Message(res.message);
         if (res.code === 200) {
+          Message('编辑成功');
           setTimeout(() => {
             if (type === 'editBus') {
               Taro.navigateTo({url: `/subpackage/pages/monitorManage/index?type=business&searchValue=${searchValue}`})
             }
           }, 500)
+        } else {
+          Message(res.message);
         }
       }).catch(() => {
         Message('网络异常请稍后再试！')
@@ -259,8 +286,8 @@ export default class BusinessDetail extends Component<IProps, isState> {
       payload: {...params}
     }).then(res => {
       console.log('onSubmitonSubmitonSubmit', res)
-      Message(res.message);
       if (res.code === 200) {
+        Message('添加成功');
         setTimeout(() => {
           if (type === 'addBus') {
             Taro.navigateTo({url: `/subpackage/pages/monitorManage/index?type=business&searchValue=${searchValue}`})
@@ -272,16 +299,18 @@ export default class BusinessDetail extends Component<IProps, isState> {
             Taro.switchTab({url: '/pages/index/index'});
           }
         }, 500)
+      } else {
+        Message(res.message);
       }
     }).catch(() => {
       Message('网络异常请稍后再试！')
     })
   }
 
-  getValue = (value) => {
-    console.log(636363, value)
-    this.obligorList = value;
-  }
+  // getValue = (value) => {
+  //   console.log(636363, value)
+  //   this.obligorList = value;
+  // }
 
   onInput = (e, field) => {
     const {baseObj} = this.state;
@@ -368,13 +397,173 @@ export default class BusinessDetail extends Component<IProps, isState> {
     })
   }
 
-  render() {
-    const {isBaseOpened, baseObj, relationList, showLoading, scrollHeight, navBarHeight} = this.state;
-    console.log('this.state=====', baseObj)
-    const handleBorrowType = {
-      0: '个人',
-      1: '企业'
+  relDelete = (index) => {
+    this.setState({
+      deleteIndex: index,
+      isDeleteOpendModal: true
+    })
+  }
+
+  onRelInput = (e, type, index) => {
+    const {dataSource} = this.state;
+    const {value} = e.detail;
+    if (type === 'obligorName') {
+      const curValue = value.slice(0, 40)
+      if (value.length <= 40) {
+        dataSource[index][type] = curValue;
+      } else {
+        Message('最长输入40个字符');
+      }
     }
+    if (type === 'obligorNumber') {
+      const curValue = value.slice(0, 18)
+      if (value.length <= 18) {
+        dataSource[index][type] = curValue;
+      } else {
+        Message('最长输入18个字符');
+      }
+    }
+    this.setState({
+      dataSource
+    })
+  }
+
+  onRelBlur = (e, type, index) => {
+    // const {value} = e.detail;
+    if (type === 'obligorName') {
+      const {dataSource, saveClickRole} = this.state;
+      console.log('saveClickRole===', saveClickRole, index)
+      const curValue = e.detail.value;
+      const isClick = saveClickRole.filter(i => i.key === index && i.value === true);
+      console.log('isClick===', isClick)
+      if (curValue.length > 4 && isClick.length === 0) {
+        dataSource[index]['borrowType'] = 1
+      }
+      if (curValue.length <= 4 && isClick.length === 0) {
+        dataSource[index]['borrowType'] = 0
+      }
+      // const {checkObligorNumber} = this.state;
+      // const reg = /^[\u4e00-\u9fa5\uff08\uff090-9a-zA-Z·\(\)]+$/;
+      // if (reg.test(value)) {
+      //   checkObligorNumber.push({key: index, value: true, field: 'obligorName'})
+      // } else {
+      //   checkObligorNumber.push({key: index, value: false, field: 'obligorName'});
+      //   Message('请填写正确的债务人名称');
+      // }
+      this.setState({
+        dataSource,
+        // checkObligorNumber
+      })
+    }
+    if (type === 'obligorNumber') {
+      const {dataSource} = this.state;
+      const curValue = e.detail.value;
+      const reg1 = /[\(]/g;
+      const reg2 = /[\)]/g;
+      dataSource[index]['obligorNumber'] = curValue.replace(reg1, "（").replace(reg2, "）");
+      this.setState({
+        dataSource
+      })
+    }
+    // if (type === 'obligorNumber') {
+    //   const {checkObligorNumber} = this.state;
+    //   const reg = /^[0-9a-zA-Z\uff08\uff09\(\)\*]+$/;
+    //   if (reg.test(value)) {
+    //     checkObligorNumber.push({key: index, value: true, field: 'obligorNumber'})
+    //   } else {
+    //     checkObligorNumber.push({key: index, value: false, field: 'obligorNumber'})
+    //     Message('请填写正确的证件号');
+    //   }
+    //   this.setState({
+    //     checkObligorNumber
+    //   })
+    // }
+  }
+
+  onRelOpenActionSheetClick = (e, index) => {
+    console.log('eeeee', e)
+    this.setState({
+      isOpened: e === 3,
+      isRoleOpened: !e,
+      curItem: index,
+      curActionSheetType: e,
+    })
+  }
+
+  addClick = () => {
+    const {dataSource} = this.state;
+    const obj = {
+      "assetTotal": null,
+      "bankruptcy": null,
+      "borrowType": "", // 债务人类型
+      "dishonestStatus": null,
+      "id": null,
+      "isBorrower": null,
+      "isTable": null,
+      "limitConsumption": null,
+      "limitHeightStatus": null,
+      "obligorId": null,
+      "obligorName": "", // 债务人名称
+      "obligorNumber": "", // 债务人证件号
+      "obligorPushType": null,
+      "openBusinessCount": null,
+      "regStatus": null,
+      "riskTotal": null,
+      "role": "2", // 债务人角色
+      "roleText": "担保人" // 债务人角色名称
+    }
+    dataSource.push(obj);
+    this.setState({
+      dataSource
+    })
+  }
+
+  onRelDeleteCancel = () => {
+    this.setState({
+      isDeleteOpendModal: false
+    })
+  }
+
+  onRelDeleteConform = () => {
+    const {deleteIndex} = this.state;
+    let {dataSource} = this.state;
+    dataSource = dataSource.filter((_, i) => i !== deleteIndex);
+    this.setState({
+      dataSource,
+      isDeleteOpendModal: false
+    })
+    console.log(82, deleteIndex, this.state, dataSource)
+  }
+
+  onRelCancel = (value) => {
+    this.setState({
+      [value]: false
+    })
+  }
+
+  onRelSheetItemClick = (type, value) => {
+    const {curItem, dataSource, curActionSheetType, saveClickRole} = this.state;
+    console.log('curItem', curItem)
+    this.setState({
+      saveClickRole: []
+    })
+    dataSource[curItem][type] = value;
+    if (type === 'role') {
+      dataSource[curItem].roleText = handleRole[value];
+    }
+    if (type === 'borrowType') {
+      saveClickRole.push({key: curItem, value: true});
+    }
+    this.setState({
+      dataSource,
+      saveClickRole
+    })
+    this.onRelCancel(curActionSheetType ? 'isOpened' : 'isRoleOpened')
+  }
+
+  render() {
+    const {isBaseOpened, baseObj, relationList, showLoading, scrollHeight, navBarHeight,isOpened, isRoleOpened, isDeleteOpendModal,dataSource} = this.state;
+    console.log('this.state=====', baseObj)
     const businessBaseInfoConfig = [
       {
         id: '1',
@@ -452,6 +641,44 @@ export default class BusinessDetail extends Component<IProps, isState> {
     //   }
     // ]
     console.log(421, scrollHeight, navBarHeight)
+    const relationBusinessConfig = [
+      {
+        id: '1',
+        title: '债务人角色',
+        placeHolder: '请选择',
+        value: '',
+        field: 'roleText',
+        type: 'select',
+      },
+      {
+        id: '2',
+        title: '债务人名称',
+        placeHolder: '请填写债务人名称（必填）',
+        value: '',
+        field: 'obligorName',
+        type: 'input',
+      },
+      {
+        id: '3',
+        title: '证件号',
+        placeHolder: '个人必填，企业可不填',
+        value: '',
+        field: 'obligorNumber',
+        type: 'input',
+      },
+      {
+        id: '4',
+        title: '债务人类型',
+        placeHolder: '请选择（必选）',
+        value: '',
+        field: 'borrowType',
+        type: 'select',
+      }
+    ]
+    const handleBorrowType = {
+      0: '个人',
+      1: '企业'
+    }
     return (
       <View className='yc-addBusiness'>
         <NavigationBar title='添加业务'/>
@@ -504,8 +731,82 @@ export default class BusinessDetail extends Component<IProps, isState> {
                   )
                 })
               }
+              {/*{*/}
+              {/*  showLoading && <RelationBusiness data={relationList} value={(value) => this.getValue(value)}/>*/}
+              {/*}*/}
+
               {
-                showLoading && <RelationBusiness data={relationList} value={(value) => this.getValue(value)}/>
+                showLoading &&
+                  <View>
+                    {
+                      <View>
+                        {
+                          dataSource.map((res, relIndex) => {
+                            return (
+                              <View>
+                                <View className='yc-addBusiness-relationTextContent'>
+                                  <View
+                                    className='yc-addBusiness-baseInfoText yc-addBusiness-relationBaseInfoText'>关联债务人{relIndex + 1}</View>
+                                  <View className='yc-addBusiness-deleteText' onClick={() => this.relDelete(relIndex)}>刪除</View>
+                                </View>
+
+                                <View className='yc-addBusiness-baseInfo'>
+                                  <View className='yc-addBusiness-baseInfo-topLine'/>
+                                  {
+                                    relationBusinessConfig.map((i, indexTemp) => {
+                                      return (
+                                        <View className='yc-addBusiness-baseInfo-input'>
+                                          <View className='yc-addBusiness-baseInfo-input-content'>
+                                            <View className='yc-addBusiness-baseInfo-input-content-inputText'>{i.title}</View>
+                                            {
+                                              i.type === 'input' ?
+                                                <Input
+                                                  className='yc-addBusiness-baseInfo-input-content-inputTemp'
+                                                  name={i.field + relIndex}
+                                                  type='text'
+                                                  placeholder={i.placeHolder}
+                                                  value={res[i.field]}
+                                                  onInput={(e) => this.onRelInput(e, i.field, relIndex)}
+                                                  onBlur={(e) => {
+                                                    this.onRelBlur(e, i.field, relIndex)
+                                                  }}
+                                                  maxlength={i.field === 'obligorName' ? 40 : i.field === 'obligorNumber' ? 18 : -1}
+                                                /> :
+                                                <View className='yc-addBusiness-baseInfo-input-content-selectTemp'
+                                                      onClick={() => {
+                                                        this.onRelOpenActionSheetClick(indexTemp, relIndex)
+                                                      }}>
+                                                  <View
+                                                    className='yc-addBusiness-baseInfo-input-content-selectTemp-selectText'
+                                                    style={{color: indexTemp ? handleBorrowType[res.borrowType] ? '#666666' : '#CCCCCC' : handleRole[res.role] ? '#666666' : '#CCCCCC'}}>{indexTemp ? handleBorrowType[res.borrowType] ? handleBorrowType[res.borrowType] : i.placeHolder : handleRole[res.role] || i.placeHolder}</View>
+                                                  <View className='yc-addBusiness-baseInfo-input-content-selectTemp-arrow'>
+                                                    <Text
+                                                      className="iconfont icon-right-arrow yc-addBusiness-baseInfo-input-content-selectTemp-arrow-text"/>
+                                                  </View>
+                                                </View>
+                                            }
+                                          </View>
+                                          {
+                                            indexTemp !== relationBusinessConfig.length - 1 &&
+                                            <View className='yc-addBusiness-baseInfo-input-content-line'/>
+                                          }
+                                        </View>
+
+                                      )
+                                    })
+                                  }
+                                  <View className='yc-addBusiness-baseInfo-topLine'/>
+                                </View>
+                              </View>
+                            )
+                          })
+                        }
+                        <View onClick={this.addClick} className='yc-addBusiness-relationText'>添加关联债务人</View>
+                        {/*<View className='yc-addBusiness-empty'/>*/}
+
+                      </View>
+                    }
+                  </View>
               }
 
               {/*<View className='yc-addBusiness-addBtn'>*/}
@@ -513,20 +814,74 @@ export default class BusinessDetail extends Component<IProps, isState> {
               {/*</View>*/}
 
             </Form>
-            <AtActionSheet isOpened={isBaseOpened} cancelText='取消' onCancel={this.onCancel}>
-              <AtActionSheetItem onClick={() => {
-                this.onSheetItemClick('borrowType', 0)
-              }}>
-                个人
-              </AtActionSheetItem>
-              <AtActionSheetItem onClick={() => {
-                this.onSheetItemClick('borrowType', 1)
-              }}>
-                企业
-              </AtActionSheetItem>
-            </AtActionSheet>
           </View>
         </ScrollView>
+        <AtActionSheet isOpened={isBaseOpened} cancelText='取消' onCancel={this.onCancel}>
+          <AtActionSheetItem onClick={() => {
+            this.onSheetItemClick('borrowType', 0)
+          }}>
+            个人
+          </AtActionSheetItem>
+          <AtActionSheetItem onClick={() => {
+            this.onSheetItemClick('borrowType', 1)
+          }}>
+            企业
+          </AtActionSheetItem>
+        </AtActionSheet>
+
+        <AtActionSheet isOpened={isOpened} cancelText='取消' onCancel={() => {
+          this.onRelCancel('isOpened')
+        }}
+                       onClose={() => {
+                         this.onRelCancel('isOpened')
+                       }}
+        >
+          <AtActionSheetItem onClick={() => {
+            this.onRelSheetItemClick('borrowType', 0)
+          }}>
+            个人
+          </AtActionSheetItem>
+          <AtActionSheetItem onClick={() => {
+            this.onRelSheetItemClick('borrowType', 1)
+          }}>
+            企业
+          </AtActionSheetItem>
+        </AtActionSheet>
+        <AtActionSheet
+          isOpened={isRoleOpened}
+          cancelText='取消'
+          onCancel={() => {
+            this.onRelCancel('isRoleOpened')
+          }}
+          onClose={() => {
+            this.onRelCancel('isRoleOpened')
+          }}
+        >
+          <AtActionSheetItem onClick={() => {
+            this.onRelSheetItemClick('role', 2)
+          }}>
+            担保人
+          </AtActionSheetItem>
+          <AtActionSheetItem onClick={() => {
+            this.onRelSheetItemClick('role', 4)
+          }}>
+            共同借款人
+          </AtActionSheetItem>
+        </AtActionSheet>
+
+        <View className='yc-addBusiness-deleteModal'>
+          <AtModal isOpened={isDeleteOpendModal}>
+            <AtModalContent>
+              <View>确定删除该债务人的信息？</View>
+            </AtModalContent>
+            <AtModalAction>
+              <Button onClick={this.onRelDeleteCancel}>取消</Button>
+              <Button onClick={this.onRelDeleteConform}>确定</Button>
+            </AtModalAction>
+          </AtModal>
+        </View>
+
+
         <View className='yc-addBusiness-addBtn' id='addBusBtn'>
           <AtButton type='primary' onClick={throttle(this.onSubmit, 5000)}>确认添加</AtButton>
         </View>

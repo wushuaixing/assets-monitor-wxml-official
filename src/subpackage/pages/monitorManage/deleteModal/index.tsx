@@ -43,20 +43,24 @@ export default class DeleteModal extends Component<any, isState> {
       type: 'monitorManage/getBusinessDelete',
       payload: {id: deleteId}
     }).then(res => {
-      Message(res.message);
       if (res.code === 200) {
+        Message('删除成功');
         this.props.dispatch({
           type: 'monitorManage/getIsDeleteOpendModal',
           payload: {deleteId: '', isDeleteOpendModal: false}
         })
         if (this.props.busDetail) {
           const {searchValue} = this.props;
-          Taro.navigateTo({url:`/subpackage/pages/monitorManage/index?type=business&searchValue=${searchValue}`})
+          Taro.navigateTo({url: `/subpackage/pages/monitorManage/index?type=business&searchValue=${searchValue}`})
         } else {
           const {handleBusinessList} = this.props;
           if (handleBusinessList) handleBusinessList();
         }
+      } else {
+        Message(res.message);
       }
+    }).catch(() => {
+      Message('网络异常请稍后再试！')
     })
   }
 
