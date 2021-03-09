@@ -112,7 +112,7 @@ const initialAssetsConfig = [
       {
         name: '推送日期',
         type: 'time',
-        field: ['startTime', 'endTime'],
+        field: ['updateTimeStart', 'updateTimeEnd'],
         value: [],
       }
     ],
@@ -171,7 +171,7 @@ const initialRiskConfig = [
       {
         name: '推送日期',
         type: 'time',
-        field: ['startTime', 'endTime'],
+        field: ['updateTimeStart', 'updateTimeEnd'],
         value: [],
       }
     ],
@@ -356,8 +356,8 @@ export default class Monitor extends Component <IProps, IState>{
           let riskConfig = getUpdateRuleConfig( JSON.parse(JSON.stringify(initialRiskConfig)));
           const { monitorParams } = this.props;
           const { currentId, starId, params} = this.state;
-          // console.log(' monitorParams 111=== ', monitorParams);
           if(monitorParams && Object.keys(monitorParams).length > 0){
+            console.log(' monitorParams 111=== ', monitorParams);
             this.backToTop();
             let tabId = monitorParams.tabId > 0 ? monitorParams.tabId : currentId;
             let newStarId = monitorParams.starId > 0 ? monitorParams.starId : starId;
@@ -393,8 +393,8 @@ export default class Monitor extends Component <IProps, IState>{
   }
 
   shouldComponentUpdate(nextProps: Readonly<IProps>, nextState: Readonly<IState>): boolean {
-    const { listCount, currentId, page, isScroll} = this.state;
-    return listCount !== nextState.listCount || currentId !== nextState.currentId || page !== nextState.page || isScroll !== nextState.isScroll;
+    const { listCount, currentId, page, isScroll, starId } = this.state;
+    return listCount !== nextState.listCount || currentId !== nextState.currentId || page !== nextState.page || isScroll !== nextState.isScroll || starId !== nextState.starId;
   }
 
   componentWillReceiveProps(nextProps: Readonly<IProps>, nextContext: any): void {
@@ -616,19 +616,21 @@ export default class Monitor extends Component <IProps, IState>{
             onScrollToLower={this.handleScrollToLower}
             scrollWithAnimation={true}
           >
-	          <View className='monitor-tips'>
-		          <View className='monitor-tips-notice'>
-			          <Text className='iconfont icon-notice monitor-tips-notice-icon'/>
-			          <Text className='monitor-tips-notice-text'>
-				          为您找到
-				          <Text className='monitor-tips-notice-text-count'>{listCount}</Text>
-				          条
-                  {
-                    currentId === 1 ? '资产线索' : '风险信息'
-                  }
-			          </Text>
-		          </View>
-	          </View>
+            {
+              !loading && <View className='monitor-tips'>
+	              <View className='monitor-tips-notice'>
+		              <Text className='iconfont icon-notice monitor-tips-notice-icon'/>
+		              <Text className='monitor-tips-notice-text'>
+			              为您找到
+			              <Text className='monitor-tips-notice-text-count'>{listCount}</Text>
+			              条
+                    {
+                      currentId === 1 ? '资产线索' : '风险信息'
+                    }
+		              </Text>
+	              </View>
+              </View>
+            }
             {
               list.map((item: any, index: number) => {
                 return (
@@ -642,11 +644,11 @@ export default class Monitor extends Component <IProps, IState>{
               })
             }
             {
-              hasNext ? <View className='monitor-scroll-more'>正在加载中</View> : <View className='monitor-scroll-done'>
-                <View className='monitor-scroll-done-left' />
-                <View className='monitor-scroll-done-text'>我是有底线的</View>
-                <View className='monitor-scroll-done-right' />
-              </View>
+              hasNext ? <View className='monitor-scroll-more'>正在加载中...</View> : (!loading && <View className='monitor-scroll-done'>
+	              <View className='monitor-scroll-done-left' />
+	              <View className='monitor-scroll-done-text'>我是有底线的</View>
+	              <View className='monitor-scroll-done-right' />
+              </View>)
             }
 		      </ScrollView>
         }

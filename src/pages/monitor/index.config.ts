@@ -1,5 +1,6 @@
 export default {
   navigationBarTitleText: '监控页',
   navigationStyle: 'custom',
-  navigationBarTextStyle: 'white'
+  navigationBarTextStyle: 'white',
+  disableScroll: true,
 }

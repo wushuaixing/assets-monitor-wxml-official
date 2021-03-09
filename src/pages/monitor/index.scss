@@ -45,37 +45,37 @@
     }
   }
   &-drop{
-    box-shadow:0 6px 10px -5px #ccc;
+    box-shadow: 0 6px 10px -5px #ccc;
   }
 
   &-scroll{
     background-color: $page-bg-color;
     &-more{
       color: $light-text-color;
-      margin: 24px 0;
+      padding: 24px 0;
       text-align: center;
       font-size: 24px;
       line-height: 24px;
     }
     &-done{
       color: $light-text-color;
-      margin: 24px 0;
+      padding: 24px 0;
       position: relative;
       &-left{
         position: absolute;
         background-color: $light-text-color;
         height: 1px;
         width: 48px;
-        right: 455px;
-        top: 12px;
+        right: 460px;
+        top: 37px;
       }
       &-right{
         position: absolute;
-        top: 12px;
+        top: 37px;
         background-color: $light-text-color;
         height: 1px;
         width: 48px;
-        left: 455px;
+        left: 460px;
       }
       &-text{
         text-align: center;
