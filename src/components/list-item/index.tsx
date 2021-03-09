@@ -240,7 +240,7 @@ const ListItem = (props: IProps) => {
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>申请人</View>
 						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{handleGetName(detail.parties, 'role', '申请人', detail.obligorName)}</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{handleGetName(detail.parties, 'role', '申请人')}</View>
 					</View>
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>案号</View>

@@ -91,6 +91,7 @@ export default class AssetsDetail extends Component <IProps, IState>{
 
   render () {
     const { detail } = this.state;
+    const mobile = detail.mobile || [];
     console.log('detail === ', detail);
     return (
       <View className='detail'>
@@ -133,8 +134,8 @@ export default class AssetsDetail extends Component <IProps, IState>{
             <View className='detail-info-item-colon'>：</View>
             <View className='detail-info-item-value link'>
               {
-                detail.mobile.length > 0 ? detail.mobile.map((item, index) => {
-                  return <View onClick={() => this.handleMakeCall(item)}>{item}{index < detail.mobile.length - 1 ? '、' : ''}</View>
+                mobile.length > 0 ? mobile.map((item, index) => {
+                  return <View onClick={() => this.handleMakeCall(item)}>{item}{index < mobile.length - 1 ? '、' : ''}</View>
                 }) : '--'
               }
             </View>

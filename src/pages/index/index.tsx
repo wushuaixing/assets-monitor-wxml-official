@@ -129,8 +129,8 @@ class Index extends Component <IProps, IState>{
   }
 
   shouldComponentUpdate(nextProps: Readonly<IProps>, nextState: Readonly<IState>): boolean {
-    const { current, businessCount, starLevel } = this.state;
-    return current !== nextState.current ||  businessCount !== nextState.businessCount || JSON.stringify(starLevel) !== JSON.stringify(nextState.starLevel);
+    const { current, businessCount, starLevel, loading } = this.state;
+    return current !== nextState.current ||  businessCount !== nextState.businessCount || loading !== nextState.loading || JSON.stringify(starLevel) !== JSON.stringify(nextState.starLevel);
   }
 
   // 点击资产或者风险tab
@@ -168,31 +168,30 @@ class Index extends Component <IProps, IState>{
       const { starLevel } = this.state;
       let newStarLevel = {...starLevel};
       const { code, data} = res;
+      this.setState({
+        loading: false,
+      });
       if( code === 200){
         let newAssetsArrary: dataItem[] =  [
           { id: 1, name: '资产拍卖', num: data.auctionCount || 0, isRule: isRule('zcwjzcpm'), icon: 'icon-auction', value: 'zcwjzcpm'},
           { id: 2, name: '代位权', num: data.subrogationCount || 0, isRule: isRule('zcwjdwq'), icon: 'icon-subrogation', value: 'zcwjdwq'},
         ];
-        data.starLevelCounts.forEach(item => {
-          if(item.starLevel === 90){
-            newStarLevel.three = item.starLevelCount;
-          }
-          else if(item.starLevel === 80){
-            newStarLevel.two = item.starLevelCount;
-          }
-          else if(item.starLevel === 60){
-            newStarLevel.one = item.starLevelCount;
-          }
-        });
+        if(data.starLevelCounts.length){
+          data.starLevelCounts.forEach(item => {
+            if(item.starLevel === 90){
+              newStarLevel.three = item.starLevelCount;
+            }
+            else if(item.starLevel === 80){
+              newStarLevel.two = item.starLevelCount;
+            }
+            else if(item.starLevel === 60){
+              newStarLevel.one = item.starLevelCount;
+            }
+          });
+        }
         this.setState({
-          loading: false,
           starLevel: newStarLevel,
           assetsArray: [...newAssetsArrary]
-        })
-      }
-      else {
-        this.setState({
-          loading: false,
         })
       }
     }).catch(()=>{
@@ -212,34 +211,33 @@ class Index extends Component <IProps, IState>{
       const { code, data} = res;
       const { starLevel } = this.state;
       let newStarLevel = {...starLevel};
+      this.setState({
+        loading: false,
+      });
       if( code === 200){
         let newRiskArrary = [
           { id: 21, name: '破产重整', num: data.bankruptcyCount || 0, isRule: isRule('fxjkqypccz'), icon: 'icon-bankruptcy', value: 'fxjkqypccz'},
-          { id: 22, name: '涉诉信息', num: data.lawsuitCount  || 0, isRule: isRule('fxjkssjk'), icon: 'icon-litigation', value: 'fxjkssjk'},
+          { id: 22, name: '涉诉信息', num: data.lawsuitCount || 0, isRule: isRule('fxjkssjk'), icon: 'icon-litigation', value: 'fxjkssjk'},
         ];
-        data.starLevelCounts.forEach(item => {
-          if(item.starLevel === 90){
-            newStarLevel.high = item.starLevelCount;
-          }
-          else if(item.starLevel === 80){
-            newStarLevel.warn = item.starLevelCount;
-          }
-          else if(item.starLevel === 60){
-            newStarLevel.tip = item.starLevelCount;
-          }
-          else{
-            newStarLevel.good = item.starLevelCount;
-          }
-        });
+        if(data.starLevelCounts.length){
+          data.starLevelCounts.forEach(item => {
+            if(item.starLevel === 90){
+              newStarLevel.high = item.starLevelCount;
+            }
+            else if(item.starLevel === 80){
+              newStarLevel.warn = item.starLevelCount;
+            }
+            else if(item.starLevel === 60){
+              newStarLevel.tip = item.starLevelCount;
+            }
+            else{
+              newStarLevel.good = item.starLevelCount;
+            }
+          });
+        }
         this.setState({
-          loading: false,
           starLevel: newStarLevel,
           riskArray: [...newRiskArrary]
-        })
-      }
-      else {
-        this.setState({
-          loading: false,
         })
       }
     }).catch(() => {
@@ -325,9 +323,8 @@ class Index extends Component <IProps, IState>{
       { title: '风险', id: 2 },
     ];
     const { current, businessCount, assetsArray, riskArray, starLevel, scrollViewHeight, loading} = this.state;
-    // console.log('businessCount ===', businessCount, JSON.stringify(businessCount));
-    const assetsSum = getArraySum(assetsArray, 'num');
-    const riskSum = getArraySum(riskArray, 'num');
+    const assetsSum = getArraySum(assetsArray, 'num') || 0;
+    const riskSum = getArraySum(riskArray, 'num') || 0;
     return (
       <View className='home'>
         <View className='home-title'>
@@ -588,7 +585,7 @@ class Index extends Component <IProps, IState>{
         {
           businessCount <= 0 && !loading && <View className='home-noBusiness'>
           <View className='home-noBusiness-box'>
-          <Image className='home-noBusiness-box-pic' src={noData} />
+            <Image className='home-noBusiness-box-pic' src={noData} />
           </View>
           <View className='home-noBusiness-prompt'>您还未添加监控的业务</View>
           <View className='home-noBusiness-btn' onClick={()=>{this.onAddBusClick('homeEmptyBus')}}>
