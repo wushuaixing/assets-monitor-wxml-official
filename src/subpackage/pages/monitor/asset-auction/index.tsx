@@ -112,7 +112,7 @@ export default class AssetsAuction extends Component <IProps, IState>{
                   detail.remark ? <RichText nodes={detail && detail.remark && detail.remark.replace(
                     /<a/gi,
                     `<a style="font-style: normal; color: #0979E6"`
-                  )} /> : null
+                  )} /> : '--'
                 }
               </View>
             </View>
@@ -134,17 +134,17 @@ export default class AssetsAuction extends Component <IProps, IState>{
             <View className='auction-detail-content-info'>
               <View className='auction-detail-content-info-justifylabel'>评估价</View>
               <View className='auction-detail-content-info-colon'>：</View>
-              <View className='auction-detail-content-info-value'>{`${floatFormat(detail.consultPrice)}元`}</View>
+              <View className='auction-detail-content-info-value'>{`${detail.consultPrice ? floatFormat(detail.consultPrice) + '元' : '--'}`}</View>
             </View>
             {
               detail.status === 5 ? <View className='auction-clues-content-info'>
 	              <View className='auction-detail-content-info-justifylabel'>成交价</View>
 	              <View className='auction-detail-content-info-colon'>：</View>
-	              <View className='auction-detail-content-info-value'>{`${floatFormat(detail.currentPrice)}元`}</View>
+	              <View className='auction-detail-content-info-value'>{`${detail.currentPrice ?  floatFormat(detail.currentPrice) + '元' : '--'}`}</View>
               </View> : <View className='auction-clues-content-info'>
                 <View className='auction-detail-content-info-justifylabel'>起拍价</View>
                 <View className='auction-detail-content-info-colon'>：</View>
-                <View className='auction-detail-content-info-value'>{`${floatFormat(detail.initialPrice)}元`}</View>
+                <View className='auction-detail-content-info-value'>{`${detail.initialPrice ? floatFormat(detail.initialPrice) + '元' : '--'}`}</View>
               </View>
             }
             {
@@ -183,12 +183,12 @@ export default class AssetsAuction extends Component <IProps, IState>{
                     <View className='auction-history-content-info'>
                       <View className='auction-history-content-info-justifylabel'>评估价</View>
                       <View className='auction-history-content-info-colon'>：</View>
-                      <View className='auction-history-content-info-value'>{`${item.consultPrice > 0 ? floatFormat(item.consultPrice) + '元' : '-'}`}</View>
+                      <View className='auction-history-content-info-value'>{`${item.consultPrice > 0 ? floatFormat(item.consultPrice) + '元' : '--'}`}</View>
                     </View>
                     <View className='auction-history-content-info'>
                       <View className='auction-history-content-info-justifylabel'>起拍价</View>
                       <View className='auction-history-content-info-colon'>：</View>
-                      <View className='auction-history-content-info-value'>{`${item.initialPrice > 0 ? floatFormat(item.initialPrice) + '元' : '-'}`}</View>
+                      <View className='auction-history-content-info-value'>{`${item.initialPrice > 0 ? floatFormat(item.initialPrice) + '元' : '--'}`}</View>
                     </View>
                     <View className='auction-history-content-info'>
                       <View className='auction-history-content-info-justifylabel'>开拍时间</View>

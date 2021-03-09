@@ -106,12 +106,12 @@ export default class AssetsDetail extends Component <IProps, IState>{
           <View className='detail-info-item'>
             <View className='detail-info-item-label'>评估价</View>
             <View className='detail-info-item-colon'>：</View>
-            <View className='detail-info-item-value'>{`${detail.consultPrice > 0 ? floatFormat(detail.consultPrice) + '元' : '-'}`}</View>
+            <View className='detail-info-item-value'>{`${detail.consultPrice > 0 ? floatFormat(detail.consultPrice) + '元' : '--'}`}</View>
           </View>
           <View className='detail-info-item'>
             <View className='detail-info-item-label'>起拍价</View>
             <View className='detail-info-item-colon'>：</View>
-            <View className='detail-info-item-value'>{`${detail.initialPrice > 0 ? floatFormat(detail.initialPrice) + '元' : '-'}`}</View>
+            <View className='detail-info-item-value'>{`${detail.initialPrice > 0 ? floatFormat(detail.initialPrice) + '元' : '--'}`}</View>
           </View>
           <View className='detail-info-item'>
             <View className='detail-info-item-label'>开拍时间</View>
@@ -121,32 +121,34 @@ export default class AssetsDetail extends Component <IProps, IState>{
           <View className='detail-info-item'>
             <View className='detail-info-item-label'>处置单位</View>
             <View className='detail-info-item-colon'>：</View>
-            <View className='detail-info-item-value'>{detail.court}</View>
+            <View className='detail-info-item-value'>{detail.court || '--'}</View>
           </View>
           <View className='detail-info-item'>
             <View className='detail-info-item-label'>联系人</View>
             <View className='detail-info-item-colon'>：</View>
-            <View className='detail-info-item-value'>{detail.liaisonPerson}</View>
+            <View className='detail-info-item-value'>{detail.liaisonPerson || '--'}</View>
           </View>
           <View className='detail-info-item'>
             <View className='detail-info-item-label'>联系电话</View>
             <View className='detail-info-item-colon'>：</View>
             <View className='detail-info-item-value link'>
               {
-                detail.mobile && detail.mobile.map((item, index) => {
+                detail.mobile.length > 0 ? detail.mobile.map((item, index) => {
                   return <View onClick={() => this.handleMakeCall(item)}>{item}{index < detail.mobile.length - 1 ? '、' : ''}</View>
-                })
+                }) : '--'
               }
             </View>
           </View>
-          <View className='detail-info-item'>
-            <View className='detail-info-item-label'>源链接</View>
-            <View className='detail-info-item-colon'>：</View>
-            <View className='detail-info-item-value-other link' onClick={() => this.onCopyClick(`${detail.url}`)}>
-              <Text>{detail.url}</Text>
-              <Text className='iconfont icon-copy detail-info-item-value-icon' />
+          {
+            detail.url && <View className='detail-info-item'>
+	            <View className='detail-info-item-label'>源链接</View>
+	            <View className='detail-info-item-colon'>：</View>
+	            <View className='detail-info-item-value-other link' onClick={() => this.onCopyClick(`${detail.url}`)}>
+		            <Text>{detail.url}</Text>
+		            <Text className='iconfont icon-copy detail-info-item-value-icon' />
+	            </View>
             </View>
-          </View>
+          }
         </View>
 
         {/*竞买公告*/}

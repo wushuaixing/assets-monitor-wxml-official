@@ -94,7 +94,7 @@ const initialAssetsConfig = [
       },
       {
         id: 2,
-        name: '涉诉资产',
+        name: '诉讼资产',
         isSelected: false,
         isRule: true,
         childrenName: [
@@ -433,14 +433,12 @@ export default class Monitor extends Component <IProps, IState>{
 
   // 请求资产或者风险列表
   handleRequestList = (payload, isNew: boolean) => {
-    const { loading, currentId, assetsList, riskList, page } = this.state;
-    if(loading){
-      Taro.showLoading({
-        title: '正在加载',
-      })
-    }
+    const { currentId, assetsList, riskList, page } = this.state;
     const { dispatch } = this.props;
     if(currentId === 1){
+      Taro.showLoading({
+        title: '正在加载',
+      });
       dispatch({
         type:'monitor/assetList',
         payload: {
@@ -467,6 +465,9 @@ export default class Monitor extends Component <IProps, IState>{
       });
     }
     else {
+      Taro.showLoading({
+        title: '正在加载',
+      });
       dispatch({
         type:'monitor/riskList',
         payload: {
@@ -550,7 +551,11 @@ export default class Monitor extends Component <IProps, IState>{
   handleScrollToLower = (event) => {
     const { hasNext, params } = this.state;
     if(hasNext){
-      this.handleRequestList({...params}, false)
+      this.setState({
+        loading: true,
+      }, () => {
+        this.handleRequestList({...params}, false)
+      });
     }
   };
 
