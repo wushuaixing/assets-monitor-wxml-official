@@ -34,7 +34,8 @@ export default class ObligorListItem extends Component<any, isState> {
   componentDidHide() {
   }
 
-  onPushStateClick = (pushState, id, index) => {
+  onPushStateClick = (pushState, id, index,obligorId) => {
+    const {type} = this.props;
     this.setState({
       curData: this.props.data
     })
@@ -43,14 +44,17 @@ export default class ObligorListItem extends Component<any, isState> {
       console.log('curData', curData)
       const buildData = [...curData];
       if (pushState) {
+        const curApi = type === 'businessRelation' ? 'monitorManage/getBusClosePush' : 'monitorManage/getClosePush';
+        const curId = type === 'businessRelation' ? obligorId : id
         this.props.dispatch({
-          type: 'monitorManage/getClosePush',
-          payload: {idList: [id]}
+          type: curApi,
+          payload: {idList: [curId]}
         }).then((res) => {
           console.log('res', res)
           const {code} = res;
           if (code === 200) {
             buildData[index].pushState = 0;
+            buildData[index].obligorPushType = 0;
             this.setState({
               curData: [...buildData]
             })
@@ -62,14 +66,17 @@ export default class ObligorListItem extends Component<any, isState> {
           Message('网络异常请稍后再试！')
         })
       } else {
+        const curApi = type === 'businessRelation' ? 'monitorManage/getBusOpenPush' : 'monitorManage/getOpenPush';
+        const curId = type === 'businessRelation' ? obligorId : id
         this.props.dispatch({
-          type: 'monitorManage/getOpenPush',
-          payload: {idList: [id]}
+          type: curApi,
+          payload: {idList: [curId]}
         }).then((res) => {
           console.log('res', res)
           const {code} = res;
           if (code === 200) {
             buildData[index].pushState = 1;
+            buildData[index].obligorPushType = 1;
             this.setState({
               curData: [...buildData]
             })
@@ -110,7 +117,7 @@ export default class ObligorListItem extends Component<any, isState> {
                         lineHeight: '80rpx'
                       }}>
                         <View
-                          className={i.role === 3 ? 'yc-monitorManage-bottom-content-relationImg-roleTextTemp' :'yc-monitorManage-bottom-content-relationImg-roleText'}
+                          className={i.role === 3 ? 'yc-monitorManage-bottom-content-relationImg-roleTextTemp' : 'yc-monitorManage-bottom-content-relationImg-roleText'}
                         >{handleRole[i.role] ? handleRole[i.role] : '未知'}</View>
                       </View>
                   }
@@ -153,8 +160,9 @@ export default class ObligorListItem extends Component<any, isState> {
                                             }}>{i.regStatus}</View> : null
                         }
                         {
-                          i.bankruptcyStatus ? <View className='yc-monitorManage-bottom-content-baseInfo-bottom-tags-sx'
-                                                     style={{width: '120rpx'}}>破产重组</View> : null
+                          i.bankruptcyStatus || i.bankruptcy ?
+                            <View className='yc-monitorManage-bottom-content-baseInfo-bottom-tags-sx'
+                                  style={{width: '120rpx'}}>破产重组</View> : null
                         }
                       </View>
                       <View className='yc-monitorManage-bottom-content-baseInfo-bottom-left'>
@@ -174,7 +182,7 @@ export default class ObligorListItem extends Component<any, isState> {
                     <View
                       className={i.pushState || i.obligorPushType ? 'yc-monitorManage-bottom-content-right-yes' : 'yc-monitorManage-bottom-content-right-no'}
                       onClick={() => {
-                        this.onPushStateClick(i.pushState || i.obligorPushType, i.id, index)
+                        this.onPushStateClick(i.pushState || i.obligorPushType, i.id, index,i.obligorId || undefined)
                       }}>
                       {
                         i.pushState || i.obligorPushType ?
@@ -182,7 +190,7 @@ export default class ObligorListItem extends Component<any, isState> {
                           <Text className="iconfont icon-user_add yc-monitorManage-bottom-content-right-noIcon"/>
                       }
                       {
-                        i.pushState || i.obligorPushType?
+                        i.pushState || i.obligorPushType ?
                           <Text className='yc-monitorManage-bottom-content-right-yesText'>已监控</Text> :
                           <Text className='yc-monitorManage-bottom-content-right-noText'>加监控</Text>
                       }
@@ -194,7 +202,7 @@ export default class ObligorListItem extends Component<any, isState> {
             )
           })
         }
-          </View>
-          )
-        }
+      </View>
+    )
+  }
 }

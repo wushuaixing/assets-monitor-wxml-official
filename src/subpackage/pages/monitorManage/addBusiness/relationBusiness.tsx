@@ -340,7 +340,7 @@ export default class RelationBusiness extends Component<IProps, isState> {
           })
         }
         <View onClick={this.addClick} className='yc-addBusiness-relationText'>添加关联债务人</View>
-        <View className='yc-addBusiness-empty'/>
+        {/*<View className='yc-addBusiness-empty'/>*/}
         <AtActionSheet isOpened={isOpened} cancelText='取消' onCancel={() => {
           this.onCancel('isOpened')
         }}

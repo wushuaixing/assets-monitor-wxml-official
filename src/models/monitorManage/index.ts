@@ -7,6 +7,8 @@ import {
   getBusinessDeleteUrl,
   getBusinessSaveUrl,
   getBusinessEditUrl,
+  getBusOpenPushUrl,
+  getBusClosePushUrl
 } from "../../services/monitorManage";
 
 export default {
@@ -58,6 +60,14 @@ export default {
     },
     * getBusinessEdit({payload}, {call}) {
       const res = yield call(getBusinessEditUrl, payload);
+      return res;
+    },
+    * getBusOpenPush({payload}, {call}) {
+      const res = yield call(getBusOpenPushUrl, payload);
+      return res;
+    },
+    * getBusClosePush({payload}, {call}) {
+      const res = yield call(getBusClosePushUrl, payload);
       return res;
     },
   },
