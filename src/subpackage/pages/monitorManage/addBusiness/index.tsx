@@ -535,6 +535,12 @@ export default class BusinessDetail extends Component<IProps, isState> {
     console.log(82, deleteIndex, this.state, dataSource)
   }
 
+  onDeleteCloseModal = () =>{
+    this.setState({
+      isDeleteOpendModal: false
+    })
+  }
+
   onRelCancel = (value) => {
     this.setState({
       [value]: false
@@ -870,7 +876,7 @@ export default class BusinessDetail extends Component<IProps, isState> {
         </AtActionSheet>
 
         <View className='yc-addBusiness-deleteModal'>
-          <AtModal isOpened={isDeleteOpendModal}>
+          <AtModal isOpened={isDeleteOpendModal} onClose={this.onDeleteCloseModal}>
             <AtModalContent>
               <View>确定删除该债务人的信息？</View>
             </AtModalContent>
