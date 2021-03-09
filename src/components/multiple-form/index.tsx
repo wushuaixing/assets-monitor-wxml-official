@@ -161,11 +161,13 @@ export default class MultipleForm extends Component <IProps, IState>{
                           </View>
                         }
                       </View>
-                      <Image
-                        src={clear}
-                        className='conditions-time-box-left-icon'
-                        onClick={() => this.onClearInput(item, 'start')}
-                      />
+                      {
+                        value[0] && <Image
+	                        src={clear}
+	                        className='conditions-time-box-left-icon'
+	                        onClick={() => this.onClearInput(item, 'start')}
+                        />
+                      }
                     </View>
                     <View className='conditions-time-box-segmentation'>~</View>
                     <View className='conditions-time-box-right'>
@@ -182,11 +184,13 @@ export default class MultipleForm extends Component <IProps, IState>{
                           </View>
                         }
                       </View>
-                      <Image
-                        src={clear}
-                        className='conditions-time-box-right-icon'
-                        onClick={() => this.onClearInput(item, 'end')}
-                      />
+                      {
+                        value[1] && <Image
+	                        src={clear}
+	                        className='conditions-time-box-right-icon'
+	                        onClick={() => this.onClearInput(item, 'end')}
+                        />
+                      }
                     </View>
                   </View>
                 </View>
