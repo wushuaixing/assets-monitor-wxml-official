@@ -1,4 +1,5 @@
-import React,{Component} from 'react'
+import React,{Component} from 'react';
+import Taro from '@tarojs/taro';
 import { Image, View }from '@tarojs/components';
 import loginTopImg from '../../assets/img/login/logo_black.png';
 import loginLogoImg from  '../../assets/img/login/logo.png';
@@ -23,14 +24,19 @@ export default class Index extends Component<any,isState> {
   }
 
   componentWillMount() {
-    // Taro.setNavigationBarColor({
-    //   frontColor: '#ffffff'
-    // })
+    Taro.setNavigationBarColor({
+      frontColor: '#ffffff',
+      backgroundColor: '',
+    })
   }
 
 
   // 切换登录方式 1.手机号登录 2. 账号密码登录
   changeLoginType = (loginType) => {
+    Taro.setNavigationBarColor({
+      frontColor: loginType === 1 ? '#ffffff' : '#000000',
+      backgroundColor: '',
+    })
     this.setState({
       loginType
     });

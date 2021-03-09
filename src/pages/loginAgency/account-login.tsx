@@ -192,7 +192,7 @@ export default class AccountLogin extends Component<IProps, isState> {
           <View className="yc-login-phoneContent-title" style={{color: '#333333'}}>源诚资产监控平台</View>
           <View className="yc-login-phoneContent-phone">
             <View className="yc-login-phoneContent-phone-content">
-              <Text className="iconfont icon-account yc-login-phoneContent-phone-content-iconAccount"/>
+              <Text className="iconfont icon-account yc-login-phoneContent-phone-content-iconAccount" style={{color: accountName !== '' ? '#333333' : '#CCCCCC' }}/>
               <View className="yc-login-accountContent">
                 <Input
                   name='accountName'
@@ -214,7 +214,7 @@ export default class AccountLogin extends Component<IProps, isState> {
             </View>
             <View className="yc-login-phoneContent-phone-content">
               <View className="yc-login-phoneContent-line" style={{background: '#CCCCCC', marginBottom: '60rpx'}}/>
-              <Text className="iconfont icon-password  yc-login-phoneContent-phone-content-iconAccount"/>
+              <Text className="iconfont icon-password  yc-login-phoneContent-phone-content-iconAccount" style={{color: accountPassword !== '' ? '#333333' : '#CCCCCC' }}/>
               <View className="yc-login-accountContent">
                 <Input
                   name='accountPassWord'
