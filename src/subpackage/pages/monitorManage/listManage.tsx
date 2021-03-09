@@ -2,12 +2,14 @@ import React, {Component} from 'react'
 import {View, ScrollView} from '@tarojs/components'
 import ObligorListItem from "./obligorListItem";
 import BusinessListItem from "./businessListItem/index";
+import {connect} from 'react-redux';
 import './index.scss'
 
 
 type isState = {
   refreshDownStatus: boolean
 }
+@connect(({monitorManage}) => ({monitorManage}))
 export default class ListManage extends Component<any, isState> {
 
   constructor(props) {
@@ -71,14 +73,24 @@ export default class ListManage extends Component<any, isState> {
     console.log('onRefresherRestore===')
   }
 
+  onScroll = () => {
+    const {curClickItem} = this.props.monitorManage;
+    if (curClickItem !== '') {
+      this.props.dispatch({
+        type: 'monitorManage/getCurClickItem',
+        payload: {curClickItem: ''}
+      })
+    }
+  }
 
   render() {
-    const {data, current, searchValue, handleBusinessList, loading} = this.props;
+    const {data, current, searchValue, handleBusinessList, loading, scrollHeight} = this.props;
     const {refreshDownStatus} = this.state;
+    console.log('scrollHeight123===', scrollHeight)
     return (
-      <View className='yc-monitorManage-bottom'>
+      <View className='yc-monitorManage-bottom' id='scrollViewHeight'>
         <ScrollView
-          style={{height: `calc(100vh - 255rpx)`}}
+          style={{height: scrollHeight}}
           scrollY
           scrollWithAnimation
           lowerThreshold={60}
@@ -91,6 +103,7 @@ export default class ListManage extends Component<any, isState> {
           refresherDefaultStyle='none'
           refresherBackground='transparent none no-repeat no-scroll 0% 0%'
           onRefresherRestore={this.onRefresherRestore}
+          onScroll={this.onScroll}
         >
           {
             current ? <ObligorListItem data={data} type='obligor'/> :
