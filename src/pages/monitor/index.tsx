@@ -235,7 +235,7 @@ export default class Monitor extends Component <IProps, IState>{
               isSelected: false,
               isRule: true,
               childrenName: [
-                {name: '全部', value: filterArray(['zcwjzcpm', 'zcwjdwq']), id: 1, isSelected: true, isRule: true },
+                {name: '涉诉资产-全部', value: filterArray(['zcwjzcpm', 'zcwjdwq']), id: 1, isSelected: true, isRule: true },
                 {name: '司法拍卖', value: filterArray(['zcwjzcpm']), id: 2, isSelected: false, isRule: isRule('zcwjzcpm')},
                 {name: '代位权', value: filterArray( ['zcwjdwq']), id: 3, isSelected: false, isRule: isRule('zcwjdwq')},
               ]
@@ -294,7 +294,7 @@ export default class Monitor extends Component <IProps, IState>{
               isSelected: false,
               isRule: isRule(['fxjkqypccz', 'fxjkssjk']),
               childrenName: [
-                {name: '全部', value: filterArray(['fxjkqypccz', 'fxjkssjk']), id: 1, isSelected: true, isRule: true },
+                {name: '司法风险-全部', value: filterArray(['fxjkqypccz', 'fxjkssjk']), id: 1, isSelected: true, isRule: true },
                 {name: '破产重整', value: filterArray(['fxjkqypccz']), id: 2, isSelected: false, isRule: isRule('fxjkqypccz') },
                 {name: '涉诉监控', value: filterArray(['fxjkssjk']), id: 3, isSelected: false, isRule: isRule('fxjkssjk') },
               ]
@@ -578,7 +578,7 @@ export default class Monitor extends Component <IProps, IState>{
   };
 
   render () {
-    const { scrollTop, isScroll, currentId, scrollHeight, listCount, starId, assetsList, riskList, queryAssetsConfig, queryRiskConfig, loading } = this.state;
+    const { scrollTop, isScroll, currentId, scrollHeight, listCount, starId, assetsList, riskList, queryAssetsConfig, queryRiskConfig, loading, hasNext } = this.state;
     let list = currentId === 1 ? assetsList : riskList;
     return (
       <View className='monitor'>
@@ -640,6 +640,13 @@ export default class Monitor extends Component <IProps, IState>{
                   /> : null
                 )
               })
+            }
+            {
+              hasNext ? <View className='monitor-scroll-more'>正在加载中</View> : <View className='monitor-scroll-done'>
+                <View className='monitor-scroll-done-left' />
+                <View className='monitor-scroll-done-text'>我是有底线的</View>
+                <View className='monitor-scroll-done-right' />
+              </View>
             }
 		      </ScrollView>
         }
