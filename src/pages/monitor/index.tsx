@@ -40,7 +40,6 @@ type IState = {
   assetsList: []
   riskList: []
   loading: boolean
-  count: number
   queryAssetsConfig: any
   queryRiskConfig: any
   params: any
@@ -49,7 +48,6 @@ type IState = {
   scrollHeight: number
   page: number
   hasNext: boolean
-  isClose: boolean
   scrollTop: number
 };
 
@@ -190,18 +188,16 @@ export default class Monitor extends Component <IProps, IState>{
       isScroll: false,
       loading: true,
       listCount: 0,
-      count: 0,
-      params: {
-        assetAndRiskType: filterArray(assestRuleArray).join(),
-      },
       starId: 1,
       assetsList: [],
       riskList: [],
       scrollHeight: 0,
       page: 1,
       hasNext: false,
-      isClose: false,
       scrollTop: 0,
+      params: {
+        assetAndRiskType: filterArray(assestRuleArray).join(),
+      },
       queryAssetsConfig: [
         {
           id: 1,
@@ -331,9 +327,7 @@ export default class Monitor extends Component <IProps, IState>{
       let height = 0;
       Taro.getSystemInfo({
         success: (info) => {
-          // console.log('info === ', info);
           height = info.windowHeight;
-          // onReady 触发后才能获取小程序渲染层的节点
           Taro.createSelectorQuery().select('#drop')
             .boundingClientRect()
             .exec(res => {
@@ -349,7 +343,7 @@ export default class Monitor extends Component <IProps, IState>{
   }
 
   componentDidShow() {
-    const {  dispatch } = this.props;
+    const { dispatch } = this.props;
     if(getGlobalData('refreshMonitor')){
       dispatch({
         type: 'home/getAuthRule',
@@ -364,6 +358,7 @@ export default class Monitor extends Component <IProps, IState>{
           const { currentId, starId, params} = this.state;
           // console.log(' monitorParams 111=== ', monitorParams);
           if(monitorParams && Object.keys(monitorParams).length > 0){
+            this.backToTop();
             let tabId = monitorParams.tabId > 0 ? monitorParams.tabId : currentId;
             let newStarId = monitorParams.starId > 0 ? monitorParams.starId : starId;
             let assetAndRiskTypeValue = monitorParams.value ? filterArray([monitorParams.value]).join() : filterArray(tabId === 1 ? assestRuleArray : riskRuleArray).join();
@@ -497,7 +492,7 @@ export default class Monitor extends Component <IProps, IState>{
 
   // 资产/ 风险tab的切换
   handleClick = (info) => {
-    const { loading, params } = this.state;
+    const { params } = this.state;
     let assetAndRiskTypeParams = filterArray(info.id === 1 ? assestRuleArray : riskRuleArray).join();
     let newParams = {...params, assetAndRiskType: assetAndRiskTypeParams};
     this.setState({
@@ -567,6 +562,11 @@ export default class Monitor extends Component <IProps, IState>{
         isScroll: true
       })
     }
+    if(detail.scrollTop <= 100){
+      this.setState({
+        isScroll: false
+      })
+    }
   };
 
   // 回到顶部
@@ -578,10 +578,8 @@ export default class Monitor extends Component <IProps, IState>{
   };
 
   render () {
-    const { scrollTop, isScroll, currentId, scrollHeight, listCount, starId, assetsList, riskList, queryAssetsConfig, queryRiskConfig, loading} = this.state;
+    const { scrollTop, isScroll, currentId, scrollHeight, listCount, starId, assetsList, riskList, queryAssetsConfig, queryRiskConfig, loading } = this.state;
     let list = currentId === 1 ? assetsList : riskList;
-    // console.log('scrollTop === ', scrollTop);
-    // console.log('monitor === ',  JSON.stringify(queryAssetsConfig));
     return (
       <View className='monitor'>
         <NavigationBar title={'源诚资产监控'} type={'blue'} color='white'/>
@@ -601,7 +599,7 @@ export default class Monitor extends Component <IProps, IState>{
           />
         </View>
         {
-          listCount === 0 && <View className='monitor-blank'>
+          listCount === 0 && !loading && <View className='monitor-blank'>
             <View className='monitor-blank-segmentation'/>
             <Image className='monitor-blank-pic' src={blankNodata} />
             <View className='monitor-blank-text'>暂未找到相关数据</View>

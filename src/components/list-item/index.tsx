@@ -85,9 +85,9 @@ const ListItem = (props: IProps) => {
       })
   };
 
-  const handleGetName = (parties?: any = [], field, name) => {
+  const handleGetName = (parties?: any = [], field, name, replaceName?: string) => {
     const applicantName = parties.filter(item =>item[field] === name) || [];
-    return applicantName.length > 0 ? applicantName.map(item => { return item.name }).join() : '-';
+    return applicantName.length > 0 ? applicantName.map(item => { return item.name }).join() : (replaceName || '--');
   };
 
   return (
@@ -170,17 +170,17 @@ const ListItem = (props: IProps) => {
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>案号</View>
 						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.caseNumber || '-'}</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.caseNumber || '--'}</View>
 					</View>
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>案由</View>
 						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.caseReason || '-'}</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.caseReason || '--'}</View>
 					</View>
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>案件类型</View>
 						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.caseType ? getCaseType(detail.caseType) : '-'}</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.caseType ? getCaseType(detail.caseType) : '--'}</View>
 					</View>
 				</View>
       }
@@ -195,12 +195,12 @@ const ListItem = (props: IProps) => {
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>案号</View>
 						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.caseNumber || '-'}</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.caseNumber || '--'}</View>
 					</View>
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>案由</View>
 						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.caseReason || '-'}</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.caseReason || '--'}</View>
 					</View>
 				</View>
       }
@@ -215,17 +215,17 @@ const ListItem = (props: IProps) => {
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>案号</View>
 						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.caseNumber || '-'}</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.caseNumber || '--'}</View>
 					</View>
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>案由</View>
 						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.caseReason || '-'}</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.caseReason || '--'}</View>
 					</View>
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>案件类型</View>
 						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.caseType || '-'}</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.caseType || '--'}</View>
 					</View>
 				</View>
       }
@@ -240,17 +240,17 @@ const ListItem = (props: IProps) => {
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>申请人</View>
 						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{handleGetName(detail.parties, 'role', '申请人')}</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{handleGetName(detail.parties, 'role', '申请人', detail.obligorName)}</View>
 					</View>
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>案号</View>
 						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.title || '-'}</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.title || '--'}</View>
 					</View>
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>破产法院</View>
 						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.court || '-'}</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.court || '--'}</View>
 					</View>
 				</View>
       }
@@ -260,7 +260,7 @@ const ListItem = (props: IProps) => {
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>标题</View>
 						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.title || '-'}</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.title || '--'}</View>
 					</View>
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>发布日期</View>
@@ -270,7 +270,7 @@ const ListItem = (props: IProps) => {
 	        <View className='item-content-info'>
 		        <View className='item-content-info-label'>破产法院</View>
 		        <View className='item-content-info-colon'>：</View>
-		        <View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.court || '-'}</View>
+		        <View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.court || '--'}</View>
 	        </View>
 				</View>
       }
@@ -285,17 +285,17 @@ const ListItem = (props: IProps) => {
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>案号</View>
 						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.caseNumber || '-'}</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.caseNumber || '--'}</View>
 					</View>
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>案由</View>
 						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.caseReason || '-'}</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.caseReason || '--'}</View>
 					</View>
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>案件类型</View>
 						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.caseType ? getCaseType(detail.caseType) : '-'}</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.caseType ? getCaseType(detail.caseType) : '--'}</View>
 					</View>
 				</View>
       }
@@ -310,12 +310,12 @@ const ListItem = (props: IProps) => {
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>案号</View>
 						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.caseNumber || '-'}</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.caseNumber || '--'}</View>
 					</View>
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>案由</View>
 						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.caseReason || '-'}</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.caseReason || '--'}</View>
 					</View>
 				</View>
       }
@@ -330,17 +330,17 @@ const ListItem = (props: IProps) => {
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>案号</View>
 						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.caseNumber || '-'}</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.caseNumber || '--'}</View>
 					</View>
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>案由</View>
 						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.caseReason || '-'}</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.caseReason || '--'}</View>
 					</View>
 					<View className='item-content-info'>
 						<View className='item-content-info-label'>案件类型</View>
 						<View className='item-content-info-colon'>：</View>
-						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.caseType || '-'}</View>
+						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.caseType || '--'}</View>
 					</View>
 				</View>
       }

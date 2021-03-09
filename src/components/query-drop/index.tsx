@@ -68,7 +68,6 @@ class QueryDrop extends Component<IProps, IState>{
   }
 
   componentWillMount(): void {
-    // console.log('componentWillMount ===', JSON.stringify(this.props.initConfig), JSON.stringify(this.state.config));
     const { initConfig } = this.props;
     if(Array.isArray(initConfig) && initConfig.length){
       this.setState({
@@ -77,21 +76,15 @@ class QueryDrop extends Component<IProps, IState>{
     }
     const onReadyEventId = this.$instance.router.onReady;
     eventCenter.once(onReadyEventId, this.onRady);
-    // const onShowEventId = this.$instance.router.onShow;
-    // eventCenter.on(onShowEventId, this.onShow);
   }
 
   shouldComponentUpdate(nextProps: Readonly<IProps>, nextState: Readonly<IState>): boolean {
-    // console.log('shouldComponentUpdate props ===', JSON.stringify(this.props.initConfig), JSON.stringify(nextProps.initConfig));
-    // console.log('shouldComponentUpdate state ===', JSON.stringify(this.state.config), JSON.stringify(nextState.config));
     const { isMask } = this.state;
     const { type, initConfig } = this.props;
     return type !== nextProps.type || isMask !== nextState.isMask || JSON.stringify(initConfig) !== JSON.stringify(nextProps.initConfig);
   }
 
   componentWillReceiveProps(nextProps: Readonly<IProps> ): void {
-    // 强制刷新
-    // console.log('componentWillReceiveProps props ', JSON.stringify(this.props.initConfig), JSON.stringify(nextProps.initConfig));
     const { initConfig, type } = this.props;
     if(type !== nextProps.type){
       this.setState({
@@ -103,24 +96,19 @@ class QueryDrop extends Component<IProps, IState>{
       this.setState({
         config: nextProps.initConfig
       });
-      // this.forceUpdate();
     }
   }
 
   componentWillUnmount(): void {
     const onReadyEventId = this.$instance.router.onReady;
     eventCenter.off(onReadyEventId, this.onRady);
-    // const onShowEventId = this.$instance.router.onShow;
-    // eventCenter.off(onShowEventId, this.onShow);
   }
 
   onRady = () => {
     let height = 0;
     Taro.getSystemInfo({
       success: (info) => {
-        // console.log('info === ', info);
         height = info.windowHeight;
-        // onReady 触发后才能获取小程序渲染层的节点
         Taro.createSelectorQuery().select('#drop-box')
           .boundingClientRect()
           .exec(res => {
@@ -132,16 +120,6 @@ class QueryDrop extends Component<IProps, IState>{
       }
     });
   };
-
-  // onShow = () => {
-    // console.log('onShow  ===', JSON.stringify(this.props.initConfig), JSON.stringify(this.state.config));
-    // const { initConfig } = this.props;
-    // Taro.nextTick(() => {
-    //  this.setState({
-    //    config: [...initConfig]
-    //  })
-    // })
-  // };
 
   // 点击切换筛选条件Tab
   handleClick = (info) => {
@@ -196,7 +174,6 @@ class QueryDrop extends Component<IProps, IState>{
       }
     });
     let newParams = {...params, [currentTab.field] : info.value.join()};
-    // console.log('line newParams === ', newParams, JSON.stringify(newParams), info, JSON.stringify(info));
     this.handleRequestParmas(newParams);
     this.setState({
       params: newParams,
@@ -243,7 +220,6 @@ class QueryDrop extends Component<IProps, IState>{
 
   render(){
     const { config, currentTab, isMask, maskHeight } = this.state;
-    // console.log('drop render === ', config, JSON.stringify(config) );
     return (
       <View className='drop' >
         <View className='drop-box' id='drop-box'>
