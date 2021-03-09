@@ -125,9 +125,17 @@ export default class LineChoose extends Component <IProps, IState>{
   // 重置
   onReset = () => {
     const { conditions } = this.props;
+    let newChildrenName = [];
+    conditions[0].childrenName.forEach(item => {
+      newChildrenName.push({...item, isSelected: item.id === 1})
+    });
+    let newConditions = [];
+    conditions.forEach(item => {
+      newConditions.push({...item, isSelected: item.id === 1})
+    });
     this.setState({
-      conditions,
-      childrenName: conditions[0].childrenName
+      conditions: JSON.parse(JSON.stringify(newConditions)),
+      childrenName: JSON.parse(JSON.stringify(newChildrenName))
     });
   };
 
