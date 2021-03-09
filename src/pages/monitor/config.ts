@@ -97,7 +97,7 @@ const getRuleName = (rule) => {
  * @param rule
  */
 const filterArray = (rule) => {
-  let ruleArray: string[] = getGlobalData('ruleArray');
+  let ruleArray: string[] = getGlobalData('ruleArray') || [];
   let resultArray: string[] = [];
   if (ruleArray && ruleArray.length > 0) {
     rule.forEach(item => {

@@ -123,20 +123,24 @@ class QueryDrop extends Component<IProps, IState>{
 
   // 点击切换筛选条件Tab
   handleClick = (info) => {
-    const { config } = this.state;
-    let newConfig: configType[] = [];
-     config.forEach(item => {
-      if(item.id === info.id){
-        newConfig.push({...item, isSelected: true })
-      }
-      else {
-        newConfig.push({...item})
-      }
-    });
     this.setState({
-      currentTab: info,
-      isMask: true,
-      config: newConfig
+      isMask: false,
+    }, () => {
+      const { config } = this.state;
+      let newConfig: configType[] = [];
+      config.forEach(item => {
+        if(item.id === info.id){
+          newConfig.push({...item, isSelected: true })
+        }
+        else {
+          newConfig.push({...item})
+        }
+      });
+      this.setState({
+        currentTab: info,
+        isMask: true,
+        config: newConfig
+      });
     });
   };
 
