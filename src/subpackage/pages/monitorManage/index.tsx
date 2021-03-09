@@ -73,13 +73,12 @@ export default class MonitorManage extends Component<IProps, isState> {
     this.setState({
       current: value,
       searchValue: ''
-    }, () => {
-      if (value) {
-        this.handleObligorList(1, '', 0)
-      } else {
-        this.handleBusinessList(1, '', 0)
-      }
     })
+    if (value) {
+      this.handleObligorList(1, '', 0)
+    } else {
+      this.handleBusinessList(1, '', 0)
+    }
   }
 
   handleChange = (e) => {
@@ -91,9 +90,9 @@ export default class MonitorManage extends Component<IProps, isState> {
         console.log('no')
       } else {
         console.log('yes')
-        this.setState({
-          dataSource: [],
-        })
+        // this.setState({
+        //   dataSource: [],
+        // })
         if (current) {
           this.handleObligorList(1, e.detail.value, 0)
         } else {
@@ -122,14 +121,12 @@ export default class MonitorManage extends Component<IProps, isState> {
     const {current} = this.state
     this.setState({
       searchValue: '',
-      dataSource: []
-    }, () => {
-      if (current) {
-        this.handleObligorList(1, '', 0)
-      } else {
-        this.handleBusinessList(1, '', 0)
-      }
     })
+    if (current) {
+      this.handleObligorList(1, '', 0)
+    } else {
+      this.handleBusinessList(1, '', 0)
+    }
   }
 
   handleObligorList = (pageTemp, searchValue, isScroll) => {

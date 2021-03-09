@@ -11,12 +11,14 @@ type IProps = {
   color?: string,
   url?:string,
   isTab?:boolean,
+  isAuthCode?:boolean
 }
 
-const NavigationBar: FC<IProps> = ({border, title, type = 'white', color = 'black',url,isTab}) => {
+const NavigationBar: FC<IProps> = ({border, title, type = 'white', color = 'black',url,isTab,isAuthCode}) => {
   const statusBarHeight = getGlobalData('statusBarHeight') || 20;
   const style = {
     paddingTop : `${statusBarHeight}px`,
+    position:isAuthCode ? 'absolute' : 'relative'
   };
   const backStates = Taro.getCurrentPages().length > 1;
 

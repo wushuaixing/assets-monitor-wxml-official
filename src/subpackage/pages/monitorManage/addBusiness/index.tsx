@@ -568,8 +568,9 @@ export default class BusinessDetail extends Component<IProps, isState> {
   }
 
   render() {
-    const {isBaseOpened, baseObj, relationList, showLoading, scrollHeight, navBarHeight,isOpened, isRoleOpened, isDeleteOpendModal,dataSource} = this.state;
-    console.log('this.state=====', baseObj)
+    const {isBaseOpened, baseObj, relationList, showLoading, scrollHeight, navBarHeight,isOpened, isRoleOpened, isDeleteOpendModal,dataSource,platform} = this.state;
+    console.log('this.state=====', platform)
+    const {router: {params: {id}}} = getCurrentInstance();
     const businessBaseInfoConfig = [
       {
         id: '1',
@@ -687,7 +688,7 @@ export default class BusinessDetail extends Component<IProps, isState> {
     }
     return (
       <View className='yc-addBusiness'>
-        <NavigationBar title='添加业务'/>
+        <NavigationBar title={id ? '编辑业务' : '添加业务'}/>
         <ScrollView scrollY style={{height: scrollHeight - navBarHeight}}>
           <View className='yc-addBusiness-baseInfoText'>基础信息</View>
           <View className='yc-addBusiness-baseInfo'>
@@ -753,7 +754,7 @@ export default class BusinessDetail extends Component<IProps, isState> {
                                 <View className='yc-addBusiness-relationTextContent'>
                                   <View
                                     className='yc-addBusiness-baseInfoText yc-addBusiness-relationBaseInfoText'>关联债务人{relIndex + 1}</View>
-                                  <View className='yc-addBusiness-deleteText' onClick={() => this.relDelete(relIndex)}>刪除</View>
+                                  <View className='yc-addBusiness-deleteText' onClick={() => this.relDelete(relIndex)}>删除</View>
                                 </View>
 
                                 <View className='yc-addBusiness-baseInfo'>
@@ -889,7 +890,7 @@ export default class BusinessDetail extends Component<IProps, isState> {
 
 
         <View className='yc-addBusiness-addBtn' id='addBusBtn'>
-          <AtButton type='primary' onClick={throttle(this.onSubmit, 5000)}>确认添加</AtButton>
+          <AtButton type='primary' onClick={throttle(this.onSubmit, 5000)}>确认</AtButton>
         </View>
       </View>
     )
