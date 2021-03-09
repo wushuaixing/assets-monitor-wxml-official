@@ -7,7 +7,7 @@ import busEmptyImg from '../../../assets/img/page/blank_nodate.png'
 import busSearchEmptyImg from '../../../assets/img/components/blank_noresult.png'
 import {Message} from '../../../utils/tools/common'
 import ListManage from './listManage';
-import Taro, {getCurrentInstance} from '@tarojs/taro';
+import Taro, {eventCenter, getCurrentInstance} from '@tarojs/taro';
 import SearchInput from './SearchInput';
 import DeleteModal from "./deleteModal";
 import NavigationBar from '../../../../src/components/navigation-bar';
@@ -20,7 +20,8 @@ type isState = {
   total: number,
   hasNext: boolean,
   loading: boolean,
-  listLoading: boolean
+  listLoading: boolean,
+  scrollHeight: number
 }
 
 type IProps = {
@@ -30,6 +31,7 @@ type IProps = {
 };
 @connect(({monitorManage}) => ({monitorManage}))
 export default class MonitorManage extends Component<IProps, isState> {
+  $instance = getCurrentInstance();
 
   constructor(props) {
     super(props);
@@ -41,7 +43,8 @@ export default class MonitorManage extends Component<IProps, isState> {
       total: 0,
       hasNext: false,
       loading: false,
-      listLoading: true
+      listLoading: true,
+      scrollHeight: 0
     };
   }
 
@@ -54,6 +57,31 @@ export default class MonitorManage extends Component<IProps, isState> {
     } else {
       this.handleObligorList(curPage, '', 0)
     }
+      const onReadyEventId = this.$instance.router.onReady;
+      eventCenter.once(onReadyEventId, () => {
+        let height = 0;
+        let navBarHeight = 0;
+        Taro.getSystemInfo({
+          success: (info) => {
+            console.log('info === ', info);
+            height = info.windowHeight;
+            Taro.createSelectorQuery().select('#navBar')
+              .boundingClientRect()
+              .exec(res => {
+                console.log('navBar === ', res, height);
+                navBarHeight = res[0].height
+              })
+            Taro.createSelectorQuery().select('#monitorManageHeader')
+              .boundingClientRect()
+              .exec(res => {
+                console.log('navBar === ', res, height);
+                this.setState({
+                  scrollHeight:height - navBarHeight - res[0].height - info.statusBarHeight - 70
+                })
+              })
+          }
+        });
+      });
   }
 
   componentDidMount() {
@@ -220,14 +248,15 @@ export default class MonitorManage extends Component<IProps, isState> {
       {title: '业务', id: 1},
       {title: '债务人', id: 2},
     ];
-    const {current, searchValue, total, dataSource, loading, listLoading} = this.state;
+    const {current, searchValue, total, dataSource, loading, listLoading, scrollHeight} = this.state;
+    console.log('scrollHeight====', scrollHeight)
     const totalNumerText = current ? '个债务人' : '笔监控业务';
     const emptyText = current ? '暂无监控的债务人' : '您还未添加监控业务';
     const placeholderText = current ? '请输入债务人名称' : '请输入业务编号或业务中的债务人姓名';
     return (
       <View className='yc-monitorManage'>
         <NavigationBar title='监控管理' url='/pages/index/index' isTab/>
-        <View className='yc-monitorManage-header'>
+        <View className='yc-monitorManage-header' id='monitorManageHeader'>
           <View className='yc-monitorManage-top'
                 style={{height: dataSource.length > 0 || searchValue !== "" ? '181rpx' : '89rpx'}}>
             <View className='yc-monitorManage-top-tab'>
@@ -241,7 +270,7 @@ export default class MonitorManage extends Component<IProps, isState> {
                 dataSource.length > 0 || searchValue !== "" ?
                   // <SearchInput searchValue={searchValue} handleChange={this.handleChange}
                   //              onRemoveClick={this.onRemoveClick} current={current}/>
-                  <View className='yc-monitorManage-top-search'>
+                  <View className='yc-monitorManage-top-search' id='searchHeight'>
                     <Text className="iconfont icon-icon-monitorManage-search yc-monitorManage-top-search-icon"/>
                     <View className='yc-monitorManage-top-search-input'>
                       <Input
@@ -283,13 +312,18 @@ export default class MonitorManage extends Component<IProps, isState> {
 
         {
           dataSource.length > 0 && !listLoading ?
-            <ListManage data={dataSource} onScrollToLower={this.handleScrollDown} current={current}
-                        searchValue={searchValue} handleBusinessList={() => {
-              this.handleBusinessList(1, searchValue, 0)
-            }}
-                        handleObligorList={() => {
-                          this.handleObligorList(1, searchValue, 0)
-                        }}
+            <ListManage
+              data={dataSource}
+              onScrollToLower={this.handleScrollDown}
+              current={current}
+              searchValue={searchValue}
+              handleBusinessList={() => {
+                this.handleBusinessList(1, searchValue, 0)
+              }}
+              handleObligorList={() => {
+                this.handleObligorList(1, searchValue, 0)
+              }}
+              scrollHeight={scrollHeight}
             />
             :
             <View>

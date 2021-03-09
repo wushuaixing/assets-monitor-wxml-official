@@ -117,8 +117,10 @@ export default class BusinessListItem extends Component<any, isState> {
                             className='yc-businessListItem-content-middleRight-middle-obligorDetail-obligorName'>借款人：</View>
                           <View className='yc-businessListItem-content-middleRight-middle-obligorDetail-obligorValue'>
                             {i.obligorName ? <RichText nodes={i.obligorName.toString().replace(
-                              reg,
-                              `<em style="color:#FF3B30;font-style: normal;">${searchValue}</em>`
+                              // reg,
+                              // `<em style="color:#FF3B30;font-style: normal;">${searchValue}</em>`
+                              /<em/gi,
+                              `<em style="color: #FF3B30; font-style: normal"`
                             )}
                             /> : '--'}
                           </View>
@@ -211,8 +213,10 @@ export default class BusinessListItem extends Component<any, isState> {
                                   return <View
                                     className='yc-businessListItem-content-middleRight-guarantor-detail-content-labelText'>
                                     {res ? <RichText nodes={res.toString().replace(
-                                      reg,
-                                      `<em style="color:#FF3B30;font-style: normal;">${searchValue}</em>`
+                                      // reg,
+                                      // `<em style="color:#FF3B30;font-style: normal;">${searchValue}</em>`
+                                      /<em/gi,
+                                      `<em style="color: #FF3B30; font-style: normal"`
                                     )}
                                     /> : '-'}
                                   </View>
