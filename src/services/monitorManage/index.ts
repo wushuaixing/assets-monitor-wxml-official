@@ -31,3 +31,10 @@ export async function getBusinessSaveUrl(params) {
 export async function getBusinessEditUrl(params) {
   return request.post(`/yc/wechat/business/edit/${params.id}`,  params);
 }
+export async function getBusOpenPushUrl(params) {
+  return request.post('/yc/wechat/business/openPush',  params);
+}
+
+export async function getBusClosePushUrl(params) {
+  return request.post('/yc/wechat/business/closePush',  params);
+}

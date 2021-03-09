@@ -100,6 +100,8 @@ export default class DefaultPage extends Component<IProps,isState>{
 
   componentDidMount() {
     Taro.getSystemInfo().then(res => {
+      console.log('res',res)
+      setGlobalData('screenHeight',res.screenHeight)
       setGlobalData('statusBarHeight',res.statusBarHeight);
       setGlobalData('statusRailHome',res.statusBarHeight > 20 && /iOS/.test(res.system));
     });

@@ -10,6 +10,7 @@ interface globalType {
   serviceWeChat?: string
   starId: number
   tabId?: number
+  screenHeight?: number
 }
 
 const globalData: globalType = {};

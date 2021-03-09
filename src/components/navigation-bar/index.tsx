@@ -33,7 +33,7 @@ const NavigationBar: FC<IProps> = ({border, title, type = 'white', color = 'blac
   };
 
   return(
-    <View className={`navigation-wrapper${border ? ' navigation-wrapper-border' : ''} navigation-${type}`} style={style}>
+    <View className={`navigation-wrapper${border ? ' navigation-wrapper-border' : ''} navigation-${type}`} style={style} id='navBar'>
       {
         backStates ? (
           <View className='navigator-chevron' onClick={() => goback()}>

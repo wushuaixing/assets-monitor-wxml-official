@@ -1,19 +1,22 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux';
-import {Button, View, Input, Form, Text} from '@tarojs/components';
+import {Button, View, Input, Form, Text, ScrollView} from '@tarojs/components';
 import {AtActionSheet, AtActionSheetItem, AtButton} from 'taro-ui';
 import RelationBusiness from './relationBusiness';
 import './index.scss'
 import {Message, throttle} from "../../../../utils/tools/common";
-import Taro, {getCurrentInstance} from "@tarojs/taro";
+import Taro, {eventCenter, getCurrentInstance} from "@tarojs/taro";
 import NavigationBar from "../../../../components/navigation-bar";
+import {getGlobalData} from "../../../../utils/const/global";
 
 type isState = {
   isBaseOpened: boolean,
   baseObj: object,
   relationList: any,
   showLoading: boolean,
-  isClickActionSheet: boolean
+  isClickActionSheet: boolean,
+  scrollHeight: number,
+  navBarHeight: number,
 }
 
 type IProps = {
@@ -23,6 +26,7 @@ type IProps = {
 };
 @connect(({monitorManage}) => ({monitorManage}))
 export default class BusinessDetail extends Component<IProps, isState> {
+  $instance = getCurrentInstance();
 
   constructor(props) {
     super(props);
@@ -47,7 +51,9 @@ export default class BusinessDetail extends Component<IProps, isState> {
       },
       relationList: [],
       showLoading: false,
-      isClickActionSheet: false
+      isClickActionSheet: false,
+      scrollHeight: 0,
+      navBarHeight: 0
     };
     this.obligorList = [];
   }
@@ -75,6 +81,35 @@ export default class BusinessDetail extends Component<IProps, isState> {
         showLoading: true
       })
     }
+    const onReadyEventId = this.$instance.router.onReady;
+    eventCenter.once(onReadyEventId, () => {
+      let height = 0;
+      let statusBarHeight = 0;
+      Taro.getSystemInfo({
+        success: (info) => {
+          console.log('info === ', info);
+          height = info.windowHeight;
+          statusBarHeight = info.statusBarHeight;
+          Taro.createSelectorQuery().select('#navBar')
+            .boundingClientRect()
+            .exec(res => {
+              console.log('res === ', res, height);
+              this.setState({
+                navBarHeight: res[0].height
+              })
+            })
+          // onReady 触发后才能获取小程序渲染层的节点
+          Taro.createSelectorQuery().select('#addBusBtn')
+            .boundingClientRect()
+            .exec(res => {
+              console.log('res === ', res, height);
+              this.setState({
+                scrollHeight: res[0].top
+              })
+            })
+        }
+      });
+    });
   }
 
   componentDidMount() {
@@ -334,7 +369,7 @@ export default class BusinessDetail extends Component<IProps, isState> {
   }
 
   render() {
-    const {isBaseOpened, baseObj, relationList, showLoading} = this.state;
+    const {isBaseOpened, baseObj, relationList, showLoading, scrollHeight, navBarHeight} = this.state;
     console.log('this.state=====', baseObj)
     const handleBorrowType = {
       0: '个人',
@@ -416,22 +451,24 @@ export default class BusinessDetail extends Component<IProps, isState> {
     //     "roleText": "担保人"
     //   }
     // ]
+    console.log(421, scrollHeight, navBarHeight)
     return (
       <View className='yc-addBusiness'>
         <NavigationBar title='添加业务'/>
-        <View className='yc-addBusiness-baseInfoText'>基础信息</View>
-        <View className='yc-addBusiness-baseInfo'>
-          <Form
-          >
-            {
-              businessBaseInfoConfig.map((i, index) => {
-                return (
-                  <View className='yc-addBusiness-baseInfo-input'>
-                    <View className='yc-addBusiness-baseInfo-input-content'>
-                      <View className='yc-addBusiness-baseInfo-input-content-inputText'
-                            style={{letterSpacing: i.id === '1' ? '11rpx' : '0'}}>{i.title}</View>
-                      {
-                        i.type === 'input' ?
+        <ScrollView scrollY style={{height: scrollHeight - navBarHeight}}>
+          <View className='yc-addBusiness-baseInfoText'>基础信息</View>
+          <View className='yc-addBusiness-baseInfo'>
+            <Form
+            >
+              {
+                businessBaseInfoConfig.map((i, index) => {
+                  return (
+                    <View className='yc-addBusiness-baseInfo-input'>
+                      <View className='yc-addBusiness-baseInfo-input-content'>
+                        <View className='yc-addBusiness-baseInfo-input-content-inputText'
+                              style={{letterSpacing: i.id === '1' ? '11rpx' : '0'}}>{i.title}</View>
+                        {
+                          i.type === 'input' ?
                             <Input
                               className='yc-addBusiness-baseInfo-input-content-inputTemp'
                               name={i.field}
@@ -445,48 +482,53 @@ export default class BusinessDetail extends Component<IProps, isState> {
                               }}
                               value={baseObj[i.field]}
                               maxlength={i.field === 'caseNumber' ? 32 : i.field === 'obligorName' ? 40 : i.field === 'obligorNumber' ? 18 : -1}
-                            />:
-                          <View className='yc-addBusiness-baseInfo-input-content-selectTemp'
-                                onClick={this.onOpenActionSheetClick}>
-                            <View
-                              className='yc-addBusiness-baseInfo-input-content-selectTemp-selectText' style={{color:handleBorrowType[baseObj.borrowType] ? '#666666' : '#CCCCCC'}}>{handleBorrowType[baseObj.borrowType] || i.placeHolder}</View>
-                            <View className='yc-addBusiness-baseInfo-input-content-selectTemp-arrow'>
-                              <Text
-                                className="iconfont icon-right-arrow yc-addBusiness-baseInfo-input-content-selectTemp-arrow-text"/>
+                            /> :
+                            <View className='yc-addBusiness-baseInfo-input-content-selectTemp'
+                                  onClick={this.onOpenActionSheetClick}>
+                              <View
+                                className='yc-addBusiness-baseInfo-input-content-selectTemp-selectText'
+                                style={{color: handleBorrowType[baseObj.borrowType] ? '#666666' : '#CCCCCC'}}>{handleBorrowType[baseObj.borrowType] || i.placeHolder}</View>
+                              <View className='yc-addBusiness-baseInfo-input-content-selectTemp-arrow'>
+                                <Text
+                                  className="iconfont icon-right-arrow yc-addBusiness-baseInfo-input-content-selectTemp-arrow-text"/>
+                              </View>
                             </View>
-                          </View>
+                        }
+                      </View>
+                      {
+                        index !== businessBaseInfoConfig.length - 1 &&
+                        <View className='yc-addBusiness-baseInfo-input-content-line'/>
                       }
                     </View>
-                    {
-                      index !== businessBaseInfoConfig.length - 1 &&
-                      <View className='yc-addBusiness-baseInfo-input-content-line'/>
-                    }
-                  </View>
 
-                )
-              })
-            }
-            {
-              showLoading && <RelationBusiness data={relationList} value={(value) => this.getValue(value)}/>
-            }
+                  )
+                })
+              }
+              {
+                showLoading && <RelationBusiness data={relationList} value={(value) => this.getValue(value)}/>
+              }
 
-            <View className='yc-addBusiness-addBtn'>
-              <AtButton type='primary' onClick={throttle(this.onSubmit, 5000)}>确认添加</AtButton>
-            </View>
+              {/*<View className='yc-addBusiness-addBtn'>*/}
+              {/*  <AtButton type='primary' onClick={throttle(this.onSubmit, 5000)}>确认添加</AtButton>*/}
+              {/*</View>*/}
 
-          </Form>
-          <AtActionSheet isOpened={isBaseOpened} cancelText='取消' onCancel={this.onCancel}>
-            <AtActionSheetItem onClick={() => {
-              this.onSheetItemClick('borrowType', 0)
-            }}>
-              个人
-            </AtActionSheetItem>
-            <AtActionSheetItem onClick={() => {
-              this.onSheetItemClick('borrowType', 1)
-            }}>
-              企业
-            </AtActionSheetItem>
-          </AtActionSheet>
+            </Form>
+            <AtActionSheet isOpened={isBaseOpened} cancelText='取消' onCancel={this.onCancel}>
+              <AtActionSheetItem onClick={() => {
+                this.onSheetItemClick('borrowType', 0)
+              }}>
+                个人
+              </AtActionSheetItem>
+              <AtActionSheetItem onClick={() => {
+                this.onSheetItemClick('borrowType', 1)
+              }}>
+                企业
+              </AtActionSheetItem>
+            </AtActionSheet>
+          </View>
+        </ScrollView>
+        <View className='yc-addBusiness-addBtn' id='addBusBtn'>
+          <AtButton type='primary' onClick={throttle(this.onSubmit, 5000)}>确认添加</AtButton>
         </View>
       </View>
     )
