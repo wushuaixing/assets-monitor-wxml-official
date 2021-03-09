@@ -232,8 +232,8 @@ class QueryDrop extends Component<IProps, IState>{
         <View className='drop-box' id='drop-box'>
           {
             config.length > 0 && config.map((item, index) => {
-              const { isSelected, value, id} = item;
-              const isActive =  value || ( currentTab.id === id && isMask) || isSelected;
+              const { id } = item;
+              const isActive = currentTab.id === id && isMask ;
               return (
                 <View onClick={() => this.handleClick(item)} className='drop-box-tab'>
                   <View className='drop-box-tab-text'>
