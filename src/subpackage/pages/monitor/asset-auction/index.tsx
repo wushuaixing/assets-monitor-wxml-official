@@ -82,7 +82,7 @@ export default class AssetsAuction extends Component <IProps, IState>{
 
   render () {
     const { detail } = this.state;
-    const { historyAuction = [] } = detail;
+    const historyAuction = detail.historyAuction || [];
     // const newHistoryAuction = [...example];
     return (
       <View className='auction'>

@@ -3,13 +3,14 @@
   height: 80px;
   line-height: 80px;
   border-radius: 4px;
+  margin: 0;
 }
 
 @mixin boxStyle{
   width: 312px;
   height: 74px;
   line-height: 70px;
-  border: 1px solid #D5D5D5;
+  border: 2px solid #D5D5D5;
   font-size: 28px;
   border-radius: 4px;
   position: relative;
@@ -18,13 +19,34 @@
   align-content: center;
   justify-content: space-between;
   overflow: visible;
+  &-input{
+    //padding: 14px 0;
+    font-size: 28px;
+    width: 100%;
+    color: #D5D5D5;
+    text-align: center;
+    &-text{
+      color: $common-text;
+      font-size: 28px;
+    }
+    &-placeholder{
+      color: #CCCCCC;
+
+    }
+  }
+  &-icon{
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    padding: 10px;
+  }
 }
 
 @mixin inputStyle{
   display: inline-block;
-  padding: 14px 0;
+  //padding: 14px 0;
   font-size: 28px;
-  width: 80%;
+  width: 100%;
   color: #D5D5D5;
   text-align: center;
 }
@@ -57,9 +79,10 @@
     flex-direction: row;
     border-top: 1px solid $border-color;
     padding: 24px 32px;
+    justify-content: space-between;
     &-reset{
       @include btnStyle;
-      width: 246px;
+      width: 264px;
       border: 2px solid #D5D5D5;
       background-color: white;
       color: $common-text;
@@ -69,6 +92,7 @@
       width: 390px;
       background-color: $primary-color;
       border-color: $primary-color;
+      color: white;
     }
   }
 
@@ -79,7 +103,7 @@
     &-title{
       color: $label-color;
       font-size: 30px;
-      font-weight: 400;
+      font-weight: 500;
     }
     &-box{
       display: flex;
@@ -95,18 +119,18 @@
       }
       &-left{
         @include boxStyle;
-        &-input{
-          @include inputStyle;
-          &-text{
-            @include textStyle
-          }
-          &-placeholder{
-            @include placeholderStyle
-          }
-        }
-        &-icon{
-          @include iconStyle;
-        }
+        //&-input{
+        //  @include inputStyle;
+        //  &-text{
+        //    @include textStyle
+        //  }
+        //  &-placeholder{
+        //    @include placeholderStyle
+        //  }
+        //}
+        //&-icon{
+        //  @include iconStyle;
+        //}
       }
       &-right{
         @include boxStyle;
