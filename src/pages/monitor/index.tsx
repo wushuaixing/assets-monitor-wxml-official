@@ -96,7 +96,7 @@ const initialAssetsConfig = [
         isSelected: false,
         isRule: true,
         childrenName: [
-          {name: '全部', value: ['zcwjzcpm', 'zcwjdwq'], id: 1, isSelected: true, isRule: true },
+          {name: '诉讼资产-全部', value: ['zcwjzcpm', 'zcwjdwq'], id: 1, isSelected: true, isRule: true },
           {name: '资产拍卖', value: ['zcwjzcpm'], id: 2, isSelected: false, isRule: 'zcwjzcpm'},
           {name: '代位权', value: ['zcwjdwq'], id: 3, isSelected: false, isRule: 'zcwjdwq'},
         ]
@@ -155,7 +155,7 @@ const initialRiskConfig = [
         isSelected: false,
         isRule: true,
         childrenName: [
-          {name: '全部', value: ['fxjkqypccz', 'fxjkssjk'], id: 1, isSelected: true, isRule: true },
+          {name: '司法风险-全部', value: ['fxjkqypccz', 'fxjkssjk'], id: 1, isSelected: true, isRule: true },
           {name: '破产重整', value: ['fxjkqypccz'], id: 2, isSelected: false, isRule: 'fxjkqypccz'},
           {name: '涉诉信息', value: ['fxjkssjk'], id: 3, isSelected: false, isRule: 'fxjkssjk'},
         ]
@@ -205,7 +205,7 @@ export default class Monitor extends Component <IProps, IState>{
           isSelected: false,
           field: 'isRead',
           type: 'singelSelected',
-          initValue: '',
+          value: '',
           conditions: [
             {name: '全部', id: 1, value: undefined, isSelected: true},
             {name: '已读', id: 2, value: true, isSelected: false},
@@ -218,7 +218,7 @@ export default class Monitor extends Component <IProps, IState>{
           isSelected: false,
           field: 'assetAndRiskType',
           type: 'lineChoose',
-          initValue: '',
+          value: '',
           conditions: [
             {
               id: 1,
@@ -252,7 +252,7 @@ export default class Monitor extends Component <IProps, IState>{
               name: '推送日期',
               type: 'time',
               field: ['startTime', 'endTime'],
-              value: [],
+              value: '',
             }
           ],
         },

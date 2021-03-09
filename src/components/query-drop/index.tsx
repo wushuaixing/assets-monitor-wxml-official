@@ -79,9 +79,9 @@ class QueryDrop extends Component<IProps, IState>{
   }
 
   shouldComponentUpdate(nextProps: Readonly<IProps>, nextState: Readonly<IState>): boolean {
-    const { isMask } = this.state;
+    const { isMask, currentTab } = this.state;
     const { type, initConfig } = this.props;
-    return type !== nextProps.type || isMask !== nextState.isMask || JSON.stringify(initConfig) !== JSON.stringify(nextProps.initConfig);
+    return type !== nextProps.type || isMask !== nextState.isMask || JSON.stringify(initConfig) !== JSON.stringify(nextProps.initConfig) || JSON.stringify(currentTab) !== JSON.stringify(nextState.currentTab);
   }
 
   componentWillReceiveProps(nextProps: Readonly<IProps> ): void {
@@ -123,25 +123,26 @@ class QueryDrop extends Component<IProps, IState>{
 
   // 点击切换筛选条件Tab
   handleClick = (info) => {
-    this.setState({
-      isMask: false,
-    }, () => {
-      const { config } = this.state;
-      let newConfig: configType[] = [];
-      config.forEach(item => {
-        if(item.id === info.id){
-          newConfig.push({...item, isSelected: true })
-        }
-        else {
-          newConfig.push({...item})
-        }
-      });
+    const { currentTab, isMask } = this.state;
+    if(currentTab.id === info.id){
       this.setState({
-        currentTab: info,
-        isMask: true,
-        config: newConfig
+        currentTab: isMask ? {} : info,
+        isMask: !isMask,
       });
-    });
+    }
+    else {
+      if(isMask){
+        this.setState({
+          currentTab: info,
+        });
+      }
+      else {
+        this.setState({
+          currentTab: info,
+          isMask: true,
+        });
+      }
+    }
   };
 
   // 处理单线的参数
@@ -150,7 +151,7 @@ class QueryDrop extends Component<IProps, IState>{
     let newConfig: configType[] = [];
     config.forEach(item => {
       if(item.id === currentTab.id){
-        newConfig.push({...item, conditions: [...conditions], title: info.name ? info.name : item.title})
+        newConfig.push({...item, conditions: [...conditions], title: info.name ? info.name : item.title, isSelected: true, value: info.value})
       }
       else {
         newConfig.push({...item})
@@ -171,7 +172,7 @@ class QueryDrop extends Component<IProps, IState>{
     let newConfig: configType[] = [];
     config.forEach(item => {
       if(item.id === currentTab.id){
-        newConfig.push({...item, conditions: [...conditions], title: info.name ? info.name : item.title})
+        newConfig.push({...item, conditions: [...conditions], title: info.name, value: info.value})
       }
       else {
         newConfig.push({...item})
@@ -224,18 +225,21 @@ class QueryDrop extends Component<IProps, IState>{
 
   render(){
     const { config, currentTab, isMask, maskHeight } = this.state;
+    // console.log('currentTab === ', JSON.stringify(currentTab));
+    // console.log('render ismask  === ', isMask);
     return (
       <View className='drop' >
         <View className='drop-box' id='drop-box'>
           {
             config.length > 0 && config.map((item, index) => {
-              const { isSelected } = item;
+              const { isSelected, value, id} = item;
+              const isActive =  value || ( currentTab.id === id && isMask) || isSelected;
               return (
                 <View onClick={() => this.handleClick(item)} className='drop-box-tab'>
                   <View className='drop-box-tab-text'>
-                    <Text className={`drop-box-tab-text-${isSelected ? `active` : `normal`}`} >{item.title}</Text>
+                    <Text className={`drop-box-tab-text-${isActive ? `active` : `normal`}`} >{item.title}</Text>
                     {
-                      index === 0 || index === 1 ? <Text className={`iconfont icon-${isSelected ? `up` : `down`}-arrow drop-box-tab-icon-${isSelected ? `active` : `normal`}`} /> : <Text className={`iconfont icon-more drop-box-tab-icon-${isSelected ? `active` : `normal`}`} />
+                      index === 0 || index === 1 ? <Text className={`iconfont icon-${isActive ? `up` : `down`}-arrow drop-box-tab-icon-${isActive ? `active` : `normal`}`} /> : <Text className={`iconfont icon-more drop-box-tab-icon-${isActive ? `active` : `normal`}`} />
                     }
                   </View>
                   {
