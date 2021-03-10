@@ -44,10 +44,6 @@
       font-size: 30px;
     }
   }
-  &-drop{
-    box-shadow: 0 6px 10px -5px #ccc;
-  }
-
   &-scroll{
     background-color: $page-bg-color;
     &-more{
@@ -94,5 +90,9 @@
       width: 76px;
       height: 76px;
     }
+  }
+
+  &-drop{
+    border-bottom: 2px solid $divider-color;
   }
 }
