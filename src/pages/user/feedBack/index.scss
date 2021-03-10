@@ -21,6 +21,23 @@
         color: #333333;
         line-height: 34px;
       }
+
+      &-textarea {
+        margin:20px 0 48px 0;
+        background: #FAFAFA;
+        border-radius: 4px;
+        border: 1px solid #D5D5D5;
+        padding:20px;
+      }
+      &-number{
+        position: relative;
+        bottom:20px;
+        font-size: 32px;
+        color: #CCCCCC;
+        line-height: 32px;
+        display: block;
+        text-align: right;
+      }
     }
 
     &-image {
@@ -105,3 +122,8 @@
   left: 0;
 }
 
+.yc-feedBack .textarea-placeholder {
+  font-size: 32px;
+  color: #CCCCCC;
+  line-height: 48px;
+}
