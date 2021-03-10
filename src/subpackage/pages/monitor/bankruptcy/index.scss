@@ -71,6 +71,13 @@
           max-width: 540px;
           line-height: 42px;
           word-break: break-all;
+          &-url{
+            width: 500px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: inline-block;
+          }
         }
         &-valueStar {
           color: #666666;
@@ -97,10 +104,16 @@
 
         .link{
           color: $primary-color;
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          .bankruptcy-baseInfo-content-info-copyIcon{
+            display: inline-block;
+            line-height: 42px;
+            height: 42px;
+          }
         }
       }
-
     }
   }
-
 }

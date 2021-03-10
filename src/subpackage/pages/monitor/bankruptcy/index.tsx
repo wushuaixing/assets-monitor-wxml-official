@@ -159,7 +159,7 @@ export default class Bankruptcy extends Component <IProps, IState>{
                       <View className='bankruptcy-baseInfo-content-info-justifylabel'>源链接</View>
                       <View className='bankruptcy-baseInfo-content-info-colon'>：</View>
                       <View className='bankruptcy-baseInfo-content-info-value link' onClick={()=>{this.onCopyClick(detail.url)}}>
-                        {detail.url}
+                        <Text className='bankruptcy-baseInfo-content-info-value-url'>{detail.url}</Text>
                         <Text className='iconfont icon-copy bankruptcy-baseInfo-content-info-copyIcon'/>
                       </View>
                       {/*<View className='bankruptcy-baseInfo-content-info-label' style={{marginLeft: 'auto'}}>（来源：诉讼网）</View>*/}
@@ -206,7 +206,7 @@ export default class Bankruptcy extends Component <IProps, IState>{
                       <View className='bankruptcy-baseInfo-content-info-justifylabel'>源链接</View>
                       <View className='bankruptcy-baseInfo-content-info-colon'>：</View>
                       <View className='bankruptcy-baseInfo-content-info-value link' onClick={()=>{this.onCopyClick(detail.url)}}>
-                        {detail.url}
+                        <Text className='bankruptcy-baseInfo-content-info-value-url'>{detail.url}</Text>
                         <Text className='iconfont icon-copy bankruptcy-baseInfo-content-info-copyIcon'/>
                       </View>
                       {/*<View className='bankruptcy-baseInfo-content-info-label' style={{marginLeft: 'auto'}}>（来源：诉讼网）</View>*/}

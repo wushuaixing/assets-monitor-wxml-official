@@ -37,6 +37,7 @@ type IProps = {
   onsetParams: (params?: any) => void
   dropParams: {}
   loading: boolean
+  isPropsMask: boolean
 }
 
 type IState = {
@@ -232,12 +233,13 @@ class QueryDrop extends Component<IProps, IState>{
         <View className='drop-box' id='drop-box'>
           {
             config.length > 0 && config.map((item, index) => {
-              const { id } = item;
-              const isActive = currentTab.id === id && isMask ;
+              const { value, isSelected, id } = item;
+              const isActive = currentTab.id === id && isMask;
+              const isBold = value || isSelected;
               return (
                 <View onClick={() => this.handleClick(item)} className='drop-box-tab'>
                   <View className='drop-box-tab-text'>
-                    <Text className={`drop-box-tab-text-${isActive ? `active` : `normal`}`} >{item.title}</Text>
+                    <Text className={`drop-box-tab-text-${isActive ? `active` : `normal`} ${isBold ? 'bold' : ''}`} >{item.title}</Text>
                     {
                       index === 0 || index === 1 ? <Text className={`iconfont icon-${isActive ? `up` : `down`}-arrow drop-box-tab-icon-${isActive ? `active` : `normal`}`} /> : <Text className={`iconfont icon-more drop-box-tab-icon-${isActive ? `active` : `normal`}`} />
                     }
