@@ -153,10 +153,10 @@ export default class PhoneLogin extends Component<IProps, isState> {
                   textAlign: 'center',
                   opacity: '1'
                 }}
-                disabled={!mobile}
+                disabled={mobile.length !== 11}
                 onClick={this.onBtnClick}
               >
-                <Text style={{opacity: !mobile ? '0.45' : '1'}}>获取短信验证码</Text>
+                <Text style={{opacity: mobile.length !== 11 ? '0.45' : '1'}}>获取短信验证码</Text>
               </AtButton>
             </View>
           </View>
