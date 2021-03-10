@@ -91,7 +91,7 @@ const ListItem = (props: IProps) => {
   };
 
   return (
-    <View className='item' onClick={handleMarkRead}>
+    <View className='item' onClick={throttle(handleMarkRead, 2000)}>
       <View className='item-segmentation'/>
       <View className='item-header'>
         <View className={`${detail.isRead ? `item-header-box` : ``}`}>
