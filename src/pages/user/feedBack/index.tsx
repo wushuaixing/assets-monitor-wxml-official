@@ -158,7 +158,8 @@ export default class FeedBack extends Component<IProps, isState> {
             <View>您还可以拨打客服电话133-7256-7936来提出意见和建议。</View>
           </View>
           <View className='yc-feedBack-bottom-btn'>
-            <AtButton type='primary' onClick={this.onSubmit}>提交反馈</AtButton>
+            {/*<AtButton type='primary' onClick={this.onSubmit}>提交反馈</AtButton>*/}
+            <View className='yc-feedBack-bottom-btn-text'>提交反馈</View>
           </View>
         </View>
       </View>
