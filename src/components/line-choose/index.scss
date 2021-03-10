@@ -71,25 +71,31 @@
     }
   }
 
-  &-btn{
-    display: flex;
-    flex-direction: row;
-    border-top: 1px solid $divider-color;
-    padding: 24px 32px;
-    justify-content: space-between;
-    &-reset{
-      @include btnStyle;
-      width: 264px;
-      border: 2px solid #D5D5D5;
-      background-color: white;
-      color: $common-text;
+  &-bottom{
+    &-line{
+      width: 100%;
+      background-color: $divider-color;
+      height: 1px;
     }
-    &-confirm{
-      @include btnStyle;
-      width: 390px;
-      background-color: $primary-color;
-      border-color: $primary-color;
+    &-btn{
+      display: flex;
+      flex-direction: row;
+      border-top: 1px solid $divider-color;
+      padding: 24px 32px;
+      justify-content: space-between;
+      &-reset{
+        @include btnStyle;
+        width: 264px;
+        border: 2px solid #D5D5D5;
+        background-color: white;
+        color: $common-text;
+      }
+      &-confirm{
+        @include btnStyle;
+        width: 390px;
+        background-color: $primary-color;
+        border-color: $primary-color;
+      }
     }
   }
-
 }

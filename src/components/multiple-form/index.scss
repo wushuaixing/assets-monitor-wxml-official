@@ -76,26 +76,32 @@
     background-color: $border-color;
     height: 1px;
   }
-
-  &-btn{
-    display: flex;
-    flex-direction: row;
-    border-top: 1px solid $border-color;
-    padding: 24px 32px;
-    justify-content: space-between;
-    &-reset{
-      @include btnStyle;
-      width: 264px;
-      border: 2px solid #D5D5D5;
-      background-color: white;
-      color: $common-text;
+  &-bottom{
+    &-line{
+      background-color: $divider-color;
+      height: 1px;
+      width: 100%;
     }
-    &-confirm{
-      @include btnStyle;
-      width: 390px;
-      background-color: $primary-color;
-      border-color: $primary-color;
-      color: white;
+    &-btn{
+      display: flex;
+      flex-direction: row;
+      border-top: 1px solid $border-color;
+      padding: 24px 32px;
+      justify-content: space-between;
+      &-reset{
+        @include btnStyle;
+        width: 264px;
+        border: 2px solid #D5D5D5;
+        background-color: white;
+        color: $common-text;
+      }
+      &-confirm{
+        @include btnStyle;
+        width: 390px;
+        background-color: $primary-color;
+        border-color: $primary-color;
+        color: white;
+      }
     }
   }
 
