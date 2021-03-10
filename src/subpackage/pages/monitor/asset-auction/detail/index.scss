@@ -8,6 +8,7 @@
       font-size: 30px;
       line-height: 45px;
       padding-top: 19px;
+      font-weight: 500;
     }
     &-item{
       display: flex;
@@ -81,6 +82,7 @@
       display: flex;
       flex-direction: row;
       justify-content: space-between;
+      position: relative;
       &-text{
         color: $common-text;
         font-size: 32px;
@@ -89,13 +91,14 @@
         display: flex;
         align-items: center;
         margin-left: 36px;
+        padding: 32px 0;
       }
       &-icon{
         color: $light-text-color;
-        padding: 41px 28px 41px 0;
-        &-logo{
-          font-size: 32px;
-        }
+        position: absolute;
+        right: 28px;
+        top: 32px;
+        font-size: 32px;
       }
     }
   }

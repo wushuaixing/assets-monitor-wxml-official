@@ -4,7 +4,7 @@ import {View, Text, Image, ScrollView} from '@tarojs/components';
 import { connect } from 'react-redux';
 import NavigationBar from '../../components/navigation-bar';
 import Tab from "../../components/tab";
-import { setGlobalData} from "../../utils/const/global";
+import {getGlobalData, setGlobalData} from "../../utils/const/global";
 import {handleDealAuthRule, isRule, getArraySum } from "../../utils/tools/common";
 import addBus from '../../assets/img/page/add-bus.png';
 import portrait from '../../assets/img/page/portrait-search.png';
@@ -340,7 +340,7 @@ class Index extends Component <IProps, IState>{
           <NavigationBar  title='源诚资产监控' type='gradient' color='white'/>
         </View>
         {
-          businessCount > 0 && <ScrollView scrollY style={{ height: scrollViewHeight }}>
+          businessCount > 0 && <ScrollView scrollY style={{ height: scrollViewHeight || getGlobalData('screenHeight') }}>
             <View className='home-bg'>
               <View className='home-header'>
                 <View className='home-header-tab' onClick={()=>{this.onAddBusClick('homeAddBus')}}

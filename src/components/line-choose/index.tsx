@@ -67,7 +67,7 @@ export default class LineChoose extends Component <IProps, IState>{
       conditions,
       childrenName: conditions.filter(item => item.isSelected)[0].childrenName,
       leftId: conditions.filter(item => item.isSelected)[0].id,
-      info: conditions.filter(item => item.isSelected)[0].childrenName[0],
+      info: (((conditions.filter(item => item.isSelected) || [])[0].childrenName || []).filter(item => item.isSelected) || [])[0],
     });
   }
 
