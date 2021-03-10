@@ -97,7 +97,7 @@ export default class BusinessDetail extends Component<IProps, isState> {
             baseObj: detail,
             relationList: buildData,
             showLoading: true,
-            dataSource:buildData
+            dataSource: buildData
           })
         }
       })
@@ -166,7 +166,7 @@ export default class BusinessDetail extends Component<IProps, isState> {
     console.log('type===', type)
     const regNumber = /^[0-9a-zA-Z\uff08\uff09\(\)\*]+$/; // 证件号
     const regName = /^[\u4e00-\u9fa5\uff08\uff090-9a-zA-Z·\(\)]+$/; // 借款人名称
-    const {baseObj,dataSource} = this.state;
+    const {baseObj, dataSource} = this.state;
     const relationList = dataSource;
     const relationObligorName = relationList.filter(i => i.obligorName === "") // 过滤关联债务人为空
     const relationObligorNumber = relationList.filter(i => i.obligorNumber === "" && i.borrowType === 0) // 过滤关联债务人证件号为空
@@ -195,21 +195,21 @@ export default class BusinessDetail extends Component<IProps, isState> {
       }
     }
     if (relationObligorName.length > 0) {
-      relationList.forEach((i, index) => {
-        if (i.obligorName === "") {
-          Message(`请填写关联债务人${index + 1}的债务人名称`);
-          return;
+      for (var i = 0; i < relationList.length; i++) {
+        if (relationList[i].obligorName === "") {
+          Message(`请填写关联债务人${i + 1}的债务人名称`);
+          break;
         }
-      })
+      }
       return;
     }
     if (relationObligorNumber.length > 0) {
-      relationList.forEach((i, index) => {
-        if (i.borrowType === 0 && i.obligorNumber === "") {
-          Message(`请填写关联债务人${index + 1}的证件号`)
-          return;
+      for (var i = 0; i < relationList.length; i++) {
+        if (relationList[i].borrowType === 0 && relationList[i].obligorNumber === "") {
+          Message(`请填写关联债务人${i + 1}的证件号`);
+          break;
         }
-      })
+      }
       return;
     }
     if (relationCheckObligorName.length > 0) {
@@ -245,10 +245,10 @@ export default class BusinessDetail extends Component<IProps, isState> {
     if (id) {
       // 编辑业务
       console.log('编辑')
-      throttle(this.editBusiness(params, type, id, searchValue), 5000)
+      throttle(this.editBusiness(params, type, id, searchValue), 3000)
     } else {
       console.log('添加')
-      throttle(this.addBusiness(params, type, searchValue), 5000)
+      throttle(this.addBusiness(params, type, searchValue), 3000)
     }
   }
 
@@ -535,7 +535,7 @@ export default class BusinessDetail extends Component<IProps, isState> {
     console.log(82, deleteIndex, this.state, dataSource)
   }
 
-  onDeleteCloseModal = () =>{
+  onDeleteCloseModal = () => {
     this.setState({
       isDeleteOpendModal: false
     })
@@ -568,7 +568,19 @@ export default class BusinessDetail extends Component<IProps, isState> {
   }
 
   render() {
-    const {isBaseOpened, baseObj, relationList, showLoading, scrollHeight, navBarHeight,isOpened, isRoleOpened, isDeleteOpendModal,dataSource,platform} = this.state;
+    const {
+      isBaseOpened,
+      baseObj,
+      relationList,
+      showLoading,
+      scrollHeight,
+      navBarHeight,
+      isOpened,
+      isRoleOpened,
+      isDeleteOpendModal,
+      dataSource,
+      platform
+    } = this.state;
     console.log('this.state=====', platform)
     const {router: {params: {id}}} = getCurrentInstance();
     const businessBaseInfoConfig = [
@@ -744,76 +756,79 @@ export default class BusinessDetail extends Component<IProps, isState> {
 
               {
                 showLoading &&
-                  <View>
-                    {
-                      <View>
-                        {
-                          dataSource.map((res, relIndex) => {
-                            return (
-                              <View>
-                                <View className='yc-addBusiness-relationTextContent'>
-                                  <View
-                                    className='yc-addBusiness-baseInfoText yc-addBusiness-relationBaseInfoText'>关联债务人{relIndex + 1}</View>
-                                  <View className='yc-addBusiness-deleteText' onClick={() => this.relDelete(relIndex)}>删除</View>
-                                </View>
+                <View>
+                  {
+                    <View>
+                      {
+                        dataSource.map((res, relIndex) => {
+                          return (
+                            <View>
+                              <View className='yc-addBusiness-relationTextContent'>
+                                <View
+                                  className='yc-addBusiness-baseInfoText yc-addBusiness-relationBaseInfoText'>关联债务人{relIndex + 1}</View>
+                                <View className='yc-addBusiness-deleteText'
+                                      onClick={() => this.relDelete(relIndex)}>删除</View>
+                              </View>
 
-                                <View className='yc-addBusiness-baseInfo'>
-                                  <View className='yc-addBusiness-baseInfo-topLine'/>
-                                  {
-                                    relationBusinessConfig.map((i, indexTemp) => {
-                                      return (
-                                        <View className='yc-addBusiness-baseInfo-input'>
-                                          <View className='yc-addBusiness-baseInfo-input-content'>
-                                            <View className='yc-addBusiness-baseInfo-input-content-inputText'>{i.title}</View>
-                                            {
-                                              i.type === 'input' ?
-                                                <Input
-                                                  className='yc-addBusiness-baseInfo-input-content-inputTemp'
-                                                  name={i.field + relIndex}
-                                                  type='text'
-                                                  placeholder={i.placeHolder}
-                                                  value={res[i.field]}
-                                                  onInput={(e) => this.onRelInput(e, i.field, relIndex)}
-                                                  onBlur={(e) => {
-                                                    this.onRelBlur(e, i.field, relIndex)
-                                                  }}
-                                                  maxlength={i.field === 'obligorName' ? 40 : i.field === 'obligorNumber' ? 18 : -1}
-                                                /> :
-                                                <View className='yc-addBusiness-baseInfo-input-content-selectTemp'
-                                                      onClick={() => {
-                                                        this.onRelOpenActionSheetClick(indexTemp, relIndex)
-                                                      }}>
-                                                  <View
-                                                    className='yc-addBusiness-baseInfo-input-content-selectTemp-selectText'
-                                                    style={{color: indexTemp ? handleBorrowType[res.borrowType] ? '#666666' : '#CCCCCC' : handleRole[res.role] ? '#666666' : '#CCCCCC'}}>{indexTemp ? handleBorrowType[res.borrowType] ? handleBorrowType[res.borrowType] : i.placeHolder : handleRole[res.role] || i.placeHolder}</View>
-                                                  <View className='yc-addBusiness-baseInfo-input-content-selectTemp-arrow'>
-                                                    <Text
-                                                      className="iconfont icon-right-arrow yc-addBusiness-baseInfo-input-content-selectTemp-arrow-text"/>
-                                                  </View>
-                                                </View>
-                                            }
-                                          </View>
+                              <View className='yc-addBusiness-baseInfo'>
+                                <View className='yc-addBusiness-baseInfo-topLine'/>
+                                {
+                                  relationBusinessConfig.map((i, indexTemp) => {
+                                    return (
+                                      <View className='yc-addBusiness-baseInfo-input'>
+                                        <View className='yc-addBusiness-baseInfo-input-content'>
+                                          <View
+                                            className='yc-addBusiness-baseInfo-input-content-inputText'>{i.title}</View>
                                           {
-                                            indexTemp !== relationBusinessConfig.length - 1 &&
-                                            <View className='yc-addBusiness-baseInfo-input-content-line'/>
+                                            i.type === 'input' ?
+                                              <Input
+                                                className='yc-addBusiness-baseInfo-input-content-inputTemp'
+                                                name={i.field + relIndex}
+                                                type='text'
+                                                placeholder={i.placeHolder}
+                                                value={res[i.field]}
+                                                onInput={(e) => this.onRelInput(e, i.field, relIndex)}
+                                                onBlur={(e) => {
+                                                  this.onRelBlur(e, i.field, relIndex)
+                                                }}
+                                                maxlength={i.field === 'obligorName' ? 40 : i.field === 'obligorNumber' ? 18 : -1}
+                                              /> :
+                                              <View className='yc-addBusiness-baseInfo-input-content-selectTemp'
+                                                    onClick={() => {
+                                                      this.onRelOpenActionSheetClick(indexTemp, relIndex)
+                                                    }}>
+                                                <View
+                                                  className='yc-addBusiness-baseInfo-input-content-selectTemp-selectText'
+                                                  style={{color: indexTemp ? handleBorrowType[res.borrowType] ? '#666666' : '#CCCCCC' : handleRole[res.role] ? '#666666' : '#CCCCCC'}}>{indexTemp ? handleBorrowType[res.borrowType] ? handleBorrowType[res.borrowType] : i.placeHolder : handleRole[res.role] || i.placeHolder}</View>
+                                                <View
+                                                  className='yc-addBusiness-baseInfo-input-content-selectTemp-arrow'>
+                                                  <Text
+                                                    className="iconfont icon-right-arrow yc-addBusiness-baseInfo-input-content-selectTemp-arrow-text"/>
+                                                </View>
+                                              </View>
                                           }
                                         </View>
+                                        {
+                                          indexTemp !== relationBusinessConfig.length - 1 &&
+                                          <View className='yc-addBusiness-baseInfo-input-content-line'/>
+                                        }
+                                      </View>
 
-                                      )
-                                    })
-                                  }
-                                  <View className='yc-addBusiness-baseInfo-topLine'/>
-                                </View>
+                                    )
+                                  })
+                                }
+                                <View className='yc-addBusiness-baseInfo-topLine'/>
                               </View>
-                            )
-                          })
-                        }
-                        <View onClick={this.addClick} className='yc-addBusiness-relationText'>添加关联债务人</View>
-                        {/*<View className='yc-addBusiness-empty'/>*/}
+                            </View>
+                          )
+                        })
+                      }
+                      <View onClick={this.addClick} className='yc-addBusiness-relationText'>添加关联债务人</View>
+                      {/*<View className='yc-addBusiness-empty'/>*/}
 
-                      </View>
-                    }
-                  </View>
+                    </View>
+                  }
+                </View>
               }
 
               {/*<View className='yc-addBusiness-addBtn'>*/}
@@ -890,7 +905,7 @@ export default class BusinessDetail extends Component<IProps, isState> {
 
 
         <View className='yc-addBusiness-addBtn' id='addBusBtn'>
-          <AtButton type='primary' onClick={throttle(this.onSubmit, 5000)}>确认</AtButton>
+          <AtButton type='primary' onClick={throttle(this.onSubmit, 3000)}>确认</AtButton>
         </View>
       </View>
     )

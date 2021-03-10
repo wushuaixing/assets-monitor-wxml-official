@@ -57,31 +57,31 @@ export default class MonitorManage extends Component<IProps, isState> {
     } else {
       this.handleObligorList(curPage, '', 0)
     }
-      const onReadyEventId = this.$instance.router.onReady;
-      eventCenter.once(onReadyEventId, () => {
-        let height = 0;
-        let navBarHeight = 0;
-        Taro.getSystemInfo({
-          success: (info) => {
-            console.log('info === ', info);
-            height = info.windowHeight;
-            Taro.createSelectorQuery().select('#navBar')
-              .boundingClientRect()
-              .exec(res => {
-                console.log('navBar === ', res, height);
-                navBarHeight = res[0].height
+    const onReadyEventId = this.$instance.router.onReady;
+    eventCenter.once(onReadyEventId, () => {
+      let height = 0;
+      let navBarHeight = 0;
+      Taro.getSystemInfo({
+        success: (info) => {
+          console.log('info === ', info);
+          height = info.windowHeight;
+          Taro.createSelectorQuery().select('#navBar')
+            .boundingClientRect()
+            .exec(res => {
+              console.log('navBar === ', res, height);
+              navBarHeight = res[0].height
+            })
+          Taro.createSelectorQuery().select('#monitorManageHeader')
+            .boundingClientRect()
+            .exec(res => {
+              console.log('navBar === ', res, height);
+              this.setState({
+                scrollHeight: height - navBarHeight - res[0].height - info.statusBarHeight - 70
               })
-            Taro.createSelectorQuery().select('#monitorManageHeader')
-              .boundingClientRect()
-              .exec(res => {
-                console.log('navBar === ', res, height);
-                this.setState({
-                  scrollHeight:height - navBarHeight - res[0].height - info.statusBarHeight - 70
-                })
-              })
-          }
-        });
+            })
+        }
       });
+    });
   }
 
   componentDidMount() {
@@ -253,9 +253,10 @@ export default class MonitorManage extends Component<IProps, isState> {
     const totalNumerText = current ? '个债务人' : '笔监控业务';
     const emptyText = current ? '暂无监控的债务人' : '您还未添加监控业务';
     const placeholderText = current ? '请输入债务人名称' : '请输入业务编号或业务中的债务人姓名';
+    const {router: {params: {origin}}} = getCurrentInstance();
     return (
       <View className='yc-monitorManage'>
-        <NavigationBar title='监控管理' url='/pages/index/index' isTab/>
+        <NavigationBar title='监控管理' url={origin ? '' : '/pages/index/index'} isTab={!origin}/>
         <View className='yc-monitorManage-header' id='monitorManageHeader'>
           <View className='yc-monitorManage-top'
                 style={{height: dataSource.length > 0 || searchValue !== "" ? '181rpx' : '89rpx'}}>
