@@ -168,11 +168,11 @@ export default class LineChoose extends Component <IProps, IState>{
           </View>
           <View className='conditions-line-choose-right'>
             {
-              childrenName.length > 0 && childrenName.map((item) => {
+              childrenName.length > 0 && childrenName.map((item, index) => {
                 const { isSelected, isRule } = item;
                 return (
                   isRule ? <View
-                    className={`conditions-line-choose-right-${isSelected ? `active` : `normal`}`}
+                    className={`conditions-line-choose-right-${isSelected ? `active` : `normal`} ${index === childrenName.length - 1 ? 'last' : ''}`}
                     onClick={() => this.chooseRight(item)}>
                     {item.name}
                     {
