@@ -93,6 +93,8 @@
   }
 
   &-drop{
-    border-bottom: 2px solid $divider-color;
+    height: 1px;
+    background-color: $divider-color;
+    width: 100%;
   }
 }

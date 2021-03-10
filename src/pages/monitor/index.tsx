@@ -399,8 +399,8 @@ export default class Monitor extends Component <IProps, IState>{
   }
 
   shouldComponentUpdate(nextProps: Readonly<IProps>, nextState: Readonly<IState>): boolean {
-    const { listCount, currentId, page, isScroll, starId, isShowBottom} = this.state;
-    return listCount !== nextState.listCount || currentId !== nextState.currentId || page !== nextState.page || isScroll !== nextState.isScroll || isShowBottom !== nextState.isShowBottom || starId !== nextState.starId;
+    const { listCount, currentId, page, isScroll, starId} = this.state;
+    return listCount !== nextState.listCount || currentId !== nextState.currentId || page !== nextState.page || isScroll !== nextState.isScroll || starId !== nextState.starId;
   }
 
   componentWillReceiveProps(nextProps: Readonly<IProps>, nextContext: any): void {
@@ -412,6 +412,12 @@ export default class Monitor extends Component <IProps, IState>{
         currentId: monitorParams.tabId > 0 ? monitorParams.tabId : currentId,
       })
     }
+  }
+
+  componentDidHide (): void {
+    this.setState({
+      isPropsMask: false
+    })
   }
 
   // 手动更新下拉框的配置
@@ -458,7 +464,16 @@ export default class Monitor extends Component <IProps, IState>{
             hasNext: data.hasNext,
           })
         }
+        else {
+          this.setState({
+            loading: false,
+            assetsList: [],
+            listCount: 0,
+            hasNext: false,
+          })
+        }
       }).catch(err => {
+        console.log('page err === ', err);
         Taro.hideLoading();
         this.setState({
           loading: false,
@@ -485,6 +500,14 @@ export default class Monitor extends Component <IProps, IState>{
             riskList: isNew ? data.list : riskList.concat(data.list),
             listCount: data.total,
             hasNext: data.hasNext,
+          })
+        }
+        else {
+          this.setState({
+            loading: false,
+            riskList: [],
+            listCount: 0,
+            hasNext: false,
           })
         }
       }).catch(err => {
@@ -563,16 +586,6 @@ export default class Monitor extends Component <IProps, IState>{
   // 监听滚动条
   handleScroll = (event) => {
     const { detail } = event;
-    if(detail.scrollTop > 10 ){
-      this.setState({
-        isShowBottom: true
-      })
-    }
-    if(detail.scrollTop <= 10){
-      this.setState({
-        isShowBottom: false
-      })
-    }
     if(detail.scrollTop > 100){
       this.setState({
         isScroll: true
@@ -594,7 +607,7 @@ export default class Monitor extends Component <IProps, IState>{
   };
 
   render () {
-    const { scrollTop, isPropsMask, isScroll, currentId, scrollHeight, listCount, starId, assetsList, riskList, queryAssetsConfig, queryRiskConfig, loading, hasNext, isShowBottom } = this.state;
+    const { scrollTop, isPropsMask, isScroll, currentId, scrollHeight, listCount, starId, assetsList, riskList, queryAssetsConfig, queryRiskConfig, loading, hasNext } = this.state;
     let list = currentId === 1 ? assetsList : riskList;
     return (
       <View className='monitor'>
@@ -606,7 +619,7 @@ export default class Monitor extends Component <IProps, IState>{
           onClick={this.handleChangeTab}
           loading={loading}
         />
-        <View id='drop' className={`${isShowBottom ? 'monitor-drop' : ''}`}>
+        <View id='drop'>
           <QueryDrop
             type={currentId === 1 ? 'assets' : 'risk' }
             initConfig={currentId === 1 ? queryAssetsConfig : queryRiskConfig}
@@ -614,6 +627,9 @@ export default class Monitor extends Component <IProps, IState>{
             loading={loading}
             isPropsMask={isPropsMask}
           />
+          {
+            isScroll && <View className='monitor-drop'/>
+          }
         </View>
         {
           listCount === 0 && !loading && <View className='monitor-blank'>

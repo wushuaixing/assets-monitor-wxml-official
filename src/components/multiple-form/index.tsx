@@ -218,9 +218,12 @@ export default class MultipleForm extends Component <IProps, IState>{
           })
         }
         {/*按钮*/}
-        <View className='conditions-btn'>
-          <AtButton className='conditions-btn-reset' type='secondary' onClick={this.onReset}>重置</AtButton>
-          <AtButton className='conditions-btn-confirm' type='primary' onClick={this.onConfirm}>确定</AtButton>
+        <View className='conditions-bottom'>
+          <View className='conditions-bottom-line'/>
+          <View className='conditions-bottom-btn'>
+            <AtButton className='conditions-bottom-btn-reset' type='secondary' onClick={this.onReset}>重置</AtButton>
+            <AtButton className='conditions-bottom-btn-confirm' type='primary' onClick={this.onConfirm}>确定</AtButton>
+          </View>
         </View>
         {
           isStartTime && <AtFloatLayout isOpened onClose={() => this.onCloseFloat('start')}>

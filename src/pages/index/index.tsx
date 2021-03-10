@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Taro, {eventCenter, getCurrentInstance}from '@tarojs/taro';
+import Taro, { getCurrentInstance}from '@tarojs/taro';
 import {View, Text, Image, ScrollView} from '@tarojs/components';
 import { connect } from 'react-redux';
 import NavigationBar from '../../components/navigation-bar';
@@ -96,23 +96,23 @@ class Index extends Component <IProps, IState>{
     };
   }
 
-  componentWillMount () {
-    const onReadyEventId = this.$instance.router.onReady;
-    eventCenter.once(onReadyEventId, () => {
-      Taro.getSystemInfo({
-        success: res => {
-          // console.log('index res === ', res);
-          setGlobalData('screenHeight', res.screenHeight);
-          setGlobalData('statusBarHeight', res.statusBarHeight);
-          this.setState({
-            scrollViewHeight: res.windowHeight - res.statusBarHeight
-          })
-        }
-      });
-    });
-  }
+  // componentWillMount () {
+  //   const onReadyEventId = this.$instance.router.onReady;
+  //   eventCenter.once(onReadyEventId, () => {
+  //
+  //   });
+  // }
 
   componentDidShow () {
+    Taro.getSystemInfo({
+      success: res => {
+        setGlobalData('screenHeight', res.screenHeight);
+        setGlobalData('statusBarHeight', res.statusBarHeight);
+        this.setState({
+          scrollViewHeight: res.windowHeight - res.statusBarHeight
+        })
+      }
+    });
     const { dispatch } = this.props;
     dispatch({
       type: 'home/getCurrentOrganization',
@@ -333,6 +333,7 @@ class Index extends Component <IProps, IState>{
     const { current, businessCount, assetsArray, riskArray, starLevel, scrollViewHeight, loading} = this.state;
     const assetsSum = getArraySum(assetsArray, 'num') || 0;
     const riskSum = getArraySum(riskArray, 'num') || 0;
+    console.log('scrollViewHeight === ', scrollViewHeight);
     return (
       <View className='home'>
         <View className='home-title'>

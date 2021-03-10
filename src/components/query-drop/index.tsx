@@ -77,6 +77,8 @@ class QueryDrop extends Component<IProps, IState>{
     }
     const onReadyEventId = this.$instance.router.onReady;
     eventCenter.once(onReadyEventId, this.onRady);
+    const onHideEventId = this.$instance.router.onHide;
+    eventCenter.on(onHideEventId, this.onHide)
   }
 
   shouldComponentUpdate(nextProps: Readonly<IProps>, nextState: Readonly<IState>): boolean {
@@ -87,6 +89,9 @@ class QueryDrop extends Component<IProps, IState>{
 
   componentWillReceiveProps(nextProps: Readonly<IProps> ): void {
     const { initConfig, type } = this.props;
+    this.setState({
+      isMask: nextProps.isPropsMask
+    });
     if(type !== nextProps.type){
       this.setState({
         isMask: false,
@@ -103,7 +108,17 @@ class QueryDrop extends Component<IProps, IState>{
   componentWillUnmount(): void {
     const onReadyEventId = this.$instance.router.onReady;
     eventCenter.off(onReadyEventId, this.onRady);
+    const onHideEventId = this.$instance.router.onHide;
+    // 卸载
+    eventCenter.off(onHideEventId, this.onHide)
   }
+
+  onHide = () => {
+    console.log('onHide');
+    this.setState({
+      isMask: false
+    })
+  };
 
   onRady = () => {
     let height = 0;
@@ -227,7 +242,8 @@ class QueryDrop extends Component<IProps, IState>{
   render(){
     const { config, currentTab, isMask, maskHeight } = this.state;
     // console.log('currentTab === ', JSON.stringify(currentTab));
-    // console.log('render ismask  === ', isMask);
+    const { isPropsMask } = this.props;
+    console.log('render isPropsMask === ', isPropsMask);
     return (
       <View className='drop' >
         <View className='drop-box' id='drop-box'>
