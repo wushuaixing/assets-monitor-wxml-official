@@ -458,7 +458,7 @@ export default class Monitor extends Component <IProps, IState>{
         if(code === 200){
           this.setState({
             loading: false,
-            page: page + 1,
+            page: data.page + 1,
             assetsList: isNew ? data.list : assetsList.concat(data.list),
             listCount: data.total,
             hasNext: data.hasNext,
@@ -467,6 +467,7 @@ export default class Monitor extends Component <IProps, IState>{
         else {
           this.setState({
             loading: false,
+            page: 1,
             assetsList: [],
             listCount: 0,
             hasNext: false,
@@ -496,7 +497,7 @@ export default class Monitor extends Component <IProps, IState>{
         if(code === 200){
           this.setState({
             loading: false,
-            page: page + 1,
+            page: data.page + 1,
             riskList: isNew ? data.list : riskList.concat(data.list),
             listCount: data.total,
             hasNext: data.hasNext,
@@ -504,6 +505,7 @@ export default class Monitor extends Component <IProps, IState>{
         }
         else {
           this.setState({
+            page: 1,
             loading: false,
             riskList: [],
             listCount: 0,
