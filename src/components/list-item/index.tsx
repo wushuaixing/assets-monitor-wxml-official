@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import Taro from '@tarojs/taro';
 import {View, Text, Image} from '@tarojs/components';
 import { getPlot, getTitleTag, getRiskTag, getObligorName, getTime, getAuctionStatus, getAuctionRoleType, getJumpType, getCaseType, getRequestParams } from './config';
-import {dateToFormat, floatFormat} from '../../utils/tools/common';
+import {dateToFormat, floatFormat, throttle} from '../../utils/tools/common';
 import { setGlobalData } from "../../utils/const/global";
 import './index.scss';
 

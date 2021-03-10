@@ -132,7 +132,7 @@ export default class AssetsDetail extends Component <IProps, IState>{
           <View className='detail-info-item'>
             <View className='detail-info-item-label'>联系电话</View>
             <View className='detail-info-item-colon'>：</View>
-            <View className='detail-info-item-value link'>
+            <View className={`'detail-info-item-value ${mobile.length > 0 ? 'link' : ''}'`}>
               {
                 mobile.length > 0 ? mobile.map((item, index) => {
                   return <View onClick={() => this.handleMakeCall(item)}>{item}{index < mobile.length - 1 ? '、' : ''}</View>
@@ -160,16 +160,11 @@ export default class AssetsDetail extends Component <IProps, IState>{
           {/*    <Text className='iconfont icon-right-arrow detail-other-item-icon-logo'/>*/}
           {/*  </View>*/}
           {/*</View>*/}
-          <View className='detail-other-line'/>
           <View className='detail-other-item' onClick={this.navigateToConfirmation}>
             <View className='detail-other-item-text'>竞价成功确认书</View>
-            <View className='detail-other-item-icon'>
-              <Text className='iconfont icon-right-arrow detail-other-item-icon-logo'/>
-            </View>
+            <Text className='iconfont icon-right-arrow detail-other-item-icon'/>
           </View>
-          <View className='detail-other-line'/>
         </View>
-
         {/*标的物介绍*/}
         {/*<View className='detail-other'>*/}
         {/*  <View className='detail-other-item'>*/}
