@@ -45,8 +45,8 @@
           font-size: 28px;
           font-weight: 400;
           color: #333333;
-          line-height: 28px;
-
+          line-height: 42px;
+          padding-left:16px;
           &-obligorName {
             vertical-align: top;
             display: inline-block;
@@ -56,6 +56,7 @@
             max-width: 350px;
             display: inline-block;
             word-break: break-all;
+            min-width: 350px;
           }
         }
 
@@ -111,11 +112,12 @@
       }
 
       &-date {
-        margin-top: 32px;
         font-size: 22px;
         font-weight: 400;
         color: #999999;
-        line-height: 22px;
+        line-height: 42px;
+        display: flex;
+        margin-left: 40px;
       }
 
     }

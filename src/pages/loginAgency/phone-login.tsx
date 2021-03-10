@@ -4,6 +4,7 @@ import {AtButton} from 'taro-ui'
 import Taro from '@tarojs/taro';
 import {connect} from 'react-redux';
 import AccountInvalid from './account-invalid/index';
+import {throttle} from "../../utils/tools/common";
 import './index.scss'
 
 type isState = {
@@ -154,7 +155,7 @@ export default class PhoneLogin extends Component<IProps, isState> {
                   opacity: '1'
                 }}
                 disabled={mobile.length !== 11}
-                onClick={this.onBtnClick}
+                onClick={throttle(this.onBtnClick, 3000)}
               >
                 <Text style={{opacity: mobile.length !== 11 ? '0.45' : '1'}}>获取短信验证码</Text>
               </AtButton>

@@ -1,13 +1,11 @@
 .yc-monitorManage {
   background: #F5F5F5;
   height: 100vh;
-  font-family: PingFangSC-Regular, PingFang SC;
 
   &-addBusinessText {
     float: right;
     margin-right: 24px;
-    font-size: 26px;
-    font-weight: 400;
+    font-size: 30px;
     color: #0979E6;
     line-height: 74px;
   }
@@ -24,11 +22,11 @@
           height: 88px;
           line-height: 88px;
           padding: 0;
-          font-weight: 500;
         }
 
         .at-tabs__item--active {
           color: #0979E6;
+          font-weight: 500;
         }
 
         .at-tabs__item-underline {
@@ -50,23 +48,21 @@
 
       &-icon {
         display: inline-block;
-        font-size: 24px;
+        font-size: 36px;
         color: #999999;
         margin-left: 17px;
-        line-height: 24px;
       }
 
       &-input {
         display: inline-block;
         width:580px;
         margin-left:8px;
-        vertical-align: middle;
+        vertical-align: text-bottom;
+        color:#333333;
+        font-size: 28px;
         .input-placeholder{
-          font-size: 26px;
-          font-weight: 400;
+          font-size: 28px;
           color: #CCCCCC;
-          line-height: 37px;
-
         }
       }
 
@@ -87,7 +83,6 @@
     &-text {
       height: 26px;
       font-size: 26px;
-      font-weight: 400;
       color: #333333;
       line-height: 26px;
 
@@ -118,7 +113,6 @@
 
       &-labelText {
         font-size: 28px;
-        font-weight: 400;
         color: #333333;
         line-height: 28px;
         display: inline-block;
@@ -130,7 +124,6 @@
         width: 510px;
         &-labelText {
           font-size: 28px;
-          font-weight: 400;
           color: #333333;
           line-height: 28px;
         }
@@ -182,7 +175,6 @@
 
         &-text {
           font-size: 22px;
-          font-weight: 400;
           color: #FFFFFF;
           line-height: 31px;
         }
@@ -202,7 +194,6 @@
           width: 450px;
           margin-right: 24px;
           font-size: 28px;
-          font-weight: 400;
           color: #333333;
           line-height: 45px;
           word-break: break-all;
@@ -212,7 +203,6 @@
           width: 450px;
           margin-right: 24px;
           font-size: 28px;
-          font-weight: 400;
           color: #333333;
           line-height: 28px;
           word-break: break-all;
@@ -232,7 +222,6 @@
 
             &-text {
               font-size: 24px;
-              font-weight: 400;
               color: #333333;
               //line-height: 24px;
               margin-left: 24px;
@@ -250,7 +239,6 @@
           &-tags {
             margin: 16px 0;
             font-size: 24px;
-            font-weight: 400;
 
             &-borrow {
               display: inline-block;
@@ -294,7 +282,6 @@
 
         &-yesText {
           font-size: 24px;
-          font-weight: 400;
           color: #00B478;
           //margin-left: 9px;
         }
@@ -315,7 +302,6 @@
 
         &-noText {
           font-size: 24px;
-          font-weight: 400;
           color: #0979E6;
           //margin-left: 9px;
         }
@@ -348,7 +334,6 @@
       &-text {
         margin-top: 30px;
         font-size: 30px;
-        font-weight: 400;
         color: #666666;
         line-height: 30px;
       }
@@ -359,10 +344,12 @@
         border-radius: 8px;
         line-height: 98px;
         font-size: 36px;
-        font-weight: 400;
         color: #FFFFFF;
         margin:48px 0 0 88px;
       }
     }
   }
+}
+.yc-monitorManage .at-tabs__item{
+  font-size: 34px;
 }

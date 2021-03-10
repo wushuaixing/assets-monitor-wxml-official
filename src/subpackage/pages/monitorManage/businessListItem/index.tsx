@@ -107,24 +107,27 @@ export default class BusinessListItem extends Component<any, isState> {
                   }}>
                     <Text className='yc-businessListItem-content-logo-text'>{i.obligorName.slice(0, 4)}</Text>
                   </View>
-                  <View style={{display:'inline-block'}}>
+                  <View style={{display: 'inline-block'}}>
                     <View className='yc-businessListItem-content-middleRight'>
                       <View className='yc-businessListItem-content-middleRight-middle'>
                         <View
                           className='yc-businessListItem-content-middleRight-middle-caseNumber'>{i.caseNumber || '--'}</View>
-                        <View className='yc-businessListItem-content-middleRight-middle-obligorDetail'>
-                          <View
-                            className='yc-businessListItem-content-middleRight-middle-obligorDetail-obligorName'>借款人：</View>
-                          <View className='yc-businessListItem-content-middleRight-middle-obligorDetail-obligorValue'>
-                            {i.obligorName ? <RichText nodes={i.obligorName.toString().replace(
-                              // reg,
-                              // `<em style="color:#FF3B30;font-style: normal;">${searchValue}</em>`
-                              /<em/gi,
-                              `<em style="color: #FF3B30; font-style: normal"`
-                            )}
-                            /> : '--'}
-                          </View>
-                        </View>
+                        {/*<View className='yc-businessListItem-content-middleRight-middle-obligorDetail'>*/}
+                        {/*  <View*/}
+                        {/*    className='yc-businessListItem-content-middleRight-middle-obligorDetail-obligorName'>借款人：</View>*/}
+                        {/*  <View className='yc-businessListItem-content-middleRight-middle-obligorDetail-obligorValue'>*/}
+                        {/*    {i.obligorName ? <RichText nodes={i.obligorName.toString().replace(*/}
+                        {/*      // reg,*/}
+                        {/*      // `<em style="color:#FF3B30;font-style: normal;">${searchValue}</em>`*/}
+                        {/*      /<em/gi,*/}
+                        {/*      `<em style="color: #FF3B30; font-style: normal"`*/}
+                        {/*    )}*/}
+                        {/*    /> : '--'}*/}
+                        {/*  </View>*/}
+                        {/*  <View className='yc-businessListItem-content-middleRightContent-date'>*/}
+                        {/*    {dateToFormat(i.uploadTime,'YYYY-MM-DD')}*/}
+                        {/*  </View>*/}
+                        {/*</View>*/}
                       </View>
                     </View>
                     <View className='yc-businessListItem-content-middleRightContent'>
@@ -174,7 +177,9 @@ export default class BusinessListItem extends Component<any, isState> {
                                         }}>
                                           <View className='ant-popover-inner-content-text'
                                                 style={{paddingTop: '32rpx'}}
-                                                onClick={()=>{this.onEditBusinessClick(i.id)}}>编辑</View>
+                                                onClick={() => {
+                                                  this.onEditBusinessClick(i.id)
+                                                }}>编辑</View>
                                         </View>
                                         <View className='ant-popover-inner-content-line'/>
                                         <View className='ant-popover-inner-content-text' onClick={(e) => {
@@ -196,13 +201,31 @@ export default class BusinessListItem extends Component<any, isState> {
                         </View>
 
 
+                        {/*<View className='yc-businessListItem-content-middleRightContent-date'>*/}
+                        {/*  {dateToFormat(i.uploadTime,'YYYY-MM-DD')}*/}
+                        {/*</View>*/}
+                      </View>
+                    </View>
+                    <View className='yc-businessListItem-content-middleRight-middle-obligorDetail'>
+                      <View
+                        className='yc-businessListItem-content-middleRight-middle-obligorDetail-obligorName'>借款人：</View>
+                      <View style={{display:'inline-flex',alignItems:'flex-end'}}>
+                        <View className='yc-businessListItem-content-middleRight-middle-obligorDetail-obligorValue'>
+                          {i.obligorName ? <RichText nodes={i.obligorName.toString().replace(
+                            // reg,
+                            // `<em style="color:#FF3B30;font-style: normal;">${searchValue}</em>`
+                            /<em/gi,
+                            `<em style="color: #FF3B30; font-style: normal"`
+                          )}
+                          /> : '--'}
+                        </View>
                         <View className='yc-businessListItem-content-middleRightContent-date'>
-                          {dateToFormat(i.uploadTime,'YYYY-MM-DD')}
+                          {dateToFormat(i.uploadTime, 'YYYY-MM-DD')}
                         </View>
                       </View>
                     </View>
                     {
-                      searchValue !== "" && i.guarantorNameList.length > 0?
+                      searchValue !== "" && i.guarantorNameList.length > 0 ?
                         <View className='yc-businessListItem-content-middleRight-guarantor'>
                           <View className='yc-businessListItem-content-middleRight-guarantor-contentLine'/>
                           <View className='yc-businessListItem-content-middleRight-guarantor-detail'>
