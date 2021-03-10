@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux';
-import {View} from '@tarojs/components'
+import {Textarea, View} from '@tarojs/components'
 import {AtTextarea, AtImagePicker, AtButton} from 'taro-ui'
 import './index.scss'
 import Taro from "@tarojs/taro";
@@ -46,9 +46,9 @@ export default class FeedBack extends Component<IProps, isState> {
   componentDidHide() {
   }
 
-  onTextAreaChange = (value) => {
+  onTextAreaChange = (e) => {
     this.setState({
-      value
+      value:e.detail.value
     })
   }
 
@@ -126,20 +126,27 @@ export default class FeedBack extends Component<IProps, isState> {
         <View className='yc-feedBack-content'>
           <View className='yc-feedBack-content-idea'>
             <View className='yc-feedBack-content-idea-text'>请提出您宝贵的意见</View>
-            <View style={{position:'relative'}}>
-              <AtTextarea
-                height={240}
-                value={value}
-                onChange={this.onTextAreaChange}
-                maxLength={150}
+            <View style={{position: 'relative'}} className='yc-feedBack-content-idea-textarea'>
+              <Textarea
+                style={{width:'100%',fontSize:'32rpx',color:'#333',lineHeight:'48rpx',minHeight:'240rpx'}}
+                autoHeight
                 placeholder='您的意见，是我们改进的动力！'
-                count={false}
+                value={value}
+                maxlength={150}
+                onInput={this.onTextAreaChange}
               />
-              <View className='at-textarea__counter' style={{position:'absolute',bottom:'18rpx',right:'18rpx'}}>
-                {value.length}/150
-              </View>
+              <View className='yc-feedBack-content-idea-number'>{value.length}/150</View>
+              {/*<AtTextarea*/}
+              {/*  value={value}*/}
+              {/*  onChange={this.onTextAreaChange}*/}
+              {/*  maxLength={150}*/}
+              {/*  placeholder='您的意见，是我们改进的动力！'*/}
+              {/*  count={false}*/}
+              {/*/>*/}
+              {/*<View className='at-textarea__counter' style={{position: 'absolute', bottom: '18rpx', right: '18rpx'}}>*/}
+              {/*  {value.length}/150*/}
+              {/*</View>*/}
             </View>
-
           </View>
           <View className='yc-feedBack-content-image'>
             <View className='yc-feedBack-content-image-text'>上传图片(可选)</View>
@@ -157,7 +164,7 @@ export default class FeedBack extends Component<IProps, isState> {
             我们会尽快处理您的反馈。
             <View>您还可以拨打客服电话133-7256-7936来提出意见和建议。</View>
           </View>
-          <View className='yc-feedBack-bottom-btn'>
+          <View className='yc-feedBack-bottom-btn' onClick={this.onSubmit}>
             {/*<AtButton type='primary' onClick={this.onSubmit}>提交反馈</AtButton>*/}
             <View className='yc-feedBack-bottom-btn-text'>提交反馈</View>
           </View>
