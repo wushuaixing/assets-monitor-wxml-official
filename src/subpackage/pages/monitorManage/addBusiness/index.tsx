@@ -34,6 +34,7 @@ type isState = {
   isDeleteOpendModal: boolean,
   deleteIndex: number,
   saveClickRole: any,
+  addBusBtnHeight:number
 }
 
 type IProps = {
@@ -79,6 +80,7 @@ export default class BusinessDetail extends Component<IProps, isState> {
       isDeleteOpendModal: false,
       deleteIndex: 0,
       saveClickRole: [],
+      addBusBtnHeight:0
     };
   }
 
@@ -120,7 +122,8 @@ export default class BusinessDetail extends Component<IProps, isState> {
             .exec(res => {
               console.log('res === ', res, height);
               this.setState({
-                navBarHeight: res[0].height
+                navBarHeight: res[0].height,
+                scrollHeight: height
               })
             })
           // onReady 触发后才能获取小程序渲染层的节点
@@ -129,7 +132,8 @@ export default class BusinessDetail extends Component<IProps, isState> {
             .exec(res => {
               console.log('res === ', res, height);
               this.setState({
-                scrollHeight: res[0].top
+                addBusBtnHeight: res[0].height,
+                scrollHeight: height
               })
             })
         }
@@ -579,9 +583,8 @@ export default class BusinessDetail extends Component<IProps, isState> {
       isRoleOpened,
       isDeleteOpendModal,
       dataSource,
-      platform
+      addBusBtnHeight
     } = this.state;
-    console.log('this.state=====', platform)
     const {router: {params: {id}}} = getCurrentInstance();
     const businessBaseInfoConfig = [
       {
@@ -701,7 +704,7 @@ export default class BusinessDetail extends Component<IProps, isState> {
     return (
       <View className='yc-addBusiness'>
         <NavigationBar title={id ? '编辑业务' : '添加业务'}/>
-        <ScrollView scrollY style={{height: scrollHeight - navBarHeight}}>
+        <ScrollView scrollY style={{height: scrollHeight - addBusBtnHeight - navBarHeight}}>
           <View className='yc-addBusiness-baseInfoText'>基础信息</View>
           <View className='yc-addBusiness-baseInfo'>
             <Form

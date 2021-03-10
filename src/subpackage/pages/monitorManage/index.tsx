@@ -68,15 +68,13 @@ export default class MonitorManage extends Component<IProps, isState> {
           Taro.createSelectorQuery().select('#navBar')
             .boundingClientRect()
             .exec(res => {
-              console.log('navBar === ', res, height);
               navBarHeight = res[0].height
             })
           Taro.createSelectorQuery().select('#monitorManageHeader')
             .boundingClientRect()
             .exec(res => {
-              console.log('navBar === ', res, height);
               this.setState({
-                scrollHeight: height - navBarHeight - res[0].height - info.statusBarHeight - 70
+                scrollHeight: height - navBarHeight - res[0].top - info.statusBarHeight - 50
               })
             })
         }

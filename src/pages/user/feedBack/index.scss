@@ -1,7 +1,7 @@
 .yc-feedBack {
-  font-family: PingFangSC-Regular, PingFang SC;
   background: #F5F5F5;
-  height:100vh;
+  height: 100vh;
+
   &-top {
     width: 100%;
     height: 24px;
@@ -13,11 +13,11 @@
     background: #fff;
 
     &-idea {
-      padding: 24px;
+      padding: 24px 24px 0;
+
       &-text {
         height: 34px;
         font-size: 34px;
-        font-weight: 400;
         color: #333333;
         line-height: 34px;
       }
@@ -25,27 +25,39 @@
 
     &-image {
       margin-left: 24px;
+
       &-text {
         height: 34px;
         font-size: 34px;
-        font-weight: 400;
         color: #333333;
         line-height: 34px;
       }
     }
   }
-  &-bottom{
-    margin:24px;
-    &-text{
+
+  &-bottom {
+    margin: 24px;
+
+    &-text {
       display: inline-block;
       height: 80px;
       font-size: 26px;
-      font-weight: 400;
       color: #999999;
       line-height: 40px;
     }
-    &-btn{
-      margin-top:48px;
+
+    &-btn {
+      margin-top: 48px;
+
+      &-text {
+        height: 98px;
+        background: #0979E6;
+        border-radius: 8px;
+        line-height: 98px;
+        font-size: 36px;
+        color: #FFFFFF;
+        text-align: center;
+      }
     }
   }
 }
@@ -62,14 +74,12 @@
   width: 448px;
   height: 48px;
   font-size: 32px;
-  font-weight: 400;
   color: #CCCCCC;
   line-height: 48px;
 }
 
 .yc-feedBack-content-idea .at-textarea .at-textarea__counter {
   font-size: 32px;
-  font-weight: 400;
   color: #CCCCCC;
   line-height: 32px;
 }
@@ -89,8 +99,9 @@
 .yc-feedBack-content-image .at-image-picker__flex-item {
   margin: 0;
 }
+
 .yc-feedBack-content-image .at-image-picker__remove-btn {
-  top:0;
-  left:0;
+  top: 0;
+  left: 0;
 }
 
