@@ -30,6 +30,7 @@ type IState = {
     initialPrice: number
     start: Date | number
     end: Date | number
+    approveTime: Date | number
     valueLevel: number
     obligorName: string
     remark: string
@@ -128,6 +129,7 @@ export default class AssetsAuction extends Component <IProps, IState>{
                 <View className='auction-clues-content-info-label'>审核备注</View>
                 <View className='auction-detail-content-info-colon'>：</View>
                 <View className='auction-clues-content-info-text'>
+                  <View className='auction-clues-content-info-text-time'>{dateToFormat(detail.approveTime, 'YYYY-MM-DD HH:mm')}</View>
                   {
                     detail.remark ? <RichText nodes={detail && detail.remark && detail.remark.replace(
                       /<a/gi,

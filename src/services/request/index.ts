@@ -1,5 +1,5 @@
 import Taro from '@tarojs/taro';
-import { urlEncode, formatDateTime}from "../../utils/tools/common";
+import {urlEncode, formatDateTime, Message} from "../../utils/tools/common";
 import { HTTP_STATUS } from '../../utils/const/status'
 import {base} from '../../utils/config';
 
@@ -78,9 +78,10 @@ const handleStatusCode = (res: resType) => {
   }
 };
 
-function checkHttpStatus(response: any, resolve, reject) {
-  if (response.statusCode >= 200 && response.statusCode < 300) {
-    resolve(response.data)
+function checkHttpStatus(options, response: any, resolve, reject) {
+  console.log('url === ', options.url);
+  if(response.statusCode >= 200 && response.statusCode < 300) {
+    resolve(response.data);
   } else {
     const message = HTTP_ERROR[response.statusCode] || `ERROR CODE: ${response.statusCode}`;
     response.data.errorCode = response.statusCode;
@@ -123,8 +124,12 @@ const baseOptions = (params: {[propName: string] : any}, method?: string = 'GET'
     Taro.request({
       ...option,
     }).then((res) => {
-        checkHttpStatus(res, resolve, reject)
-      })
+      checkHttpStatus(option, res, resolve, reject);
+    }).catch(err => {
+      console.log('err === ', err);
+      Taro.hideLoading();
+      Message('网络异常');
+    })
   }))
 };
 
