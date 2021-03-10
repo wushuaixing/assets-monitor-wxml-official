@@ -49,6 +49,8 @@ type IState = {
   page: number
   hasNext: boolean
   scrollTop: number
+  isShowBottom: boolean
+  isPropsMask: boolean
 };
 
 const tabList = [
@@ -195,6 +197,8 @@ export default class Monitor extends Component <IProps, IState>{
       page: 1,
       hasNext: false,
       scrollTop: 0,
+      isShowBottom: false,
+      isPropsMask: false,
       params: {
         assetAndRiskType: filterArray(assestRuleArray).join(),
       },
@@ -374,6 +378,7 @@ export default class Monitor extends Component <IProps, IState>{
               starId: newStarId,
               params: {...newParams},
               loading: true,
+              isPropsMask: false,
             }, () => {
               this.handleRequestList({...newParams}, true);
             });
@@ -383,6 +388,7 @@ export default class Monitor extends Component <IProps, IState>{
               queryAssetsConfig: JSON.parse(JSON.stringify(assetsConfig)),
               queryRiskConfig: JSON.parse(JSON.stringify(riskConfig)),
               loading: true,
+              isPropsMask: false,
             }, () => {
               this.handleRequestList({...params}, true);
             });
@@ -393,8 +399,8 @@ export default class Monitor extends Component <IProps, IState>{
   }
 
   shouldComponentUpdate(nextProps: Readonly<IProps>, nextState: Readonly<IState>): boolean {
-    const { listCount, currentId, page, isScroll, starId } = this.state;
-    return listCount !== nextState.listCount || currentId !== nextState.currentId || page !== nextState.page || isScroll !== nextState.isScroll || starId !== nextState.starId;
+    const { listCount, currentId, page, isScroll, starId, isShowBottom} = this.state;
+    return listCount !== nextState.listCount || currentId !== nextState.currentId || page !== nextState.page || isScroll !== nextState.isScroll || isShowBottom !== nextState.isShowBottom || starId !== nextState.starId;
   }
 
   componentWillReceiveProps(nextProps: Readonly<IProps>, nextContext: any): void {
@@ -557,6 +563,16 @@ export default class Monitor extends Component <IProps, IState>{
   // 监听滚动条
   handleScroll = (event) => {
     const { detail } = event;
+    if(detail.scrollTop > 10 ){
+      this.setState({
+        isShowBottom: true
+      })
+    }
+    if(detail.scrollTop <= 10){
+      this.setState({
+        isShowBottom: false
+      })
+    }
     if(detail.scrollTop > 100){
       this.setState({
         isScroll: true
@@ -578,7 +594,7 @@ export default class Monitor extends Component <IProps, IState>{
   };
 
   render () {
-    const { scrollTop, isScroll, currentId, scrollHeight, listCount, starId, assetsList, riskList, queryAssetsConfig, queryRiskConfig, loading, hasNext } = this.state;
+    const { scrollTop, isPropsMask, isScroll, currentId, scrollHeight, listCount, starId, assetsList, riskList, queryAssetsConfig, queryRiskConfig, loading, hasNext, isShowBottom } = this.state;
     let list = currentId === 1 ? assetsList : riskList;
     return (
       <View className='monitor'>
@@ -590,12 +606,13 @@ export default class Monitor extends Component <IProps, IState>{
           onClick={this.handleChangeTab}
           loading={loading}
         />
-        <View id='drop' className='monitor-drop'>
+        <View id='drop' className={`${isShowBottom ? 'monitor-drop' : ''}`}>
           <QueryDrop
             type={currentId === 1 ? 'assets' : 'risk' }
             initConfig={currentId === 1 ? queryAssetsConfig : queryRiskConfig}
             onsetParams={this.handleSetParams}
             loading={loading}
+            isPropsMask={isPropsMask}
           />
         </View>
         {

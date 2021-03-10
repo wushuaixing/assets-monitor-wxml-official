@@ -145,7 +145,7 @@ export default class AssetsDetail extends Component <IProps, IState>{
 	            <View className='detail-info-item-label'>源链接</View>
 	            <View className='detail-info-item-colon'>：</View>
 	            <View className='detail-info-item-value-other link' onClick={() => this.onCopyClick(`${detail.url}`)}>
-		            <Text>{detail.url}</Text>
+		            <Text className='detail-info-item-value-other-url'>{detail.url}</Text>
 		            <Text className='iconfont icon-copy detail-info-item-value-icon' />
 	            </View>
             </View>

@@ -2,14 +2,13 @@ import React, { Component } from "react";
 import {Image, View} from '@tarojs/components';
 import { AtButton, AtFloatLayout, AtCalendar} from 'taro-ui';
 import clear from '../../assets/img/components/clear.png';
-import { connect } from 'react-redux';
 import './index.scss';
 
 export interface conditionsType{
   name: string
   type: string
   value?: any
-  filed: any
+  field: any
 }
 
 type IProps = {
@@ -39,8 +38,19 @@ export default class MultipleForm extends Component <IProps, IState>{
 
   componentWillMount(): void {
     const { conditions } = this.props;
+    const { params} = this.state;
+    let newParms = {...params };
+    conditions.forEach(item => {
+      const field = item.field || [];
+      const value = item.value || [];
+      if(item.type === 'time' && (value || []).length > 0){
+        newParms = {...params, [field[0]]: value[0] || '', [field[1]]: value[1] || ''};
+      }
+    });
     this.setState({
       conditions,
+      params: newParms,
+      info: conditions[0],
     });
   }
 
@@ -64,15 +74,16 @@ export default class MultipleForm extends Component <IProps, IState>{
 
   // 重置
   onReset = () => {
-    const { conditions } = this.props;
+    const { conditions, params} = this.props;
+    const { info } = this.state;
+    let newParmas = {...params, [info.field[0]] : '', [info.field[1]]: ''};
     let newConditions: conditionsType[] = [];
     conditions.forEach(item => {
       newConditions.push({...item, value: Array.isArray(item.value) ? [] : ''})
     });
     this.setState({
       conditions: newConditions,
-      info: {},
-      params: {},
+      params: newParmas,
       isStartTime: false,
       isEndTime: false,
     });
@@ -80,7 +91,7 @@ export default class MultipleForm extends Component <IProps, IState>{
 
   // 确认按钮
   onConfirm = () => {
-    const { conditions, params} = this.state;
+    const { conditions, params } = this.state;
     const { onConfirmForm } = this.props;
     onConfirmForm(conditions, params);
   };
@@ -105,7 +116,6 @@ export default class MultipleForm extends Component <IProps, IState>{
       params: newParmas,
       info,
     });
-
   };
 
   // 点击日期事件
@@ -141,7 +151,8 @@ export default class MultipleForm extends Component <IProps, IState>{
         <View className='conditions-line'/>
         {
           conditions.length > 0 && conditions.map((item) => {
-            const { type, value} = item;
+            const { type } = item;
+            const value = item.value || [];
             if(type === 'time'){
               return (
                 <View className='conditions-time'>
