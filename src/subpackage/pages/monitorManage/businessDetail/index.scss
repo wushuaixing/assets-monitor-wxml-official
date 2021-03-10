@@ -1,7 +1,6 @@
 .yc-businessDetail{
   background: #F5F5F5;
   height:100vh;
-  font-family: PingFangSC-Medium, PingFang SC;
   &-line{
     height:24px;
   }
@@ -20,7 +19,6 @@
       &-removeBusText{
         float: right;
         font-size: 32px;
-        font-weight: 400;
         color: #0979E6;
       }
     }
@@ -33,14 +31,13 @@
       &-text{
         height: 28px;
         font-size: 28px;
-        font-weight: 400;
         color: #999999;
         line-height: 28px;
       }
       &-number{
         height: 28px;
         font-size: 28px;
-        font-weight: 400;
+        font-weight: 500;
         color: #666666;
         line-height: 28px;
       }

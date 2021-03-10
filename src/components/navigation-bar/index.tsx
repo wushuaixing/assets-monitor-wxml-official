@@ -39,7 +39,7 @@ const NavigationBar: FC<IProps> = ({border, title, type = 'white', color = 'blac
       {
         backStates ? (
           <View className='navigator-chevron' onClick={() => goback()}>
-            <View className='at-icon at-icon-chevron-left' />
+            <View className='at-icon at-icon-chevron-left navigator-chevron-icon' />
           </View>
         ) : null
       }

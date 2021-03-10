@@ -28,13 +28,16 @@
     text-align: center;
     font-size: 40px;
     line-height: 50PX;
+    &-icon{
+      font-size: 44px;
+    }
   }
   .navigator-content{
     line-height: 45PX;
     text-align: center;
     color: $common-text;
     font-weight: bold;
-    font-size: 32px;
+    font-size: 36px;
     padding: 0 230px;
     white-space: nowrap;
     overflow: hidden;
