@@ -532,6 +532,7 @@ export default class Monitor extends Component <IProps, IState>{
       params: newParams,
       page: 1,
       starId: 1,
+      isPropsMask: false,
     }, () => {
       this.backToTop();
       this.handleRequestList({assetAndRiskType: assetAndRiskTypeParams}, true)
@@ -548,6 +549,7 @@ export default class Monitor extends Component <IProps, IState>{
         page: 1,
         starId: info.id,
         loading: true,
+        isPropsMask: false,
       }, () => {
         this.backToTop();
         this.handleRequestList({...newParams}, true);
