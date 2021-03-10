@@ -269,6 +269,15 @@
               content:'|';
               color:#000000;
               height:40px;
+              animation:cursorImg 1s infinite steps(1, start);
+              @keyframes cursorImg {
+                0%, 100% {
+                  opacity: 0;
+                }
+                50% {
+                  opacity: 1;
+                }
+              }
             }
           }
         }

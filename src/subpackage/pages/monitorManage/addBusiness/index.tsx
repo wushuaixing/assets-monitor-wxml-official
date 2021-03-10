@@ -908,7 +908,8 @@ export default class BusinessDetail extends Component<IProps, isState> {
 
 
         <View className='yc-addBusiness-addBtn' id='addBusBtn'>
-          <AtButton type='primary' onClick={throttle(this.onSubmit, 3000)}>确认</AtButton>
+          {/*<AtButton type='primary' onClick={throttle(this.onSubmit, 3000)}>确认</AtButton>*/}
+          <View className='yc-addBusiness-addBtn-text' onClick={throttle(this.onSubmit, 3000)}>确认</View>
         </View>
       </View>
     )

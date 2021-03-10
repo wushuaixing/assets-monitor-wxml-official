@@ -29,8 +29,8 @@
     }
   }
 
-  &-relationTextContent{
-    height:106px;
+  &-relationTextContent {
+    height: 106px;
     background: #F5F5F5;
     line-height: 106px;
   }
@@ -38,11 +38,23 @@
   &-addBtn {
     position: fixed;
     bottom: 0;
-    padding: 0 24px;
+    padding: 16px 24px;
     width: calc(100% - 48px);
-    height:130px;
+    height: 114px;
     background: #F5F5F5;
-    z-index:99;
+    z-index: 99;
+    box-shadow: 0px -2px 5px 0px rgba(0, 0, 0, 0.1);
+
+    &-text {
+      height: 98px;
+      background: #0979E6;
+      border-radius: 8px;
+      font-size: 36px;
+      font-weight: 400;
+      color: #FFFFFF;
+      line-height: 98px;
+      text-align: center;
+    }
   }
 
   &-baseInfoText {
@@ -54,7 +66,8 @@
     padding-left: 24px;
     display: inline-block;
   }
-  &-relationBaseInfoText{
+
+  &-relationBaseInfoText {
     line-height: 106px;
   }
 
@@ -84,8 +97,9 @@
 
   &-baseInfo {
     background: #fff;
-    &-topLine{
-      height:1px;
+
+    &-topLine {
+      height: 1px;
       background: #E5E5E5;
     }
 
@@ -115,7 +129,7 @@
           display: inline-block;
 
           &-selectText {
-            width: 493px;
+            width: 489px;
             display: inline-block;
             font-size: 32px;
             font-weight: 400;
@@ -132,7 +146,7 @@
             vertical-align: middle;
 
             &-text {
-              font-size: 23px;
+              font-size: 32px;
               color: #CCCCCC;
             }
           }
@@ -151,10 +165,11 @@
     }
   }
 }
-.input-placeholder{
-  height:96px;
+
+.input-placeholder {
+  height: 96px;
   line-height: 96px;
-  color:#CCCCCC;
+  color: #CCCCCC;
   font-size: 32px;
   vertical-align: middle;
 }
