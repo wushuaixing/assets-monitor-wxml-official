@@ -74,6 +74,17 @@
           word-break: break-all;
         }
 
+        &-linkUrl{
+          line-height: 42px;
+          color: #666666;
+          word-break: break-all;
+          width: 500px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          display: inline-block;
+        }
+
         &-valueStar {
           font-weight: 500;
         }

@@ -231,12 +231,14 @@ export default class Subrogation extends Component <IProps, IState> {
               <View onClick={() => {
                 this.onCopyClick(detail.url)
               }}>
-                <View className='yc-subrogation-baseInfo-content-info-value'
+                <View className='yc-subrogation-baseInfo-content-info-linkUrl'
                       style={{
                         color: detail.url ? '#0979E6' : '#666666',
                         display: 'inline-block'
                       }}>
                   {detail.url || '--'}
+                </View>
+                <View style={{display:"inline-block",verticalAlign:'top'}}>
                   {
                     detail.url ?
                       <Text className='iconfont icon-copy yc-subrogation-baseInfo-content-info-copyIcon'/> : null
