@@ -130,35 +130,35 @@ export default class User extends Component<IProps, isState> {
             </View>
           </View>
           <View className='yc-user-baseInfo-list'>
-            <AtList>
-              <AtListItem title='意见反馈' arrow='right' thumb={feedbackImg} onClick={this.onFeedBackClick}/>
-              <AtListItem title='联系客服' arrow='right' thumb={telImg} onClick={this.onTelClick}/>
-            </AtList>
-            {/*<View className='yc-user-baseInfo-list-opinion' onClick={this.onFeedBackClick} style={{padding:'0 24rpx'}}>*/}
-            {/*  <View className='yc-user-baseInfo-list-opinion-icon'>*/}
-            {/*    <Text className="iconfont icon-feedback yc-user-baseInfo-list-opinion-icon-text"/>*/}
-            {/*  </View>*/}
-            {/*  <View className='yc-user-baseInfo-list-opinion-text'>*/}
-            {/*    意见反馈*/}
-            {/*  </View>*/}
-            {/*  <View className='yc-user-baseInfo-list-opinion-arrow'>*/}
-            {/*    <Text className="iconfont icon-right-arrow yc-user-baseInfo-list-opinion-arrow-text"/>*/}
-            {/*  </View>*/}
-            {/*</View>*/}
+            {/*<AtList>*/}
+            {/*  <AtListItem title='意见反馈' arrow='right' thumb={feedbackImg} onClick={this.onFeedBackClick}/>*/}
+            {/*  <AtListItem title='联系客服' arrow='right' thumb={telImg} onClick={this.onTelClick}/>*/}
+            {/*</AtList>*/}
+            <View className='yc-user-baseInfo-list-opinion' onClick={this.onFeedBackClick}>
+              <View className='yc-user-baseInfo-list-opinion-icon'>
+                <Text className="iconfont icon-feedback yc-user-baseInfo-list-opinion-icon-text"/>
+              </View>
+              <View className='yc-user-baseInfo-list-opinion-text'>
+                意见反馈
+              </View>
+              <View className='yc-user-baseInfo-list-opinion-arrow'>
+                <Text className="iconfont icon-right-arrow yc-user-baseInfo-list-opinion-arrow-text"/>
+              </View>
+            </View>
 
-            {/*<View className='yc-user-baseInfo-list-line'/>*/}
+            <View className='yc-user-baseInfo-list-line'/>
 
-            {/*<View className='yc-user-baseInfo-list-opinion' onClick={this.onTelClick} style={{paddingLeft:'24rpx'}}>*/}
-            {/*  <View className='yc-user-baseInfo-list-opinion-icon'>*/}
-            {/*    <Text className="iconfont icon-customService yc-user-baseInfo-list-opinion-icon-text"/>*/}
-            {/*  </View>*/}
-            {/*  <View className='yc-user-baseInfo-list-opinion-text'>*/}
-            {/*    联系客服*/}
-            {/*  </View>*/}
-            {/*  <View className='yc-user-baseInfo-list-opinion-arrow'>*/}
-            {/*    <Text className="iconfont icon-right-arrow yc-user-baseInfo-list-opinion-arrow-text"/>*/}
-            {/*  </View>*/}
-            {/*</View>*/}
+            <View className='yc-user-baseInfo-list-opinion' onClick={this.onTelClick}>
+              <View className='yc-user-baseInfo-list-opinion-icon'>
+                <Text className="iconfont icon-customService yc-user-baseInfo-list-opinion-icon-text"/>
+              </View>
+              <View className='yc-user-baseInfo-list-opinion-text'>
+                联系客服
+              </View>
+              <View className='yc-user-baseInfo-list-opinion-arrow'>
+                <Text className="iconfont icon-right-arrow yc-user-baseInfo-list-opinion-arrow-text"/>
+              </View>
+            </View>
           </View>
           <View className='yc-user-baseInfo-bottom' onClick={this.onOutLoginClick}>
             <View className='yc-user-baseInfo-bottom-text'>退出登录</View>

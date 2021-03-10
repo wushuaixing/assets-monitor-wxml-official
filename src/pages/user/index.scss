@@ -76,12 +76,11 @@
     }
 
     &-list {
-      margin-top: 24px;
-
+      margin-top: 21px;
+      background: #fff;
       &-line {
-        //width:726px;
         height: 1px;
-        background: #f00;
+        background: #E5E5E5;
         margin-left: 24px;
       }
 
@@ -89,7 +88,7 @@
         height: 104px;
         background: #fff;
         line-height: 104px;
-
+        padding:0 24px;
         &-icon {
           display: inline-block;
 
@@ -108,7 +107,8 @@
 
         &-arrow {
           display: inline-block;
-          float: right;
+          position: absolute;
+          right:24px;
 
           &-text {
             font-size: 32px;
