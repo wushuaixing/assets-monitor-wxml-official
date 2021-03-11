@@ -1,5 +1,5 @@
 import { currentOrganizationApi, assetApi, riskApi } from '../../services/home';
-import { handleDealAuthRule } from '../../utils/tools/common';
+import { handleDealAuthRule, clearEmpty } from '../../utils/tools/common';
 import { getAuthRuleUrl } from "../../services/login";
 import { setGlobalData } from "../../utils/const/global";
 
@@ -11,7 +11,7 @@ export default {
   },
   effects: {
     *getCurrentOrganization({ payload }, { call, put }) {
-      const res = yield call(currentOrganizationApi, payload);
+      const res = yield call(currentOrganizationApi,  { ...clearEmpty(payload)});
       return res;
     },
 
@@ -25,12 +25,12 @@ export default {
 
 
     *getAssets({ payload }, {all, call, put }) {
-      const res = yield call(assetApi, payload);
+      const res = yield call(assetApi, { ...clearEmpty(payload)});
       return res;
     },
 
     *getRisk({ payload}, {all, call, put }) {
-      const res = yield call(riskApi, payload);
+      const res = yield call(riskApi, { ...clearEmpty(payload)});
       return res;
     },
   },

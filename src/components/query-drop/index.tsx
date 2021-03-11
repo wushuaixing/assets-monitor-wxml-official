@@ -95,7 +95,8 @@ class QueryDrop extends Component<IProps, IState>{
     if(type !== nextProps.type){
       this.setState({
         isMask: false,
-        config: nextProps.initConfig
+        config: nextProps.initConfig,
+        params: {}
       });
     }
     if(JSON.stringify(initConfig) !== JSON.stringify(nextProps.initConfig)){
