@@ -467,8 +467,6 @@ export default class Monitor extends Component <IProps, IState>{
         else {
           this.setState({
             loading: false,
-            page: 1,
-            assetsList: [],
             listCount: 0,
             hasNext: false,
           })
@@ -505,9 +503,7 @@ export default class Monitor extends Component <IProps, IState>{
         }
         else {
           this.setState({
-            page: 1,
             loading: false,
-            riskList: [],
             listCount: 0,
             hasNext: false,
           })
@@ -523,9 +519,8 @@ export default class Monitor extends Component <IProps, IState>{
 
   // 资产/ 风险tab的切换
   handleClick = (info) => {
-    const { params } = this.state;
     let assetAndRiskTypeParams = filterArray(info.id === 1 ? assestRuleArray : riskRuleArray).join();
-    let newParams = {...params, assetAndRiskType: assetAndRiskTypeParams};
+    let newParams = { assetAndRiskType: assetAndRiskTypeParams};
     this.setState({
       queryAssetsConfig: getUpdateRuleConfig(JSON.parse(JSON.stringify(initialAssetsConfig))),
       queryRiskConfig: getUpdateRuleConfig(JSON.parse(JSON.stringify(initialRiskConfig))),
@@ -613,6 +608,7 @@ export default class Monitor extends Component <IProps, IState>{
   render () {
     const { scrollTop, isPropsMask, isScroll, currentId, scrollHeight, listCount, starId, assetsList, riskList, queryAssetsConfig, queryRiskConfig, loading, hasNext } = this.state;
     let list = currentId === 1 ? assetsList : riskList;
+    // console.log('queryAssetsConfig === ', queryAssetsConfig, JSON.stringify(queryAssetsConfig));
     return (
       <View className='monitor'>
         <NavigationBar title={'源诚资产监控'} type={'blue'} color='white'/>
@@ -694,7 +690,6 @@ export default class Monitor extends Component <IProps, IState>{
 	          <Image src={backTop} className='monitor-back-pic' />
           </View>
         }
-
       </View>
     )
   }

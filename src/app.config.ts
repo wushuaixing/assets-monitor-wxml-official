@@ -4,7 +4,6 @@ export default {
     "pages/monitor/index",
     "pages/search/index",
     "pages/user/index",
-    "pages/demo/index",
     "pages/default-page/index",
     "pages/user/feedBack/index",
   ],
