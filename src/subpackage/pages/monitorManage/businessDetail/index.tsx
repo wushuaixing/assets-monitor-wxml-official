@@ -141,6 +141,19 @@ export default class BusinessDetail extends Component<IProps, isState> {
             <View className='yc-businessDetail-top-line'/>
             <ObligorListItem data={relationObligorList} type='businessRelation'/>
           </View>
+          {/*{*/}
+          {/*  hasNext ? <View className='monitor-scroll-more'>正在加载中...</View> : (!loading && <View className='monitor-scroll-done'>*/}
+          {/*    <View className='monitor-scroll-done-left' />*/}
+          {/*    <View className='monitor-scroll-done-text'>我是有底线的</View>*/}
+          {/*    <View className='monitor-scroll-done-right' />*/}
+          {/*  </View>)*/}
+          {/*}*/}
+          {/*<View className='yc-businessDetail-scroll-more'>正在加载中...</View>*/}
+          {/*<View className='yc-businessDetail-scroll-done'>*/}
+          {/*  <View className='yc-businessDetail-scroll-done-left' />*/}
+          {/*  <View className='yc-businessDetail-scroll-done-text'>我是有底线的</View>*/}
+          {/*  <View className='yc-businessDetail-scroll-done-right' />*/}
+          {/*</View>*/}
         </ScrollView>
         <DeleteModal searchValue={saveSearchValue} busDetail={true}/>
       </View>

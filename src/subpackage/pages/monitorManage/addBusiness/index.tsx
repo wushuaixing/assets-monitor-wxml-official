@@ -768,7 +768,7 @@ export default class BusinessDetail extends Component<IProps, isState> {
                             <View>
                               <View className='yc-addBusiness-relationTextContent'>
                                 <View
-                                  className='yc-addBusiness-baseInfoText yc-addBusiness-relationBaseInfoText'>关联债务人{relIndex + 1}</View>
+                                  className='yc-addBusiness-relationBaseInfoText'>关联债务人{relIndex + 1}</View>
                                 <View className='yc-addBusiness-deleteText'
                                       onClick={() => this.relDelete(relIndex)}>删除</View>
                               </View>
