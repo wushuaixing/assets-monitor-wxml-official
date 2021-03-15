@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {View, Input, Text} from '@tarojs/components'
+import {View, Input, Text, RichText} from '@tarojs/components'
 import {AtButton} from 'taro-ui'
 import Taro from '@tarojs/taro';
 import {connect} from 'react-redux';
@@ -35,9 +35,18 @@ export default class PhoneLogin extends Component<IProps, isState> {
   }
 
   componentDidMount() {
-    this.setState({
-      mobile: this.props.login.accountNumber
-    })
+    const {accountNumber} = this.props.login;
+    const reg = /^[0-9]+$/;
+    if (accountNumber && accountNumber.length <= 11 && reg.test(accountNumber)) {
+      const curMobile = this.handleMobile(accountNumber)
+      this.setState({
+        mobile: curMobile
+      })
+    } else {
+      this.setState({
+        mobile: accountNumber.slice(0, 13)
+      })
+    }
   }
 
   componentWillUnmount() {
@@ -52,18 +61,19 @@ export default class PhoneLogin extends Component<IProps, isState> {
 
   onBtnClick = () => {
     const {mobile} = this.state;
+    const curMobile = mobile.replace(/[^0-9]/ig, "")
     const Rule = new RegExp(/^(13[0-9]|14[5-9]|15[012356789]|166|17[0-8]|18[0-9]|19[8-9])[0-9]{8}$/);
-    const inputError = Rule.test(mobile);
+    const inputError = Rule.test(curMobile);
     this.setState({inputError})
     if (inputError) {
       this.props.dispatch({
         type: 'login/getSms',
-        payload: {mobile},
+        payload: {mobile: curMobile},
       }).then(res => {
         const {code} = res || {};
         if (code === 200) {
           Taro.navigateTo({
-            url: `/pages/loginAgency/auth-code/index?phone=${mobile}`,
+            url: `/pages/loginAgency/auth-code/index?phone=${curMobile}`,
           });
         } else if (code === 15002) {
           this.setState({
@@ -77,10 +87,30 @@ export default class PhoneLogin extends Component<IProps, isState> {
     }
   }
 
+  handleMobile = (value) => {
+    let curValue = value.replace(/[^0-9]/ig, "");
+    const arr = curValue.split('');
+    if (arr && arr.length >= 8) {
+      arr.splice(3, 0, ' ');
+      arr.splice(8, 0, ' ');
+      curValue = arr.join('');
+      return curValue
+    }
+    if (arr && arr.length >= 4) {
+      arr.splice(3, 0, ' ');
+      curValue = arr.join('');
+      return curValue
+    }
+    return null
+  }
+
   onInput = (e) => {
     const {detail: {value}} = e;
-    this.setState({mobile: value})
-    this.onShareAccount();
+    const curValue = this.handleMobile(value)
+    if (curValue) {
+      this.setState({mobile: curValue})
+      this.onShareAccount();
+    }
   }
 
   onFocus = () => {
@@ -103,9 +133,10 @@ export default class PhoneLogin extends Component<IProps, isState> {
   onShareAccount = () => {
     setTimeout(() => {
       const {mobile} = this.state;
+      let curValue = mobile.replace(/[^0-9]/ig, "");
       this.props.dispatch({
         type: 'login/getAccountNumber',
-        payload: {accountNumber: mobile}
+        payload: {accountNumber: curValue}
       })
     })
   }
@@ -122,7 +153,7 @@ export default class PhoneLogin extends Component<IProps, isState> {
               <View className="yc-login-phoneContent-phone-content-input">
                 <Input
                   name='phoneNum'
-                  maxlength={11}
+                  maxlength={13}
                   onInput={this.onInput}
                   onFocus={this.onFocus}
                   placeholder='请输入手机号'
@@ -154,10 +185,10 @@ export default class PhoneLogin extends Component<IProps, isState> {
                   textAlign: 'center',
                   opacity: '1'
                 }}
-                disabled={mobile.length !== 11}
+                disabled={mobile.length !== 13}
                 onClick={throttle(this.onBtnClick, 3000)}
               >
-                <Text style={{opacity: mobile.length !== 11 ? '0.45' : '1'}}>获取短信验证码</Text>
+                <Text style={{opacity: mobile.length !== 13 ? '0.45' : '1'}}>获取短信验证码</Text>
               </AtButton>
             </View>
           </View>

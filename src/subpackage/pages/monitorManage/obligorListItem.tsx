@@ -187,7 +187,7 @@ export default class ObligorListItem extends Component<any, isState> {
                       {
                         i.pushState || i.obligorPushType ?
                           <Text className="iconfont icon-selected yc-monitorManage-bottom-content-right-yesIcon"/> :
-                          <Text className="iconfont icon-user_add yc-monitorManage-bottom-content-right-noIcon"/>
+                          <Text className="iconfont icon-add yc-monitorManage-bottom-content-right-noIcon"/>
                       }
                       {
                         i.pushState || i.obligorPushType ?
@@ -196,7 +196,9 @@ export default class ObligorListItem extends Component<any, isState> {
                       }
                     </View>
                   </View>
-                  <View className='yc-monitorManage-bottom-content-line'/>
+                  {
+                    index !== data.length - 1 &&  <View className='yc-monitorManage-bottom-content-line'/>
+                  }
                 </View>
               </View>
             )
