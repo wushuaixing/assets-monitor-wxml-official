@@ -144,6 +144,15 @@
 .home{
   background-color: $page-bg-color;
   height: 100vh;
+  &-title{
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 10;
+  }
+  &-blank{
+    width: 100%;
+  }
   &-bg{
     background: url("../../assets/img/page/header-bg.png") no-repeat;
     background-size: 100% auto;
