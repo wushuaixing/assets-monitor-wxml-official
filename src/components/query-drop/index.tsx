@@ -116,9 +116,12 @@ class QueryDrop extends Component<IProps, IState>{
   }
 
   onHide = () => {
-    console.log('onHide');
+    const { initConfig } = this.props;
     this.setState({
-      isMask: false
+      isMask: false,
+      config: initConfig,
+      params: {},
+      currentTab: {},
     })
   };
 

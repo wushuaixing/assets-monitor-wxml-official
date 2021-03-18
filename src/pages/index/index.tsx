@@ -366,7 +366,6 @@ class Index extends Component <IProps, IState>{
         }
       }
     });
-    setGlobalData('refreshMonitor', true);
     Taro.switchTab({
       url:'/pages/monitor/index'
     });
