@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import Taro, { eventCenter, getCurrentInstance }from '@tarojs/taro';
 import {Image, View} from '@tarojs/components';
 import { AtButton, AtFloatLayout, AtCalendar} from 'taro-ui';
 import clear from '../../assets/img/components/clear.png';
@@ -25,6 +26,7 @@ type IState = {
 };
 
 export default class MultipleForm extends Component <IProps, IState>{
+  $instance = getCurrentInstance();
   constructor(props) {
     super(props);
     this.state = {
@@ -52,7 +54,25 @@ export default class MultipleForm extends Component <IProps, IState>{
       params: newParms,
       info: conditions[0],
     });
+    const onHideEventId = this.$instance.router.onHide;
+    eventCenter.on(onHideEventId, this.onHide);
   }
+
+  componentWillUnmount(): void {
+    const onHideEventId = this.$instance.router.onHide;
+    eventCenter.off(onHideEventId, this.onHide)
+  }
+
+  onHide = () => {
+    const { conditions } = this.props;
+    this.setState({
+      conditions,
+      isStartTime: false,
+      isEndTime: false,
+      params: {},
+      info: {},
+    })
+  };
 
   // 点击输入框触发日期弹窗组件
   onFocusInput = (info, type) => {
