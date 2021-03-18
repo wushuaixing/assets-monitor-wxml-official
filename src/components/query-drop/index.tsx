@@ -101,7 +101,8 @@ class QueryDrop extends Component<IProps, IState>{
     }
     if(JSON.stringify(initConfig) !== JSON.stringify(nextProps.initConfig)){
       this.setState({
-        config: nextProps.initConfig
+        config: nextProps.initConfig,
+        params: {},
       });
     }
   }
@@ -210,7 +211,7 @@ class QueryDrop extends Component<IProps, IState>{
     let newConfig: configType[] = [];
     config.forEach(item => {
       if(item.id === currentTab.id){
-        newConfig.push({...item, isSelected: true, conditions: [...conditions],})
+        newConfig.push({...item, isSelected: true, conditions: [...conditions] })
       }
       else {
         newConfig.push({...item})

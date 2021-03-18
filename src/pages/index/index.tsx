@@ -103,12 +103,13 @@ class Index extends Component <IProps, IState>{
     eventCenter.once(onReadyEventId, () => {
       Taro.getSystemInfo({
         success: res => {
-          console.log('sys === ', res);
+          // console.log('sys === ', res);
           setGlobalData('screenHeight', res.screenHeight);
           setGlobalData('statusBarHeight', res.statusBarHeight);
           Taro.createSelectorQuery().select('#home-title')
             .boundingClientRect()
             .exec(e => {
+              // console.log('e === ', e);
               this.setState({
                 navHeight: e[0].height,
                 scrollViewHeight: res.windowHeight - res.statusBarHeight - e[0].height
@@ -145,10 +146,11 @@ class Index extends Component <IProps, IState>{
   }
 
   shouldComponentUpdate(nextProps: Readonly<IProps>, nextState: Readonly<IState>): boolean {
-    const { current, businessCount, starLevel, loading } = this.state;
-    return current !== nextState.current ||  businessCount !== nextState.businessCount || loading !== nextState.loading || JSON.stringify(starLevel) !== JSON.stringify(nextState.starLevel);
+    const { current, businessCount, starLevel, loading, navHeight} = this.state;
+    return current !== nextState.current ||  businessCount !== nextState.businessCount || navHeight !== nextState.navHeight || loading !== nextState.loading || JSON.stringify(starLevel) !== JSON.stringify(nextState.starLevel);
   }
 
+  // 页面下拉的时候触发
   onPullDownRefresh () {
     const { dispatch } = this.props;
     dispatch({
@@ -384,7 +386,7 @@ class Index extends Component <IProps, IState>{
         <View className='home-title' id='home-title'>
           <NavigationBar  title='源诚资产监控' type='gradient' color='white'/>
         </View>
-        <View className='home-blank' style={{height: navHeight, width: '100%'}} />
+        <View className='home-blank' style={{height: navHeight || 20, width: '100%'}} />
         {
           businessCount > 0 && <ScrollView
 	          refresherEnabled={false}

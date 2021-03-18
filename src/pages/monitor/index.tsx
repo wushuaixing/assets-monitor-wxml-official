@@ -361,13 +361,12 @@ export default class Monitor extends Component <IProps, IState>{
           const { monitorParams } = this.props;
           const { currentId, starId, params} = this.state;
           if(monitorParams && Object.keys(monitorParams).length > 0){
-            console.log(' monitorParams 111=== ', monitorParams);
+            // console.log(' monitorParams 111=== ', monitorParams);
             this.backToTop();
             let tabId = monitorParams.tabId > 0 ? monitorParams.tabId : currentId;
             let newStarId = monitorParams.starId > 0 ? monitorParams.starId : starId;
             let assetAndRiskTypeValue = monitorParams.value ? filterArray([monitorParams.value]).join() : filterArray(tabId === 1 ? assestRuleArray : riskRuleArray).join();
             let newParams = {
-              ...params,
               assetAndRiskType: assetAndRiskTypeValue,
               score: getStarValue(tabId, newStarId)
             };
@@ -415,8 +414,20 @@ export default class Monitor extends Component <IProps, IState>{
   }
 
   componentDidHide (): void {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'home/emptyMonitorParams',
+      payload: {}
+    });
     this.setState({
-      isPropsMask: false
+      isPropsMask: false,
+      starId: 1,
+      currentId: 1,
+      params: {
+        assetAndRiskType: filterArray(assestRuleArray).join()
+      },
+      queryAssetsConfig: [],
+      queryRiskConfig: [],
     })
   }
 
