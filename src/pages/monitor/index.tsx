@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import Taro, { eventCenter, getCurrentInstance } from '@tarojs/taro'
 import {View, Text, Image, ScrollView} from '@tarojs/components'
 import { connect } from 'react-redux';
+import moment from "moment";
 import {handleDealAuthRule, isRule } from '../../utils/tools/common';
 import NavigationBar from '../../components/navigation-bar';
 import TagSelected from '../../components/tag-selected';
@@ -29,6 +30,7 @@ type IProps = {
     tabId: number
     value: string[]
     starId: number
+    dateType: string
   }
   assetsList: []
   riskList: []
@@ -116,7 +118,13 @@ const initialAssetsConfig = [
         type: 'time',
         field: ['updateTimeStart', 'updateTimeEnd'],
         value: [],
-      }
+        chooseType: 'quickTimeTag',
+        chooseTag: [
+          {name: '今天', value: '1', active: false},
+          {name: '近七天', value: '2', active: false},
+          {name: '全部', value: '3', active: false},
+        ]
+      },
     ],
   },
 ];
@@ -175,6 +183,12 @@ const initialRiskConfig = [
         type: 'time',
         field: ['updateTimeStart', 'updateTimeEnd'],
         value: [],
+        chooseType: 'quickTimeTag',
+        chooseTag: [
+          {name: '今天', value: '1', active: false},
+          {name: '近七天', value: '2', active: false},
+          {name: '全部', value: '3', active: false},
+        ]
       }
     ],
   },
@@ -358,14 +372,15 @@ export default class Monitor extends Component <IProps, IState>{
         const { monitorParams } = this.props;
         const { currentId, starId } = this.state;
         if(monitorParams && Object.keys(monitorParams).length > 0){
-          // console.log(' monitorParams 111=== ', monitorParams);
           this.backToTop();
           let tabId = monitorParams.tabId > 0 ? monitorParams.tabId : currentId;
           let newStarId = monitorParams.starId > 0 ? monitorParams.starId : starId;
           let assetAndRiskTypeValue = monitorParams.value ? filterArray([monitorParams.value]).join() : filterArray(tabId === 1 ? assestRuleArray : riskRuleArray).join();
           let newParams = {
             assetAndRiskType: assetAndRiskTypeValue,
-            score: getStarValue(tabId, newStarId)
+            score: getStarValue(tabId, newStarId),
+            updateTimeStart: monitorParams.dateType !== '1' ? (monitorParams.dateType === '2' ? moment().subtract(7).format('YYYY-MM-DD') : undefined) : moment().format('YYYY-MM-DD'),
+            updateTimeEnd: monitorParams.dateType === '3' ? undefined : moment().format('YYYY-MM-DD'),
           };
           this.setState({
             queryAssetsConfig: this.handleUpdataConfig(JSON.parse(JSON.stringify(assetsConfig)), monitorParams),
@@ -398,12 +413,12 @@ export default class Monitor extends Component <IProps, IState>{
     }).catch(() => {});
   }
 
-  shouldComponentUpdate(nextProps: Readonly<IProps>, nextState: Readonly<IState>): boolean {
+  shouldComponentUpdate(_nextProps: Readonly<IProps>, nextState: Readonly<IState>): boolean {
     const { listCount, currentId, page, isScroll, starId} = this.state;
     return listCount !== nextState.listCount || currentId !== nextState.currentId || page !== nextState.page || isScroll !== nextState.isScroll || starId !== nextState.starId;
   }
 
-  componentWillReceiveProps(nextProps: Readonly<IProps>, nextContext: any): void {
+  componentWillReceiveProps(nextProps: Readonly<IProps> ): void {
     const { currentId, starId } = this.state;
     const { monitorParams } = this.props;
     if(JSON.stringify(monitorParams) !== JSON.stringify(nextProps.monitorParams)){
@@ -435,18 +450,34 @@ export default class Monitor extends Component <IProps, IState>{
   }
 
   // 手动更新下拉框的配置
-  handleUpdataConfig = (config, params?: any) => {
-    const { tabId, value} = params;
-    if( tabId === 1 && value){
-      let assetsConfig =  [...config];
-      assetsConfig[1].isSelected = true;
-      assetsConfig[1].title = getRuleName(value);
+  handleUpdataConfig = (config, params: {tabId?: number, value?: string, dateType: string}) => {
+    const { tabId, value, dateType } = params;
+    if( tabId === 1 ){
+      let assetsConfig = [...config];
+      if(value){
+        assetsConfig[1].isSelected = true;
+        assetsConfig[1].title = getRuleName(value);
+      }
+      let newChooseTag: any = [];
+      let chooseTag = assetsConfig[2].conditions[0].chooseTag;
+      chooseTag.forEach(item => {
+        newChooseTag.push({...item, active: item.value === dateType })
+      });
+      assetsConfig[2].conditions[0].chooseTag = JSON.parse(JSON.stringify(newChooseTag));
       return assetsConfig;
     }
-    if( tabId === 2 && value ){
+    if( tabId === 2 ){
       let riskConfig = [...config];
-      riskConfig[1].isSelected = true;
-      riskConfig[1].title = getRuleName(value);
+      if(value){
+        riskConfig[1].isSelected = true;
+        riskConfig[1].title = getRuleName(value);
+      }
+      let newChooseTag: any = [];
+      let chooseTag = riskConfig[2].conditions[0].chooseTag;
+      chooseTag.forEach(item => {
+        newChooseTag.push({...item, active: item.value === dateType })
+      });
+      riskConfig[2].conditions[0].chooseTag = JSON.parse(JSON.stringify(newChooseTag));
       return riskConfig;
     }
     return JSON.parse(JSON.stringify(config));
