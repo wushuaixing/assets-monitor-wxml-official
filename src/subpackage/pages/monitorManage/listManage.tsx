@@ -4,6 +4,7 @@ import ObligorListItem from "./obligorListItem";
 import BusinessListItem from "./businessListItem/index";
 import {connect} from 'react-redux';
 import './index.scss'
+import {AtActivityIndicator} from "taro-ui";
 
 
 type isState = {
@@ -84,7 +85,7 @@ export default class ListManage extends Component<any, isState> {
   }
 
   render() {
-    const {data, current, searchValue, handleBusinessList, loading, scrollHeight} = this.props;
+    const {data, current, searchValue, handleBusinessList, loading, scrollHeight, hasNext} = this.props;
     const {refreshDownStatus} = this.state;
     console.log('scrollHeight123===', scrollHeight)
     return (
@@ -109,7 +110,15 @@ export default class ListManage extends Component<any, isState> {
             current ? <ObligorListItem data={data} type='obligor'/> :
               <BusinessListItem data={data} searchValue={searchValue} handleBusinessList={handleBusinessList}/>
           }
-
+          {
+            hasNext ? <View className='yc-monitorManage-scroll-more'>
+              <AtActivityIndicator content='正在加载' color='#cccccc'/>
+            </View> : (!loading && <View className='yc-monitorManage-scroll-done'>
+              <View className='yc-monitorManage-scroll-done-left'/>
+              <View className='yc-monitorManage-scroll-done-text'>我是有底线的</View>
+              <View className='yc-monitorManage-scroll-done-right'/>
+            </View>)
+          }
         </ScrollView>
       </View>
     )

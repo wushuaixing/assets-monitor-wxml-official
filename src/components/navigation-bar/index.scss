@@ -1,6 +1,6 @@
-@mixin contentItem{
-
-}
+//@mixin contentItem{
+//
+//}
 
 .navigation-blue{
   background-color: $primary-color;
@@ -54,4 +54,31 @@
 }
 .navigation-wrapper-border{
   border-bottom: 1px solid $border-color;
+}
+.navigation-obligorCustom{
+  display: flex;
+  justify-content: space-between;
+  padding:0 285px 0 84px;
+  line-height: 45PX;
+  text-align: center;
+  color: $common-text;
+  font-weight: bold;
+  font-size: 36px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow:ellipsis;
+}
+.navigation-home{
+  display: flex;
+  align-items: baseline;
+  &-line{
+    width: 1px;
+    height: 32px;
+    background: #706E74;
+  }
+  &-icon{
+    color: #333333;
+    font-size: 44px;
+    padding-left: 24px;
+  }
 }

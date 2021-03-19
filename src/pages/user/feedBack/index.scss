@@ -74,6 +74,9 @@
         font-size: 36px;
         color: #FFFFFF;
         text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
     }
   }
@@ -126,4 +129,15 @@
   font-size: 32px;
   color: #CCCCCC;
   line-height: 48px;
+}
+.yc-feedBack .at-activity-indicator{
+  justify-content: center;
+}
+.yc-feedBack .at-loading, .at-loading__ring {
+  width: 36px;
+  height:36px;
+}
+.yc-feedBack .at-activity-indicator__content{
+  font-size: 36px;
+  color: #FFFFFF;
 }
