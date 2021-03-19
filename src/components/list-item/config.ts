@@ -61,6 +61,20 @@ const getAuctionStatus = (status: number) => {
   return title
 };
 
+// 固定字体颜色 const status = 1-即将开始、3-正在进行、5-已成交、7-已流拍、9-中止、11-撤回
+const getAuctionStatusColor = (status: number) =>{
+  let condition :object = {title:'',color:''};
+  switch (status) {
+    case 1: condition={title:'即将开始',color:'#F57A00'}; break;
+    case 3: condition={title:'正在进行',color:'#F57A00'}; break;
+    case 5: condition={title:'已成交',color:'#00B578'}; break;
+    case 7: condition={title:'已流拍',color:'#666666'}; break;
+    case 9: condition={title:'中止',color:'#666666'}; break;
+    case 11: condition={title:'撤回',color:'#666666'}; break;
+  }
+  return condition
+}
+
 
 // 角色类型:0-未知 1-资产所有人 2-债权人 3-资产线索 4-起诉人 5-竞买人
 const getAuctionRoleType = (role: number) => {
@@ -225,5 +239,6 @@ export {
   getJumpType,
   getCaseType,
   getLevel,
-  getRequestParams
+  getRequestParams,
+  getAuctionStatusColor
 }

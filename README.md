@@ -33,7 +33,7 @@ http://172.18.255.251:18080/doc.html
 
 #### 2、项目环境
 + 环境管理
- 当前相关环境，共有两个环境。分别是测试环境（开发环境）、线上环境。 配置文件地址：assets-monitor-wxml\src\utils\config\index.ts，如果地址是https://wechatdev.yczcjk.com 是测试环境，https://wechat.yczcjk.com就是线上环境。
+ 当前相关环境，共有两个环境。分别是测试环境（开发环境）、线上环境。 配置文件地址：assets-monitor-wxml\src\utils\config\index.tsx，如果地址是https://wechatdev.yczcjk.com 是测试环境，https://wechat.yczcjk.com就是线上环境。
 
 + 分支管理
 目前开发分支是dev分支

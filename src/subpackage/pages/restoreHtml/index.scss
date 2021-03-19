@@ -1,0 +1,17 @@
+.writDetails{
+  &-content{
+    height:88vh;
+    overflow: scroll;
+    //overflow-x: hidden;
+    padding: 20px 20px 30px 20px;
+    .rich-div{
+      font-size: 26px !important;
+    }
+    .rich-img{
+      width: 95vw;
+    }
+    .rich-table{
+      width: 95vw;
+    }
+  }
+}

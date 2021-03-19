@@ -94,8 +94,8 @@
       position: absolute;
       right: 0;
       top: 102px;
-      color: #FF3B30;
-      background-color: #FFE7E6;
+      color: #F5F5F5;
+      background-color: #FF5E55;
       font-size: 24px;
       line-height: 24px;
       padding: 8px 12px;
@@ -108,8 +108,8 @@
       position: absolute;
       right: 0;
       top: 102px;
-      color: $text-color;
-      background-color: $border-color;
+      color: #FFFFFF;
+      background-color: #999999;
       font-size: 24px;
       line-height: 24px;
       padding: 8px 12px;
@@ -126,6 +126,7 @@
       font-size: 32px;
       line-height: 45px;
       padding: 28px 0 29px 24px;
+      border: 1px solid #E5E5E5;
     }
 
     &-line{
@@ -152,10 +153,12 @@
   &-history{
     margin-top: 23px;
     position: relative;
+    margin-bottom: 30px;
     &-title{
       background-color: white;
       display: flex;
       justify-content: space-between;
+      border-bottom: 1px solid #E5E5E5;
       &-left{
         color: $common-text;
         font-size: 32px;
@@ -185,6 +188,139 @@
         font-size: 33px;
       }
     }
-  }
 
+    &-contents:last-child{
+      .auction-history-contents-wire{
+        display: none;
+      }
+    }
+    //历史拍卖列表
+    &-contents{
+      background-color: white;
+      padding: 4px 24px 10px 24px;
+      position: relative;
+
+      &-title{
+        color: $common-text;
+        font-size: 30px;
+        line-height: 45px;
+        margin-top: 16px;
+      }
+      &-info{
+        font-size: 28px;
+        line-height: 28px;
+        margin-top: 6px;
+        display: flex;
+        &-label{
+          color: $label-color;
+          word-break: keep-all;
+          line-height: 42px;
+          height: 42px;
+        }
+        &-colon{
+          height: 42px;
+          line-height: 42px;
+          color: $label-color;
+          word-break: keep-all;
+        }
+        &-justifylabel{
+          height: 42px;
+          line-height: 42px;
+          color: $label-color;
+          word-break: keep-all;
+          max-width: 110px;
+          width: 110px;
+          text-align-last: justify;
+          text-align: justify;
+          text-justify: distribute-all-lines;
+          &:after{
+            display: inline-block;
+            height: 0;
+            width: 100%;
+            content: ' ';
+          }
+        }
+        &-value{
+          line-height: 42px;
+          color: $text-color;
+          &-link{
+            color: $primary-color;
+          }
+        }
+        &-text{
+          color: $text-color;
+          line-height: 42px;
+          &-link{
+            color: $primary-color;
+          }
+          &-time{
+            display: block;
+          }
+        }
+        .blod{
+          font-weight: 500;
+        }
+        .link{
+          color: $primary-color;
+        }
+      }
+
+      &-wire{
+        height:96%;
+        border-left:1px dashed  #CCCCCC;
+        position: absolute;
+        top: 30px;
+        left: 138px;
+        z-index: 1;
+      }
+      &-info{
+        display: flex;
+        align-items: center;
+        &-round{
+          width: 120px;
+          height: 30px;
+          text-align: left;
+          vertical-align: bottom;
+          margin-left: -12px;
+        }
+        &-dot{
+          width: 14px;
+          height: 14px;
+          border-radius: 50%;
+          background-color: #1C80E1;
+          margin-right: 30px;
+          vertical-align:bottom;
+          box-shadow: 0px 0px 0px 6px #DFE9FE;
+          position: relative;
+          z-index: 1;
+        }
+      }
+    }
+  }
+  .history-side{
+    margin-left: 152px;
+  }
+  //星级标签样式
+  &-item-header-title-tag-star{
+    width: 116px;
+    height: 40px;
+    border: 2px solid #F5A623;
+    text-align: center;
+    line-height: 40px;
+    &-active{
+      color:#F57A00;
+      font-size: 26px;
+      margin: 0 2px;
+      line-height: 40px;
+      display: inline-block;
+    }
+    &-normal{
+      color: #F57A00;
+      opacity: 0.25;
+      font-size: 26px;
+      margin: 0 2px;
+      line-height: 40px;
+      display: inline-block;
+    }
+  }
 }
