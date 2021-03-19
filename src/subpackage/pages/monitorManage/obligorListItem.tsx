@@ -3,7 +3,9 @@ import {connect} from 'react-redux';
 import {Text, View, Image} from '@tarojs/components'
 import './index.scss'
 import LogoImg from '../../../assets/img/monitorManage/monitorManage_logo.png';
-import {Message} from '../../../utils/tools/common'
+import {Message} from '../../../utils/tools/common';
+import Taro from '@tarojs/taro';
+import TagGroup from "../../../components/tag-group";
 
 type isState = {
   curData: any
@@ -91,6 +93,10 @@ export default class ObligorListItem extends Component<any, isState> {
     })
   }
 
+  onDetailClick = (obligorId) =>{
+    Taro.navigateTo({url:`/subpackage/pages/monitorManage/obligorDetail/index?obligorId=${obligorId}`})
+  }
+
 
   render() {
     const {data, type} = this.props;
@@ -105,7 +111,7 @@ export default class ObligorListItem extends Component<any, isState> {
         {
           data && data.length > 0 && data.map((i, index) => {
             return (
-              <View>
+              <View onClick={()=>{this.onDetailClick(type === 'obligor' ? i.id : i.obligorId)}}>
                 <View className='yc-monitorManage-bottom-content'>
                   {
                     type === 'obligor' ?
@@ -123,7 +129,7 @@ export default class ObligorListItem extends Component<any, isState> {
                   }
                   <View className='yc-monitorManage-bottom-content-baseInfo'>
                     {
-                      i.obligorName.length > 4 && i.obligorNumber === '' ?
+                      i.obligorName.length > 4 ?
                         <View className='yc-monitorManage-bottom-content-baseInfo-company'>
                           {i.obligorName || '--'}
                         </View> :
@@ -138,32 +144,14 @@ export default class ObligorListItem extends Component<any, isState> {
 
                     <View className='yc-monitorManage-bottom-content-baseInfo-bottom'>
                       <View className='yc-monitorManage-bottom-content-baseInfo-bottom-tags'>
-                        {
-                          i.isBorrower ?
-                            <View
-                              className='yc-monitorManage-bottom-content-baseInfo-bottom-tags-borrow'>借</View> : null
-                        }
-                        {
-                          i.dishonestStatus ?
-                            <View className='yc-monitorManage-bottom-content-baseInfo-bottom-tags-sx'>失信</View> : null
-                        }
-                        {
-                          i.limitHeightStatus ?
-                            <View className='yc-monitorManage-bottom-content-baseInfo-bottom-tags-sx'>限高</View> : null
-                        }
-
-                        {
-                          i.isTable ? <View className='yc-monitorManage-bottom-content-baseInfo-bottom-tags-sx'
-                                            style={{
-                                              background: '#F5F5F5',
-                                              color: '#666666'
-                                            }}>{i.regStatus}</View> : null
-                        }
-                        {
-                          i.bankruptcyStatus || i.bankruptcy ?
-                            <View className='yc-monitorManage-bottom-content-baseInfo-bottom-tags-sx'
-                                  style={{width: '120rpx'}}>破产重组</View> : null
-                        }
+                        <TagGroup
+                          isBorrower={i.isBorrower}
+                          dishonestStatus={i.dishonestStatus}
+                          limitHeightStatus={i.limitHeightStatus}
+                          isTable={i.isTable}
+                          bankruptcyStatus={i.bankruptcyStatus || i.bankruptcy}
+                          regStatus={i.regStatus}
+                        />
                       </View>
                       <View className='yc-monitorManage-bottom-content-baseInfo-bottom-left'>
                         <Text className='yc-monitorManage-bottom-content-baseInfo-bottom-left-text'>资产</Text>
@@ -178,7 +166,7 @@ export default class ObligorListItem extends Component<any, isState> {
                       </View>
                     </View>
                   </View>
-                  <View className='yc-monitorManage-bottom-content-right'>
+                  <View className='yc-monitorManage-bottom-content-right' onClick={(e)=>{e.stopPropagation();}}>
                     <View
                       className={i.pushState || i.obligorPushType ? 'yc-monitorManage-bottom-content-right-yes' : 'yc-monitorManage-bottom-content-right-no'}
                       onClick={() => {
