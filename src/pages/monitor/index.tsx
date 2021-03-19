@@ -9,7 +9,7 @@ import QueryDrop from '../../components/query-drop';
 import Tab from '../../components/tab';
 import ListItem from '../../components/list-item/index';
 import blankNodata from '../../assets/img/page/blank_nodate.png';
-import {getGlobalData, setGlobalData} from "../../utils/const/global";
+import { setGlobalData} from "../../utils/const/global";
 import backTop from '../../assets/img/components/back-top.png'
 import { getStarValue, getRuleName, filterArray, getUpdateRuleConfig } from './config';
 import './index.scss'
@@ -324,8 +324,6 @@ export default class Monitor extends Component <IProps, IState>{
   }
 
   componentWillMount(): void {
-    // 设置第一次进入监控页触发加载
-    setGlobalData('refreshMonitor', true);
     const onReadyEventId = this.$instance.router.onReady;
     eventCenter.once(onReadyEventId, () => {
       let height = 0;
@@ -348,54 +346,56 @@ export default class Monitor extends Component <IProps, IState>{
 
   componentDidShow() {
     const { dispatch } = this.props;
-    if(getGlobalData('refreshMonitor')){
-      dispatch({
-        type: 'home/getAuthRule',
-        payload: {}
-      }).then(res => {
-        if(res.code === 200){
-          let ruleArray = handleDealAuthRule(res.data.orgPageGroups);
-          setGlobalData('ruleArray', ruleArray);
-          let assetsConfig = getUpdateRuleConfig(JSON.parse(JSON.stringify(initialAssetsConfig)));
-          let riskConfig = getUpdateRuleConfig( JSON.parse(JSON.stringify(initialRiskConfig)));
-          const { monitorParams } = this.props;
-          const { currentId, starId, params} = this.state;
-          if(monitorParams && Object.keys(monitorParams).length > 0){
-            console.log(' monitorParams 111=== ', monitorParams);
-            this.backToTop();
-            let tabId = monitorParams.tabId > 0 ? monitorParams.tabId : currentId;
-            let newStarId = monitorParams.starId > 0 ? monitorParams.starId : starId;
-            let assetAndRiskTypeValue = monitorParams.value ? filterArray([monitorParams.value]).join() : filterArray(tabId === 1 ? assestRuleArray : riskRuleArray).join();
-            let newParams = {
-              ...params,
-              assetAndRiskType: assetAndRiskTypeValue,
-              score: getStarValue(tabId, newStarId)
-            };
-            this.setState({
-              queryAssetsConfig: this.handleUpdataConfig(JSON.parse(JSON.stringify(assetsConfig)), monitorParams),
-              queryRiskConfig: this.handleUpdataConfig(JSON.parse(JSON.stringify(riskConfig)), monitorParams),
-              currentId: tabId,
-              starId: newStarId,
-              params: {...newParams},
-              loading: true,
-              isPropsMask: false,
-            }, () => {
-              this.handleRequestList({...newParams}, true);
-            });
-          }
-          else {
-            this.setState({
-              queryAssetsConfig: JSON.parse(JSON.stringify(assetsConfig)),
-              queryRiskConfig: JSON.parse(JSON.stringify(riskConfig)),
-              loading: true,
-              isPropsMask: false,
-            }, () => {
-              this.handleRequestList({...params}, true);
-            });
-          }
+    dispatch({
+      type: 'home/getAuthRule',
+      payload: {}
+    }).then(res => {
+      if(res.code === 200){
+        let ruleArray = handleDealAuthRule(res.data.orgPageGroups);
+        setGlobalData('ruleArray', ruleArray);
+        let assetsConfig = getUpdateRuleConfig(JSON.parse(JSON.stringify(initialAssetsConfig)));
+        let riskConfig = getUpdateRuleConfig( JSON.parse(JSON.stringify(initialRiskConfig)));
+        const { monitorParams } = this.props;
+        const { currentId, starId } = this.state;
+        if(monitorParams && Object.keys(monitorParams).length > 0){
+          // console.log(' monitorParams 111=== ', monitorParams);
+          this.backToTop();
+          let tabId = monitorParams.tabId > 0 ? monitorParams.tabId : currentId;
+          let newStarId = monitorParams.starId > 0 ? monitorParams.starId : starId;
+          let assetAndRiskTypeValue = monitorParams.value ? filterArray([monitorParams.value]).join() : filterArray(tabId === 1 ? assestRuleArray : riskRuleArray).join();
+          let newParams = {
+            assetAndRiskType: assetAndRiskTypeValue,
+            score: getStarValue(tabId, newStarId)
+          };
+          this.setState({
+            queryAssetsConfig: this.handleUpdataConfig(JSON.parse(JSON.stringify(assetsConfig)), monitorParams),
+            queryRiskConfig: this.handleUpdataConfig(JSON.parse(JSON.stringify(riskConfig)), monitorParams),
+            currentId: tabId,
+            starId: newStarId,
+            params: {...newParams},
+            loading: true,
+            isPropsMask: false,
+          }, () => {
+            this.handleRequestList({...newParams}, true);
+          });
         }
-      }).catch(() => {});
-    }
+        else {
+          this.setState({
+            queryAssetsConfig: JSON.parse(JSON.stringify(assetsConfig)),
+            queryRiskConfig: JSON.parse(JSON.stringify(riskConfig)),
+            params: {
+              assetAndRiskType: filterArray(assestRuleArray).join(),
+            },
+            loading: true,
+            isPropsMask: false,
+          }, () => {
+            this.handleRequestList({
+              assetAndRiskType: filterArray(assestRuleArray).join(),
+            }, true);
+          });
+        }
+      }
+    }).catch(() => {});
   }
 
   shouldComponentUpdate(nextProps: Readonly<IProps>, nextState: Readonly<IState>): boolean {
@@ -415,8 +415,22 @@ export default class Monitor extends Component <IProps, IState>{
   }
 
   componentDidHide (): void {
+    let assetsConfig = getUpdateRuleConfig(JSON.parse(JSON.stringify(initialAssetsConfig)));
+    let riskConfig = getUpdateRuleConfig( JSON.parse(JSON.stringify(initialRiskConfig)));
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'home/emptyMonitorParams',
+      payload: {}
+    });
     this.setState({
-      isPropsMask: false
+      isPropsMask: false,
+      starId: 1,
+      currentId: 1,
+      params: {
+        assetAndRiskType: filterArray(assestRuleArray).join()
+      },
+      queryAssetsConfig: assetsConfig,
+      queryRiskConfig: riskConfig,
     })
   }
 

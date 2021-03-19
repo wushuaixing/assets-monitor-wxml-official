@@ -1,6 +1,8 @@
 export default {
   navigationBarTitleText: '首页',
   navigationStyle: 'custom',
-  disableScroll: true,
-  navigationBarTextStyle: 'white'
+  navigationBarTextStyle: 'white',
+  enablePullDownRefresh: true,
+  backgroundTextStyle: 'dark',
+  backgroundColor: '#f5f5f5'
 }

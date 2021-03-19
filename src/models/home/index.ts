@@ -49,5 +49,12 @@ export default {
         monitorParams: {...newParmas},
       }
     },
+
+    emptyMonitorParams(state) {
+      return {
+        ...state,
+        monitorParams: {},
+      }
+    },
   }
 }

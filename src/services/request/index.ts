@@ -79,7 +79,7 @@ const handleStatusCode = (res: resType) => {
 };
 
 function checkHttpStatus(options, response: any, resolve, reject) {
-  console.log('url === ', options.url);
+  // console.log('url === ', options.url);
   if(response.statusCode >= 200 && response.statusCode < 300) {
     resolve(response.data);
   } else {

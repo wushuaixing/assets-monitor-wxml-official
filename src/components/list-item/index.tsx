@@ -59,10 +59,8 @@ const ListItem = (props: IProps) => {
 
   // 跳转详情页
   const handleGoDetail = () => {
-    let detailString = JSON.stringify({...detail, dataType});
-    let url = getJumpType(dataType).url;
     Taro.navigateTo({
-      url: `${url}?detail=${detailString}`,
+      url: getJumpType(dataType).url,
       success: function(res) {
         setGlobalData('refreshMonitor', false);
         res.eventChannel.emit('acceptDataFromOpenerPage', { ...detail, dataType})
@@ -72,17 +70,22 @@ const ListItem = (props: IProps) => {
 
   // 点击已读未读
   const handleMarkRead = () => {
-    getJumpType(dataType).apiName({...getRequestParams(dataType, detail.id)})
-      .then(res => {
-        if(res.code === 200 && res.data){
-          const { id } = detail;
-          onRefresh({id, isRead: true, index}, 'isRead');
-          handleGoDetail();
-        }
-        else {
-          handleGoDetail();
-        }
-      })
+    if(!detail.isRead){
+      getJumpType(dataType).apiName({...getRequestParams(dataType, detail.id)})
+        .then(res => {
+          if(res.code === 200 && res.data){
+            const { id } = detail;
+            onRefresh({id, isRead: true, index}, 'isRead');
+            handleGoDetail();
+          }
+          else {
+            handleGoDetail();
+          }
+        })
+    }
+    else {
+      handleGoDetail();
+    }
   };
 
   const handleGetName = (parties, field, name ) => {

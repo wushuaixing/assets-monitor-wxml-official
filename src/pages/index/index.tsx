@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Taro, { getCurrentInstance}from '@tarojs/taro';
+import Taro, { eventCenter, getCurrentInstance}from '@tarojs/taro';
 import {View, Text, Image, ScrollView} from '@tarojs/components';
 import { connect } from 'react-redux';
 import NavigationBar from '../../components/navigation-bar';
@@ -52,6 +52,7 @@ type IState = {
   scrollViewHeight: number
   loading: boolean,
   businessCount: number
+  navHeight: number,
   caseArray: caseItem[]
   assetsArray: dataItem[]
   riskArray: dataItem[]
@@ -82,6 +83,7 @@ class Index extends Component <IProps, IState>{
       scrollViewHeight: 0,
       loading: true,
       businessCount: 0,
+      navHeight: 0,
       assetsArray: [],
       riskArray: [],
       starLevel: {
@@ -96,23 +98,30 @@ class Index extends Component <IProps, IState>{
     };
   }
 
-  // componentWillMount () {
-  //   const onReadyEventId = this.$instance.router.onReady;
-  //   eventCenter.once(onReadyEventId, () => {
-  //
-  //   });
-  // }
+  componentWillMount(): void {
+    const onReadyEventId = this.$instance.router.onReady;
+    eventCenter.once(onReadyEventId, () => {
+      Taro.getSystemInfo({
+        success: res => {
+          // console.log('sys === ', res);
+          setGlobalData('screenHeight', res.screenHeight);
+          setGlobalData('statusBarHeight', res.statusBarHeight);
+          Taro.createSelectorQuery().select('#home-title')
+            .boundingClientRect()
+            .exec(e => {
+              // console.log('e === ', e);
+              this.setState({
+                navHeight: e[0].height,
+                scrollViewHeight: res.windowHeight - res.statusBarHeight - e[0].height
+              })
+            })
+          }
+        })
+    });
+  }
 
   componentDidShow () {
-    Taro.getSystemInfo({
-      success: res => {
-        setGlobalData('screenHeight', res.screenHeight);
-        setGlobalData('statusBarHeight', res.statusBarHeight);
-        this.setState({
-          scrollViewHeight: res.windowHeight - res.statusBarHeight
-        })
-      }
-    });
+
     const { dispatch } = this.props;
     dispatch({
       type: 'home/getCurrentOrganization',
@@ -137,9 +146,41 @@ class Index extends Component <IProps, IState>{
   }
 
   shouldComponentUpdate(nextProps: Readonly<IProps>, nextState: Readonly<IState>): boolean {
-    const { current, businessCount, starLevel, loading } = this.state;
-    return current !== nextState.current ||  businessCount !== nextState.businessCount || loading !== nextState.loading || JSON.stringify(starLevel) !== JSON.stringify(nextState.starLevel);
+    const { current, businessCount, starLevel, loading, navHeight} = this.state;
+    return current !== nextState.current ||  businessCount !== nextState.businessCount || navHeight !== nextState.navHeight || loading !== nextState.loading || JSON.stringify(starLevel) !== JSON.stringify(nextState.starLevel);
   }
+
+  // 页面下拉的时候触发
+  onPullDownRefresh () {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'home/getCurrentOrganization',
+      payload: {}
+    }).then(res => {
+      if(res.code === 200){
+        this.setState({
+          businessCount: res.data.businessCount,
+        })
+      }
+    }).catch();
+    dispatch({
+      type: 'home/getAuthRule',
+      payload: {}
+    }).then(res => {
+      if(res.code === 200){
+        let ruleArray = handleDealAuthRule(res.data.orgPageGroups);
+        setGlobalData('ruleArray', ruleArray);
+        const { current } = this.state;
+        if(current === 1){
+          this.handleRequestAsstes('refresh');
+        }
+        else {
+          this.handleRequestRisk('refresh');
+        }
+      }
+    }).catch(() => {});
+  }
+
 
   // 点击资产或者风险tab
   handleClick = (value?: any) => {
@@ -167,12 +208,15 @@ class Index extends Component <IProps, IState>{
   };
 
   // 请求资产列表的数据
-  handleRequestAsstes = () => {
+  handleRequestAsstes = (type?: string) => {
     const { dispatch } = this.props;
     dispatch({
       type: 'home/getAssets',
       payload: {}
     }).then(res => {
+      if(type === 'refresh'){
+        Taro.stopPullDownRefresh();
+      }
       const { starLevel } = this.state;
       let newStarLevel = {...starLevel};
       const { code, data} = res;
@@ -210,12 +254,15 @@ class Index extends Component <IProps, IState>{
   };
 
   // 请求风险列表的数据
-  handleRequestRisk = () => {
+  handleRequestRisk = (type?: string) => {
     const { dispatch } = this.props;
     dispatch({
       type: 'home/getRisk',
       payload: {}
     }).then(res => {
+      if(type === 'refresh'){
+        Taro.stopPullDownRefresh();
+      }
       const { code, data} = res;
       const { starLevel } = this.state;
       let newStarLevel = {...starLevel};
@@ -319,7 +366,6 @@ class Index extends Component <IProps, IState>{
         }
       }
     });
-    setGlobalData('refreshMonitor', true);
     Taro.switchTab({
       url:'/pages/monitor/index'
     });
@@ -330,17 +376,24 @@ class Index extends Component <IProps, IState>{
       { title: '资产', id: 1 },
       { title: '风险', id: 2 },
     ];
-    const { current, businessCount, assetsArray, riskArray, starLevel, scrollViewHeight, loading} = this.state;
+    const { current, businessCount, assetsArray, riskArray, starLevel, scrollViewHeight, loading, navHeight} = this.state;
     const assetsSum = getArraySum(assetsArray, 'num') || 0;
     const riskSum = getArraySum(riskArray, 'num') || 0;
     console.log('scrollViewHeight === ', scrollViewHeight);
     return (
       <View className='home'>
-        <View className='home-title'>
+        <View className='home-title' id='home-title'>
           <NavigationBar  title='源诚资产监控' type='gradient' color='white'/>
         </View>
+        <View className='home-blank' style={{height: navHeight || 20, width: '100%'}} />
         {
-          businessCount > 0 && <ScrollView scrollY style={{ height: scrollViewHeight || getGlobalData('screenHeight') }}>
+          businessCount > 0 && <ScrollView
+	          refresherEnabled={false}
+	          refresherDefaultStyle='none'
+	          refresherBackground='#f5f5f5'
+            scrollY
+            style={{ height: scrollViewHeight || getGlobalData('screenHeight') }}
+          >
             <View className='home-bg'>
               <View className='home-header'>
                 <View className='home-header-tab' onClick={()=>{this.onAddBusClick('homeAddBus')}}
@@ -557,7 +610,6 @@ class Index extends Component <IProps, IState>{
                 )
               }
             </View>
-
             {/*目前线索使用案例只和资产有关 线索使用案例目前先不展示2021-3-4*/}
             {/*{*/}
             {/*  assetsArray.length === 0 && <View className='home-case'>*/}
