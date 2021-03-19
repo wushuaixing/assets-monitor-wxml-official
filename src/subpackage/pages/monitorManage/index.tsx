@@ -157,10 +157,12 @@ export default class MonitorManage extends Component<IProps, isState> {
 
   handleObligorList = (pageTemp, searchValue, isScroll) => {
     this.setState({
-      loading: !isScroll,
+      loading: true,
       listLoading: !isScroll
     })
-    Taro.showLoading({title: '正在加载...'});
+    if (!isScroll) {
+      Taro.showLoading({title: '正在加载...'});
+    }
     this.props.dispatch({
       type: 'monitorManage/getObligorList',
       payload: {page: pageTemp, obligorName: searchValue}
@@ -193,10 +195,12 @@ export default class MonitorManage extends Component<IProps, isState> {
 
   handleBusinessList = (pageTemp, searchValue, isScroll) => {
     this.setState({
-      loading: !isScroll,
+      loading: true,
       listLoading: !isScroll
     })
-    Taro.showLoading({title: '正在加载...'});
+    if (!isScroll) {
+      Taro.showLoading({title: '正在加载...'});
+    }
     this.props.dispatch({
       type: 'monitorManage/getBusinessList',
       payload: {page: pageTemp, caseNumberOrObligorName: searchValue}
@@ -246,7 +250,7 @@ export default class MonitorManage extends Component<IProps, isState> {
       {title: '业务', id: 1},
       {title: '债务人', id: 2},
     ];
-    const {current, searchValue, total, dataSource, loading, listLoading, scrollHeight} = this.state;
+    const {current, searchValue, total, dataSource, loading, listLoading, scrollHeight, hasNext} = this.state;
     console.log('scrollHeight====', scrollHeight)
     const totalNumerText = current ? '个债务人' : '笔监控业务';
     const emptyText = current ? '暂无监控的债务人' : '您还未添加监控业务';
@@ -323,6 +327,8 @@ export default class MonitorManage extends Component<IProps, isState> {
                 this.handleObligorList(1, searchValue, 0)
               }}
               scrollHeight={scrollHeight}
+              hasNext={hasNext}
+              loading={loading}
             />
             :
             <View>

@@ -1,0 +1,27 @@
+.yc-tagGroup {
+  &-borrow {
+    display: inline-block;
+    width: 36px;
+    height: 40px;
+    background: #FF3B30;
+    border-radius: 2px;
+    color: #FFFFFF;
+    line-height: 40px;
+    text-align: center;
+    margin-right: 12px;
+    font-size: 24px;
+  }
+
+  &-sx {
+    display: inline-block;
+    width: 72px;
+    height: 40px;
+    background: #FFECEB;
+    border-radius: 2px;
+    color: #FF3B30;
+    line-height: 40px;
+    text-align: center;
+    margin-right: 12px;
+    font-size: 24px;
+  }
+}

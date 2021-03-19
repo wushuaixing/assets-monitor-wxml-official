@@ -1,0 +1,95 @@
+.assetsRisk {
+  background: #FFFFFF;
+
+  &-content {
+    &-line{
+      height:24px;
+      background: #F5F5F5;
+    }
+    &-companyLine{
+      height:1px;
+      background: #E5E5E5;
+    }
+    &-atTab {
+
+      .at-tabs__item {
+        height: 88px;
+        line-height: 88px;
+        padding: 0;
+      }
+
+      .at-tabs__item--active {
+        color: #0979E6;
+        font-weight: 500;
+      }
+
+      .at-tabs__item-underline {
+        height: 4px;
+        background: #0979E6;
+        width: 30%;
+        left: 35%;
+      }
+    }
+
+    &-risk {
+      line-height: 88px;
+
+      &-info {
+        padding-left: 24px;
+
+        &-text {
+          font-size: 32px;
+          font-weight: 500;
+          color: #333333;
+        }
+      }
+      &-line {
+        height: 1px;
+        background: #FFFFFF;
+        &-line {
+          width:726px;
+          height: 1px;
+          float: right;
+          background: #E5E5E5;
+        }
+      }
+
+
+      &-content {
+        display: flex;
+        padding:19px 0 22px 0;
+        background: #FFFFFF;
+        &-gray{
+          color:#999999
+        }
+        &-info {
+          width:25%;
+          color: #666666;
+          text-align: center;
+          &-number{
+            font-size: 28px;
+            line-height: 28px;
+            display: flex;
+            justify-content: flex-end;
+            padding-right: 20px;
+          }
+          &-icon {
+            font-size: 48px;
+          }
+
+          &-text {
+            font-size: 28px;
+            line-height: 28px;
+          }
+        }
+        &-infoLine{
+          border-right: solid 1px #D9D9D9;
+        }
+        &-line{
+          height: 1px;
+          background: #E5E5E5;
+        }
+      }
+    }
+  }
+}

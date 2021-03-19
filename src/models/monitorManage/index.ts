@@ -8,7 +8,12 @@ import {
   getBusinessSaveUrl,
   getBusinessEditUrl,
   getBusOpenPushUrl,
-  getBusClosePushUrl
+  getBusClosePushUrl,
+  getObligorDetailUrl, // 债务人详情
+  getObligorRelationUrl, // 关联业务
+  getObligorAssetTotalCountUrl, // 资产各类数据统计
+  getObligorRiskTotalCountCountUrl, // 风险各类数据统计
+  getAuthRuleUrl,
 } from "../../services/monitorManage";
 
 export default {
@@ -48,7 +53,7 @@ export default {
         deleteId: payload.deleteId,
         isDeleteOpendModal: payload.isDeleteOpendModal
       }
-      yield put({type: 'getIsDeleteOpendModalSuccess', payload:params});
+      yield put({type: 'getIsDeleteOpendModalSuccess', payload: params});
     },
     * getBusinessDelete({payload}, {call}) {
       const res = yield call(getBusinessDeleteUrl, payload);
@@ -70,6 +75,26 @@ export default {
       const res = yield call(getBusClosePushUrl, payload);
       return res;
     },
+    * getObligorDetail({payload}, {call}) {
+      const res = yield call(getObligorDetailUrl, payload);
+      return res;
+    },
+    * getObligorRelation({payload}, {call}) {
+      const res = yield call(getObligorRelationUrl, payload);
+      return res;
+    },
+    * getObligorAssetTotalCount({payload}, {call}) {
+      const res = yield call(getObligorAssetTotalCountUrl, payload);
+      return res;
+    },
+    * getObligorRiskTotalCountCount({payload}, {call}) {
+      const res = yield call(getObligorRiskTotalCountCountUrl, payload);
+      return res;
+    },
+    * getAuthRule({payload}, {call}) {
+      const res = yield call(getAuthRuleUrl, payload);
+      return res;
+    },
   },
   reducers: {
     getCurClickItemrSuccess: (state, {payload}) => {
@@ -80,7 +105,6 @@ export default {
       }
     },
     getIsDeleteOpendModalSuccess: (state, {payload}) => {
-      console.log('52payload', payload)
       return {
         ...payload,
         ...state,
