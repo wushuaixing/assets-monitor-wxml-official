@@ -253,7 +253,9 @@ export default class BusinessListItem extends Component<any, isState> {
                   </View>
 
                 </View>
-                <View className='yc-businessListItem-line'/>
+                {
+                  index !== data.length - 1 && <View className='yc-businessListItem-line'/>
+                }
               </View>
             )
           })

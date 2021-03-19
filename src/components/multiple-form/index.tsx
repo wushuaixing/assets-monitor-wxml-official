@@ -1,14 +1,24 @@
 import React, { Component } from "react";
+import Taro, { eventCenter, getCurrentInstance }from '@tarojs/taro';
 import {Image, View} from '@tarojs/components';
 import { AtButton, AtFloatLayout, AtCalendar} from 'taro-ui';
 import clear from '../../assets/img/components/clear.png';
 import './index.scss';
+import moment from "moment";
+
+interface chooseItem {
+  name: string
+  value: string
+  active: boolean
+}
 
 export interface conditionsType{
   name: string
   type: string
   value?: any
   field: any
+  chooseType?: string
+  chooseTag?: chooseItem[]
 }
 
 type IProps = {
@@ -20,11 +30,13 @@ type IState = {
   isStartTime: boolean
   isEndTime: boolean
   conditions: conditionsType[]
+  chooseTag: chooseItem[]
   params: any
   info: any
 };
 
 export default class MultipleForm extends Component <IProps, IState>{
+  $instance = getCurrentInstance();
   constructor(props) {
     super(props);
     this.state = {
@@ -52,7 +64,25 @@ export default class MultipleForm extends Component <IProps, IState>{
       params: newParms,
       info: conditions[0],
     });
+    const onHideEventId = this.$instance.router.onHide;
+    eventCenter.on(onHideEventId, this.onHide);
   }
+
+  componentWillUnmount(): void {
+    const onHideEventId = this.$instance.router.onHide;
+    eventCenter.off(onHideEventId, this.onHide)
+  }
+
+  onHide = () => {
+    const { conditions } = this.props;
+    this.setState({
+      conditions,
+      isStartTime: false,
+      isEndTime: false,
+      params: {},
+      info: {},
+    })
+  };
 
   // 点击输入框触发日期弹窗组件
   onFocusInput = (info, type) => {
@@ -144,8 +174,29 @@ export default class MultipleForm extends Component <IProps, IState>{
 
   };
 
+  handleSwitchDate = (info) => {
+    const { conditions } = this.state;
+    let newChooseTag: chooseItem[] = [];
+    let newConditions: conditionsType[] = [];
+    conditions.forEach(item => {
+      if(item.type === 'time' && item.chooseType === 'quickTimeTag'){
+        item.chooseTag.forEach(item => {
+          newChooseTag.push({...item, active: info.name === item.name })
+        });
+        newConditions.push({...item, chooseTag: newChooseTag})
+      }
+      else {
+        newConditions.push({...item })
+      }
+    });
+    this.setState({
+      conditions: newConditions,
+    });
+  };
+
   render(){
     const { conditions, info, isStartTime, isEndTime } = this.state;
+    console.log('conditions === ', conditions, JSON.stringify(conditions));
     return (
       <View className='conditions'>
         <View className='conditions-line'/>
@@ -157,6 +208,15 @@ export default class MultipleForm extends Component <IProps, IState>{
               return (
                 <View className='conditions-time'>
                   <View className='conditions-time-title'>推送日期</View>
+                  {
+                    item.chooseType === 'quickTimeTag' && <View className='conditions-time-date'>
+                      {
+                        item.chooseTag && item.chooseTag.length > 0 && item.chooseTag.map(it => {
+                          return <View className={`conditions-time-date-${it.active ? 'activeChoose' : 'choose'}`} onClick={() => this.handleSwitchDate(it)}>{it.name}</View>
+                        })
+                      }
+                    </View>
+                  }
                   <View className='conditions-time-box'>
                     <View className='conditions-time-box-left'>
                       <View className='conditions-time-box-left-input'>

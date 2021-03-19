@@ -71,6 +71,16 @@
   color: #CCCCCC;
 }
 
+@mixin chooseItem{
+  font-size: 28px;
+  line-height: 40px;
+  height: 40px;
+  width: 212px;
+  padding: 16px 0;
+  border-radius: 36px;
+  text-align: center;
+}
+
 .conditions{
   &-line{
     background-color: $border-color;
@@ -113,6 +123,25 @@
       color: $label-color;
       font-size: 30px;
       font-weight: 500;
+    }
+    &-date{
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      margin-top: 24px;
+      &-activeChoose{
+        @include chooseItem;
+        color: $primary-color;
+        background-color: #E7F1FF;
+        border: 1px solid $primary-color;
+        font-weight: 500;
+      }
+      &-choose{
+        @include chooseItem;
+        color: $common-text;
+        background-color: $page-bg-color;
+        border: 1px solid $page-bg-color;
+      }
     }
     &-box{
       display: flex;

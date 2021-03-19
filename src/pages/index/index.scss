@@ -141,6 +141,17 @@
   }
 }
 
+@mixin chooseItem{
+  font-size: 30px;
+  display: inline-block;
+  text-align: center;
+  padding: 11px 0;
+  line-height: 42px;
+  height: 42px;
+  width: 202px;
+  border-radius: 32px;
+}
+
 .home{
   background-color: $page-bg-color;
   height: 100vh;
@@ -246,19 +257,43 @@
   &-data{
     margin: 24px;
     border-radius: 24px;
-    background-color: white;
+    //background-color: white;
     padding-bottom: 24px;
     &-box{
       width: 702px;
       background-color: white;
       border-bottom-left-radius: 24px;
       border-bottom-right-radius: 24px;
+      &-date{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 4px 24px 28px;
+        &-activeChoose{
+          @include chooseItem;
+          border: 1px solid $primary-color;
+          color: $primary-color;
+          background-color: #E7F1FF;
+          font-weight: 500;
+        }
+        &-choose{
+          @include chooseItem;
+          border: 1px solid $page-bg-color;
+          color: $common-text;
+          background-color: $page-bg-color;
+        }
+      }
+      &-line{
+        background-color: $page-bg-color;
+        height: 2px;
+        width: 100%;
+      }
       &-level{
         display: flex;
         color: $common-text;
         font-size: 30px;
         line-height: 30px;
-        margin: 9px 0 0 24px;
+        margin: 24px 0 0 24px;
         font-weight: 500;
         &-icon{
           color: #666666;

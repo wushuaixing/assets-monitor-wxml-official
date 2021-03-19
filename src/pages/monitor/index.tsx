@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import Taro, { eventCenter, getCurrentInstance } from '@tarojs/taro'
 import {View, Text, Image, ScrollView} from '@tarojs/components'
 import { connect } from 'react-redux';
+import moment from "moment";
 import {handleDealAuthRule, isRule } from '../../utils/tools/common';
 import NavigationBar from '../../components/navigation-bar';
 import TagSelected from '../../components/tag-selected';
@@ -9,7 +10,7 @@ import QueryDrop from '../../components/query-drop';
 import Tab from '../../components/tab';
 import ListItem from '../../components/list-item/index';
 import blankNodata from '../../assets/img/page/blank_nodate.png';
-import {getGlobalData, setGlobalData} from "../../utils/const/global";
+import { setGlobalData} from "../../utils/const/global";
 import backTop from '../../assets/img/components/back-top.png'
 import { getStarValue, getRuleName, filterArray, getUpdateRuleConfig } from './config';
 import './index.scss'
@@ -29,6 +30,7 @@ type IProps = {
     tabId: number
     value: string[]
     starId: number
+    dateType: string
   }
   assetsList: []
   riskList: []
@@ -116,7 +118,13 @@ const initialAssetsConfig = [
         type: 'time',
         field: ['updateTimeStart', 'updateTimeEnd'],
         value: [],
-      }
+        chooseType: 'quickTimeTag',
+        chooseTag: [
+          {name: '今天', value: '1', active: false},
+          {name: '近七天', value: '2', active: false},
+          {name: '全部', value: '3', active: false},
+        ]
+      },
     ],
   },
 ];
@@ -175,6 +183,12 @@ const initialRiskConfig = [
         type: 'time',
         field: ['updateTimeStart', 'updateTimeEnd'],
         value: [],
+        chooseType: 'quickTimeTag',
+        chooseTag: [
+          {name: '今天', value: '1', active: false},
+          {name: '近七天', value: '2', active: false},
+          {name: '全部', value: '3', active: false},
+        ]
       }
     ],
   },
@@ -324,8 +338,6 @@ export default class Monitor extends Component <IProps, IState>{
   }
 
   componentWillMount(): void {
-    // 设置第一次进入监控页触发加载
-    setGlobalData('refreshMonitor', true);
     const onReadyEventId = this.$instance.router.onReady;
     eventCenter.once(onReadyEventId, () => {
       let height = 0;
@@ -348,61 +360,65 @@ export default class Monitor extends Component <IProps, IState>{
 
   componentDidShow() {
     const { dispatch } = this.props;
-    if(getGlobalData('refreshMonitor')){
-      dispatch({
-        type: 'home/getAuthRule',
-        payload: {}
-      }).then(res => {
-        if(res.code === 200){
-          let ruleArray = handleDealAuthRule(res.data.orgPageGroups);
-          setGlobalData('ruleArray', ruleArray);
-          let assetsConfig = getUpdateRuleConfig(JSON.parse(JSON.stringify(initialAssetsConfig)));
-          let riskConfig = getUpdateRuleConfig( JSON.parse(JSON.stringify(initialRiskConfig)));
-          const { monitorParams } = this.props;
-          const { currentId, starId, params} = this.state;
-          if(monitorParams && Object.keys(monitorParams).length > 0){
-            // console.log(' monitorParams 111=== ', monitorParams);
-            this.backToTop();
-            let tabId = monitorParams.tabId > 0 ? monitorParams.tabId : currentId;
-            let newStarId = monitorParams.starId > 0 ? monitorParams.starId : starId;
-            let assetAndRiskTypeValue = monitorParams.value ? filterArray([monitorParams.value]).join() : filterArray(tabId === 1 ? assestRuleArray : riskRuleArray).join();
-            let newParams = {
-              assetAndRiskType: assetAndRiskTypeValue,
-              score: getStarValue(tabId, newStarId)
-            };
-            this.setState({
-              queryAssetsConfig: this.handleUpdataConfig(JSON.parse(JSON.stringify(assetsConfig)), monitorParams),
-              queryRiskConfig: this.handleUpdataConfig(JSON.parse(JSON.stringify(riskConfig)), monitorParams),
-              currentId: tabId,
-              starId: newStarId,
-              params: {...newParams},
-              loading: true,
-              isPropsMask: false,
-            }, () => {
-              this.handleRequestList({...newParams}, true);
-            });
-          }
-          else {
-            this.setState({
-              queryAssetsConfig: JSON.parse(JSON.stringify(assetsConfig)),
-              queryRiskConfig: JSON.parse(JSON.stringify(riskConfig)),
-              loading: true,
-              isPropsMask: false,
-            }, () => {
-              this.handleRequestList({...params}, true);
-            });
-          }
+    dispatch({
+      type: 'home/getAuthRule',
+      payload: {}
+    }).then(res => {
+      if(res.code === 200){
+        let ruleArray = handleDealAuthRule(res.data.orgPageGroups);
+        setGlobalData('ruleArray', ruleArray);
+        let assetsConfig = getUpdateRuleConfig(JSON.parse(JSON.stringify(initialAssetsConfig)));
+        let riskConfig = getUpdateRuleConfig( JSON.parse(JSON.stringify(initialRiskConfig)));
+        const { monitorParams } = this.props;
+        const { currentId, starId } = this.state;
+        if(monitorParams && Object.keys(monitorParams).length > 0){
+          this.backToTop();
+          let tabId = monitorParams.tabId > 0 ? monitorParams.tabId : currentId;
+          let newStarId = monitorParams.starId > 0 ? monitorParams.starId : starId;
+          let assetAndRiskTypeValue = monitorParams.value ? filterArray([monitorParams.value]).join() : filterArray(tabId === 1 ? assestRuleArray : riskRuleArray).join();
+          let newParams = {
+            assetAndRiskType: assetAndRiskTypeValue,
+            score: getStarValue(tabId, newStarId),
+            updateTimeStart: monitorParams.dateType !== '1' ? (monitorParams.dateType === '2' ? moment().subtract(7).format('YYYY-MM-DD') : undefined) : moment().format('YYYY-MM-DD'),
+            updateTimeEnd: monitorParams.dateType === '3' ? undefined : moment().format('YYYY-MM-DD'),
+          };
+          this.setState({
+            queryAssetsConfig: this.handleUpdataConfig(JSON.parse(JSON.stringify(assetsConfig)), monitorParams),
+            queryRiskConfig: this.handleUpdataConfig(JSON.parse(JSON.stringify(riskConfig)), monitorParams),
+            currentId: tabId,
+            starId: newStarId,
+            params: {...newParams},
+            loading: true,
+            isPropsMask: false,
+          }, () => {
+            this.handleRequestList({...newParams}, true);
+          });
         }
-      }).catch(() => {});
-    }
+        else {
+          this.setState({
+            queryAssetsConfig: JSON.parse(JSON.stringify(assetsConfig)),
+            queryRiskConfig: JSON.parse(JSON.stringify(riskConfig)),
+            params: {
+              assetAndRiskType: filterArray(assestRuleArray).join(),
+            },
+            loading: true,
+            isPropsMask: false,
+          }, () => {
+            this.handleRequestList({
+              assetAndRiskType: filterArray(assestRuleArray).join(),
+            }, true);
+          });
+        }
+      }
+    }).catch(() => {});
   }
 
-  shouldComponentUpdate(nextProps: Readonly<IProps>, nextState: Readonly<IState>): boolean {
+  shouldComponentUpdate(_nextProps: Readonly<IProps>, nextState: Readonly<IState>): boolean {
     const { listCount, currentId, page, isScroll, starId} = this.state;
     return listCount !== nextState.listCount || currentId !== nextState.currentId || page !== nextState.page || isScroll !== nextState.isScroll || starId !== nextState.starId;
   }
 
-  componentWillReceiveProps(nextProps: Readonly<IProps>, nextContext: any): void {
+  componentWillReceiveProps(nextProps: Readonly<IProps> ): void {
     const { currentId, starId } = this.state;
     const { monitorParams } = this.props;
     if(JSON.stringify(monitorParams) !== JSON.stringify(nextProps.monitorParams)){
@@ -414,6 +430,8 @@ export default class Monitor extends Component <IProps, IState>{
   }
 
   componentDidHide (): void {
+    let assetsConfig = getUpdateRuleConfig(JSON.parse(JSON.stringify(initialAssetsConfig)));
+    let riskConfig = getUpdateRuleConfig( JSON.parse(JSON.stringify(initialRiskConfig)));
     const { dispatch } = this.props;
     dispatch({
       type: 'home/emptyMonitorParams',
@@ -426,24 +444,40 @@ export default class Monitor extends Component <IProps, IState>{
       params: {
         assetAndRiskType: filterArray(assestRuleArray).join()
       },
-      queryAssetsConfig: [],
-      queryRiskConfig: [],
+      queryAssetsConfig: assetsConfig,
+      queryRiskConfig: riskConfig,
     })
   }
 
   // 手动更新下拉框的配置
-  handleUpdataConfig = (config, params?: any) => {
-    const { tabId, value} = params;
-    if( tabId === 1 && value){
-      let assetsConfig =  [...config];
-      assetsConfig[1].isSelected = true;
-      assetsConfig[1].title = getRuleName(value);
+  handleUpdataConfig = (config, params: {tabId?: number, value?: string, dateType: string}) => {
+    const { tabId, value, dateType } = params;
+    if( tabId === 1 ){
+      let assetsConfig = [...config];
+      if(value){
+        assetsConfig[1].isSelected = true;
+        assetsConfig[1].title = getRuleName(value);
+      }
+      let newChooseTag: any = [];
+      let chooseTag = assetsConfig[2].conditions[0].chooseTag;
+      chooseTag.forEach(item => {
+        newChooseTag.push({...item, active: item.value === dateType })
+      });
+      assetsConfig[2].conditions[0].chooseTag = JSON.parse(JSON.stringify(newChooseTag));
       return assetsConfig;
     }
-    if( tabId === 2 && value ){
+    if( tabId === 2 ){
       let riskConfig = [...config];
-      riskConfig[1].isSelected = true;
-      riskConfig[1].title = getRuleName(value);
+      if(value){
+        riskConfig[1].isSelected = true;
+        riskConfig[1].title = getRuleName(value);
+      }
+      let newChooseTag: any = [];
+      let chooseTag = riskConfig[2].conditions[0].chooseTag;
+      chooseTag.forEach(item => {
+        newChooseTag.push({...item, active: item.value === dateType })
+      });
+      riskConfig[2].conditions[0].chooseTag = JSON.parse(JSON.stringify(newChooseTag));
       return riskConfig;
     }
     return JSON.parse(JSON.stringify(config));

@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux';
 import {Textarea, View} from '@tarojs/components'
-import {AtTextarea, AtImagePicker, AtButton} from 'taro-ui'
+import {AtTextarea, AtImagePicker, AtButton, AtActivityIndicator} from 'taro-ui'
 import './index.scss'
 import Taro from "@tarojs/taro";
 import {base} from '../../../utils/config'
@@ -10,6 +10,7 @@ type isState = {
   value: string,
   files: any,
   fileList: any,
+  isOpened: boolean,
 }
 
 type IProps = {
@@ -27,7 +28,8 @@ export default class FeedBack extends Component<IProps, isState> {
     this.state = {
       value: '',
       files: [],
-      fileList: []
+      fileList: [],
+      isOpened: false
     };
   }
 
@@ -48,7 +50,7 @@ export default class FeedBack extends Component<IProps, isState> {
 
   onTextAreaChange = (e) => {
     this.setState({
-      value:e.detail.value
+      value: e.detail.value
     })
   }
 
@@ -91,6 +93,9 @@ export default class FeedBack extends Component<IProps, isState> {
   onSubmit = () => {
     const {value, fileList} = this.state;
     if (value !== '' || fileList.length !== 0) {
+      this.setState({
+        isOpened: true
+      })
       const params = {
         fileList,
         suggestion: value
@@ -101,6 +106,9 @@ export default class FeedBack extends Component<IProps, isState> {
       }).then(res => {
         const {code, message} = res;
         if (code === 200) {
+          this.setState({
+            isOpened: false
+          })
           Message('意见反馈成功');
           setTimeout(() => {
             Taro.navigateBack({
@@ -119,7 +127,7 @@ export default class FeedBack extends Component<IProps, isState> {
   }
 
   render() {
-    const {value, files} = this.state;
+    const {value, files, isOpened} = this.state;
     return (
       <View className='yc-feedBack'>
         <View className='yc-feedBack-top'/>
@@ -128,7 +136,7 @@ export default class FeedBack extends Component<IProps, isState> {
             <View className='yc-feedBack-content-idea-text'>请提出您宝贵的意见</View>
             <View style={{position: 'relative'}} className='yc-feedBack-content-idea-textarea'>
               <Textarea
-                style={{width:'100%',fontSize:'32rpx',color:'#333',lineHeight:'48rpx',minHeight:'240rpx'}}
+                style={{width: '100%', fontSize: '32rpx', color: '#333', lineHeight: '48rpx', minHeight: '240rpx'}}
                 autoHeight
                 placeholder='您的意见，是我们改进的动力！'
                 value={value}
@@ -165,8 +173,11 @@ export default class FeedBack extends Component<IProps, isState> {
             <View>您还可以拨打客服电话133-7256-7936来提出意见和建议。</View>
           </View>
           <View className='yc-feedBack-bottom-btn' onClick={this.onSubmit}>
-            {/*<AtButton type='primary' onClick={this.onSubmit}>提交反馈</AtButton>*/}
-            <View className='yc-feedBack-bottom-btn-text'>提交反馈</View>
+            {
+              isOpened ? <View className='yc-feedBack-bottom-btn-text'>
+                <AtActivityIndicator content='提交反馈' color='#fff' isOpened={isOpened}/>
+              </View> : <View className='yc-feedBack-bottom-btn-text'>提交反馈</View>
+            }
           </View>
         </View>
       </View>

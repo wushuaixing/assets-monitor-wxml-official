@@ -65,6 +65,7 @@ export const randomStr = (length: number): string => {
 export const isRule = (rule) => {
   let ispermission: number = 0;
   let ruleArray: string[] = getGlobalData('ruleArray');
+  console.log('ruleArray',ruleArray,rule)
   if (ruleArray && ruleArray.length > 0) {
     if (Array.isArray(rule) && rule.length > 0) {
       rule.forEach(item => {
@@ -102,9 +103,11 @@ export const filterArray = (ruleArray) => {
  */
 export const handleDealAuthRule = (authRule) => {
   let ruleArray: string[] = [];
-  authRule.forEach(item => {
-    ruleArray.push(item.rule)
-  });
+  if (authRule && authRule.length > 0) {
+    authRule.forEach(item => {
+      ruleArray.push(item.rule)
+    });
+  }
   return ruleArray;
 };
 
@@ -209,13 +212,13 @@ export const throttle = (fn, Interval) => {
 
   // 定时器；
   let last = 0;
-  return function() {
+  return function () {
     // 保存上下文的this
     let context = this;
     // 保存传入的参数
     let args = arguments;
     // 保存调用时的时间;
-    let now = + new Date;
+    let now = +new Date;
     // 判断上一次调用时间和当前调用时间对比
     if (now - last > Interval) {
       // 更新最后一次调用时间;
@@ -224,4 +227,26 @@ export const throttle = (fn, Interval) => {
     }
   };
 };
+
+/** 判断Array，Object，String是否为空 */
+export const isEmpty = (obj) => {
+  if (obj) {
+    if (typeof obj === 'object' && Object.keys(obj).length === 0) {
+      return true;
+    }
+    if (typeof obj === 'string' && obj.trim().length === 0) {
+      return true;
+    }
+    return false;
+  }
+  return true;
+}
+
+// 各类别数量求和(数组对象求和)
+export const arraySum = (arr, field) => {
+  if (arr && arr.length > 0) {
+    const sum = arr.reduce((init, item) => init += item[field], 0);
+    return sum
+  }
+}
 

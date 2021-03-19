@@ -38,3 +38,27 @@ export async function getBusOpenPushUrl(params) {
 export async function getBusClosePushUrl(params) {
   return request.post('/yc/wechat/business/closePush',  params);
 }
+
+// 债务人详情
+export async function getObligorDetailUrl(params) {
+  return request.get('/yc/wechat/obligor/monitor/overview/detail',{...params});
+}
+
+// 关联业务
+export async function getObligorRelationUrl(params) {
+  return request.get('/yc/wechat/obligor/monitor/overview/relation',{...params});
+}
+
+// 资产各类数据统计
+export async function getObligorAssetTotalCountUrl(params) {
+  return request.get('/yc/wechat/obligor/monitor/asset/assetTotalCount',{...params});
+}
+
+// 风险各类数据统计
+export async function getObligorRiskTotalCountCountUrl(params) {
+  return request.get('/yc/wechat/obligor/monitor/risk/riskTotalCount',{...params});
+}
+
+export async function getAuthRuleUrl({}) {
+  return request.get('/api/auth/authRule',{});
+}

@@ -22,7 +22,8 @@ export default {
         "monitorManage/businessDetail/index",
         "monitorManage/addBusiness/index",
         "rule-description/index",
-        "restoreHtml/index"
+        "restoreHtml/index",
+        "monitorManage/obligorDetail/index",
       ]
     },
     {

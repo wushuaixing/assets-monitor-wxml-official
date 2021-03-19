@@ -1,0 +1,77 @@
+.relationBusiness {
+  background: #FFFFFF;
+
+  &-top {
+    height: 104px;
+    line-height: 104px;
+    padding: 0 24px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 32px;
+    &-text {
+      color: #333333;
+    }
+    &-icon{
+      font-size: 32px;
+      color:#D9D9D9;
+    }
+  }
+
+  &-content {
+    &-line {
+      height: 1px;
+      background: #E5E5E5;
+    }
+
+    &-info {
+      padding: 32px 24px;
+
+      &-number {
+        font-size: 28px;
+        color: #333333;
+        line-height: 28px;
+      }
+      &-busNumber{
+        display: flex;
+        font-size: 28px;
+        color: #666666;
+        line-height: 28px;
+        &-label{
+          letter-spacing: 7px;
+        }
+        &-value{
+          color:#333333
+        }
+      }
+
+      &-news {
+        display: flex;
+        justify-content: space-between;
+        padding-top:20px;
+
+        &-left {
+          font-size: 28px;
+          color: #666666;
+          line-height: 28px;
+          display: flex;
+          &-value{
+            color:#333333
+          }
+        }
+
+        &-right {
+          display: flex;
+          align-items: flex-end;
+          font-size: 22px;
+          color: #999999;
+          line-height: 22px;
+        }
+      }
+
+      &-line {
+        height: 1px;
+        background: #E5E5E5;
+      }
+    }
+  }
+}
