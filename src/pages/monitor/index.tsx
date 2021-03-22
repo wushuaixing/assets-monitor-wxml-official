@@ -371,6 +371,7 @@ export default class Monitor extends Component <IProps, IState>{
         let riskConfig = getUpdateRuleConfig( JSON.parse(JSON.stringify(initialRiskConfig)));
         const { monitorParams } = this.props;
         const { currentId, starId } = this.state;
+        // console.log('monitorParams === ', monitorParams, JSON.stringify(monitorParams));
         if(monitorParams && Object.keys(monitorParams).length > 0){
           this.backToTop();
           let tabId = monitorParams.tabId > 0 ? monitorParams.tabId : currentId;
@@ -379,7 +380,7 @@ export default class Monitor extends Component <IProps, IState>{
           let newParams = {
             assetAndRiskType: assetAndRiskTypeValue,
             score: getStarValue(tabId, newStarId),
-            updateTimeStart: monitorParams.dateType !== '1' ? (monitorParams.dateType === '2' ? moment().subtract(7).format('YYYY-MM-DD') : undefined) : moment().format('YYYY-MM-DD'),
+            updateTimeStart: monitorParams.dateType !== '1' ? (monitorParams.dateType === '2' ? moment().subtract(7, 'd').format('YYYY-MM-DD') : undefined) : moment().format('YYYY-MM-DD'),
             updateTimeEnd: monitorParams.dateType === '3' ? undefined : moment().format('YYYY-MM-DD'),
           };
           this.setState({
@@ -463,7 +464,9 @@ export default class Monitor extends Component <IProps, IState>{
       chooseTag.forEach(item => {
         newChooseTag.push({...item, active: item.value === dateType })
       });
-      assetsConfig[2].conditions[0].chooseTag = JSON.parse(JSON.stringify(newChooseTag));
+      let conditions = JSON.parse(JSON.stringify(assetsConfig[2].conditions[0]));
+      conditions.chooseTag = JSON.parse(JSON.stringify(newChooseTag));
+      assetsConfig[2].conditions[0] = conditions;
       return assetsConfig;
     }
     if( tabId === 2 ){

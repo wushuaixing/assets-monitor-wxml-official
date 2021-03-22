@@ -65,7 +65,7 @@ export const randomStr = (length: number): string => {
 export const isRule = (rule) => {
   let ispermission: number = 0;
   let ruleArray: string[] = getGlobalData('ruleArray');
-  console.log('ruleArray',ruleArray,rule)
+  // console.log('ruleArray',ruleArray,rule)
   if (ruleArray && ruleArray.length > 0) {
     if (Array.isArray(rule) && rule.length > 0) {
       rule.forEach(item => {
