@@ -26,6 +26,9 @@
         text-align: center;
         justify-content: center;
         min-width:92px;
+        &-text{
+          max-width: 70px;
+        }
       }
 
       &-info {
