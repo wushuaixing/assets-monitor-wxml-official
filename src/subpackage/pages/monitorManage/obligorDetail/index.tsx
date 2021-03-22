@@ -220,8 +220,8 @@ export default class ObligorDetail extends Component<IProps, isState> {
     const {scrollHeight, relationBusiness, obligorDetail, assetsData, riskData} = this.state;
     const assetsArr = [];
     const riskArr = [];
-    this.handleSumData(assetsArr, assetsData, 'dwq', '代位权', 'icon-subrogation'); // 代位权总数量
     this.handleSumData(assetsArr, assetsData, 'zcpm', '司法拍卖', 'icon-auction'); // 司法拍卖总数量
+    this.handleSumData(assetsArr, assetsData, 'dwq', '代位权', 'icon-subrogation'); // 代位权总数量
     this.handleSumData(riskArr, riskData, 'pccz', '破产重整', 'icon-bankruptcy'); // 破产重整总数量
     this.handleSumData(riskArr, riskData, 'ss', '涉诉信息', 'icon-litigation'); // 涉诉信息总数量
     return (
