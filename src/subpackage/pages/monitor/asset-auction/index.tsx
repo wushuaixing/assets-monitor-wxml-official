@@ -46,6 +46,8 @@ const Auction = [
   {round:1,title:'标题',status:1,initialPrice:600,start:1585015200,consultPrice:1},
   {round:1,title:'标题',status:1,initialPrice:600,start:1585015200,consultPrice:1},
   {round:1,title:'标题',status:1,initialPrice:600,start:1585015200,consultPrice:1},
+  {round:1,title:'标题',status:1,initialPrice:600,start:1585015200,consultPrice:1},
+  {round:1,title:'标题',status:1,initialPrice:600,start:1585015200,consultPrice:1},
 ]
 
 export default class AssetsAuction extends Component <IProps, IState>{

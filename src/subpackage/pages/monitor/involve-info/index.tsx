@@ -4,6 +4,8 @@ import {View, Text} from '@tarojs/components'
 import NavigationBar from "../../../../components/navigation-bar";
 import './index.scss'
 import {dateToFormat} from "../../../../utils/tools/common";
+import {getJumpType} from "../../../../components/list-item/config";
+import {setGlobalData} from "../../../../utils/const/global";
 
 
 type IProps = {}
@@ -68,6 +70,17 @@ export default class InvolveInfo extends Component <IProps, IState> {
     }
   }
 
+  //跳转到文书还原页面
+  restoreWrit = ()=>{
+    Taro.navigateTo({
+      url: `/subpackage/pages/restoreHtml/index`,
+      success: (res)=> {
+        setGlobalData('refreshMonitor', false);
+        const {detail} = this.state;
+        res.eventChannel.emit('acceptDataFromOpenerPage', {...detail})
+      }
+    });
+  }
 
   render() {
     const {detail} = this.state;
@@ -133,7 +146,7 @@ export default class InvolveInfo extends Component <IProps, IState> {
 
         {/*详细信息*/}
         <View className='yc-subrogation-baseInfo'>
-          <View className='yc-subrogation-baseInfo-title'>详细信息</View>
+          <View className='yc-subrogation-baseInfo-title' onClick={this.restoreWrit}>详细信息</View>
           <View className='yc-subrogation-baseInfo-line'/>
           <View className='yc-subrogation-baseInfo-content'>
             <View className='yc-subrogation-baseInfo-content-info'>
