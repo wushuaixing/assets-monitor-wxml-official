@@ -18,12 +18,12 @@
   font-size: 30px;
   height: 30px;
   line-height: 30px;
-  margin: 12px 0 0 20px;
+  margin-top: 12px;
   font-weight: 500;
 }
 
 @mixin starTag{
-  margin-left: 20px;
+  margin-right: 12px;
   padding: 0 12px;
   border-radius: 2px;
   width: 120px;
@@ -54,17 +54,18 @@
       &-mask{
         position: absolute;
         background-color: rgba(255, 255, 255, 0.5);
-        width: 90px;
+        width: 80px;
         height: 90px;
         top: 0;
       }
     }
     &-title{
+      margin-left: 20px;
       &-tag{
         display: flex;
         flex-direction: row;
         &-star{
-          margin-left: 20px;
+          margin-right: 12px;
           border: 2px solid #F5A623;
           padding: 0 12px;
           border-radius: 2px;
@@ -110,7 +111,6 @@
           border: 2px solid $primary-color;
           color: $primary-color;
           border-radius: 2px;
-          margin-left: 12px;
           padding: 0 12px;
         }
         &-status{
