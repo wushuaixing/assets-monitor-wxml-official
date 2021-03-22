@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Taro, { eventCenter, getCurrentInstance } from '@tarojs/taro';
 import {View, Text, RichText, ScrollView} from '@tarojs/components'
 import NavigationBar from "../../../../components/navigation-bar";
-import { getAuctionStatus, getLevel, getAuctionRoleType } from '../../../../components/list-item/config';
+import { getAuctionStatus, getLevel, getAuctionRoleType,getAuctionStatusColor} from '../../../../components/list-item/config';
 import { floatFormat, dateToFormat } from '../../../../utils/tools/common';
 import {getGlobalData } from "../../../../utils/const/global";
 import './index.scss'
@@ -42,6 +42,13 @@ type IState = {
   scrollHeight: number
 };
 
+const Auction = [
+  {round:1,title:'标题',status:1,initialPrice:600,start:1585015200,consultPrice:1},
+  {round:1,title:'标题',status:1,initialPrice:600,start:1585015200,consultPrice:1},
+  {round:1,title:'标题',status:1,initialPrice:600,start:1585015200,consultPrice:1},
+  {round:1,title:'标题',status:1,initialPrice:600,start:1585015200,consultPrice:1},
+  {round:1,title:'标题',status:1,initialPrice:600,start:1585015200,consultPrice:1},
+]
 
 export default class AssetsAuction extends Component <IProps, IState>{
   $instance = getCurrentInstance();
@@ -101,7 +108,9 @@ export default class AssetsAuction extends Component <IProps, IState>{
 
   render () {
     const { detail, scrollHeight } = this.state;
-    const historyAuction = detail.historyAuction || [];
+    // const historyAuction = detail.historyAuction || [];
+    const historyAuction = Auction || [];
+    console.log(detail, scrollHeight)
     // const newHistoryAuction = [...example];
     // console.log('height === ', scrollHeight);
     return (
@@ -116,7 +125,14 @@ export default class AssetsAuction extends Component <IProps, IState>{
               <View className='auction-clues-content-info'>
                 <View className='auction-detail-content-info-justifylabel'>价值等级</View>
                 <View className='auction-detail-content-info-colon'>：</View>
-                <View className='auction-clues-content-info-value blod'>{getLevel(1, detail.valueLevel)}</View>
+                {/*<View className='auction-clues-content-info-value blod'>{getLevel(1, detail.valueLevel)}</View>*/}
+                <View className='auction-clues-content-info-value'>
+                   <View className='auction-item-header-title-tag-star'>
+                      <Text className='iconfont icon-star auction-item-header-title-tag-star-active' />
+                      <Text className={`iconfont icon-star auction-item-header-title-tag-star-${detail.valueLevel === 90 || detail.valueLevel === 80 ? `active` : `normal`}`} />
+                      <Text className={`iconfont icon-star auction-item-header-title-tag-star-${detail.valueLevel === 90 ? `active` : `normal`}`} />
+                    </View>
+                </View>
               </View>
               {
                 detail.important === 1 && <View className='auction-clues-content-info'>
@@ -141,7 +157,6 @@ export default class AssetsAuction extends Component <IProps, IState>{
             </View>
             <View className={`auction-clues-${detail.important === 1 ? 'accurate' : 'fuzzy'}`}>{detail.important === 1 ? '精准匹配' : '模糊匹配'}</View>
           </View>
-
           {/*线索详情*/}
           <View className='auction-detail' onClick={this.navigateToDetail}>
             <View className='auction-detail-title'>线索详情</View>
@@ -151,7 +166,8 @@ export default class AssetsAuction extends Component <IProps, IState>{
               <View className='auction-detail-content-info'>
                 <View className='auction-detail-content-info-justifylabel'>当前状态</View>
                 <View className='auction-detail-content-info-colon'>：</View>
-                <View className='auction-detail-content-info-value'>{getAuctionStatus(detail.status)}</View>
+                {/*<View className='auction-detail-content-info-value'>{getAuctionStatus(detail.status)}</View>*/}
+                <View className='auction-detail-content-info-value' style={{color:getAuctionStatusColor(detail.status).color}}>{getAuctionStatusColor(detail.status).title}</View>
               </View>
               <View className='auction-detail-content-info'>
                 <View className='auction-detail-content-info-justifylabel'>评估价</View>
@@ -195,27 +211,29 @@ export default class AssetsAuction extends Component <IProps, IState>{
               {
                 historyAuction.map((item: {round:number, title: string, status: number, initialPrice: number, start: any, consultPrice: number, }) => {
                   return (
-                    <View className='auction-history-content'>
-                      <View className='auction-history-content-title'>【{item.round}】{item.title}</View>
-                      <View className='auction-history-content-info'>
-                        <View className='auction-history-content-info-justifylabel'>当前状态</View>
-                        <View className='auction-history-content-info-colon'>：</View>
-                        <View className='auction-history-content-info-value'>{getAuctionStatus(item.status)}</View>
+                    <View className='auction-history-contents'>
+                      <View className='auction-history-contents-wire'></View>
+                      <View className='auction-history-contents-info '>
+                        <View className='auction-history-contents-info-round'>【一拍】</View>
+                        <View className='auction-history-contents-info-dot'></View>
+                        <View className='auction-history-contents-info-justifylabel'>开拍时间</View>
+                        <View className='auction-history-contents-info-colon'>：</View>
+                        <View className='auction-history-contents-info-value'>{dateToFormat(item.start)}</View>
                       </View>
-                      <View className='auction-history-content-info'>
-                        <View className='auction-history-content-info-justifylabel'>评估价</View>
-                        <View className='auction-history-content-info-colon'>：</View>
-                        <View className='auction-history-content-info-value'>{`${item.consultPrice > 0 ? floatFormat(item.consultPrice) + '元' : '--'}`}</View>
+                      <View className='auction-history-contents-info history-side'>
+                        <View className='auction-history-contents-info-justifylabel'>当前状态</View>
+                        <View className='auction-history-contents-info-colon'>：</View>
+                        <View className='auction-history-contents-info-value'>{getAuctionStatus(detail.status)}</View>
                       </View>
-                      <View className='auction-history-content-info'>
-                        <View className='auction-history-content-info-justifylabel'>起拍价</View>
-                        <View className='auction-history-content-info-colon'>：</View>
-                        <View className='auction-history-content-info-value'>{`${item.initialPrice > 0 ? floatFormat(item.initialPrice) + '元' : '--'}`}</View>
+                      <View className='auction-history-contents-info history-side'>
+                        <View className='auction-history-contents-info-justifylabel'>评估价</View>
+                        <View className='auction-history-contents-info-colon'>：</View>
+                        <View className='auction-history-contents-info-value'>{`${item.consultPrice > 0 ? floatFormat(item.consultPrice) + '元' : '--'}`}</View>
                       </View>
-                      <View className='auction-history-content-info'>
-                        <View className='auction-history-content-info-justifylabel'>开拍时间</View>
-                        <View className='auction-history-content-info-colon'>：</View>
-                        <View className='auction-history-content-info-value'>{dateToFormat(item.start)}</View>
+                      <View className='auction-history-contents-info history-side'>
+                        <View className='auction-history-contents-info-justifylabel'>起拍价</View>
+                        <View className='auction-history-contents-info-colon'>：</View>
+                        <View className='auction-history-contents-info-value'>{`${item.initialPrice > 0 ? floatFormat(item.initialPrice) + '元' : '--'}`}</View>
                       </View>
                     </View>
                   )

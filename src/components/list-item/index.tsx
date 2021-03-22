@@ -5,6 +5,7 @@ import { getPlot, getTitleTag, getRiskTag, getObligorName, getTime, getAuctionSt
 import {dateToFormat, floatFormat, throttle} from '../../utils/tools/common';
 import { setGlobalData } from "../../utils/const/global";
 import './index.scss';
+import * as url from "url";
 
 
 interface itemType{

@@ -62,3 +62,12 @@ export async function getObligorRiskTotalCountCountUrl(params) {
 export async function getAuthRuleUrl({}) {
   return request.get('/api/auth/authRule',{});
 }
+
+//html文书还原详情
+export async function getWritRestore(params) {
+  return request.get('/yc/wechat/index/aggregation/getJudgmentDocumentReduction',{...params});
+}
+
+
+
+
