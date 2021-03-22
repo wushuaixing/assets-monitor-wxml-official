@@ -42,10 +42,11 @@ type IProps = {
   onMarkRead: any
   index: number
   loading: boolean
+  listCount: number
 }
 
 const ListItem = (props: IProps) => {
-  const { dataType, updateTime, type, index} = props;
+  const { dataType, updateTime, type, index, listCount } = props;
   const [detail, setDetail] = useState(props.object);
   useEffect(() => {
     setDetail(props.object);
@@ -96,7 +97,6 @@ const ListItem = (props: IProps) => {
 
   return (
     <View className='item' onClick={throttle(handleMarkRead, 2000)}>
-      <View className='item-segmentation'/>
       <View className='item-header'>
         <View className={`${detail.isRead ? `item-header-box` : ``}`}>
           <Image className='item-header-box-pic' src={getPlot(dataType)}/>
@@ -111,9 +111,8 @@ const ListItem = (props: IProps) => {
                 <Text className='iconfont icon-star item-header-title-tag-star-active' />
                 <Text className={`iconfont icon-star item-header-title-tag-star-${detail.valueLevel === 90 || detail.valueLevel === 80 ? `active` : `normal`}`} />
                 <Text className={`iconfont icon-star item-header-title-tag-star-${detail.valueLevel === 90 ? `active` : `normal`}`} />
-              </View> : <View className={`item-header-title-tag-risk${detail.valueLevel}`}>{getRiskTag(detail.valueLevel)}</View>
+              </View> : ( detail.valueLevel > 0 ? <View className={`item-header-title-tag-risk${detail.valueLevel}`}>{getRiskTag(detail.valueLevel)}</View> : null)
             }
-
             <View className='item-header-title-tag-type'>{getTitleTag(dataType, detail.bankruptcyType)}</View>
             {/*优先展示 新增拍卖轮次*/}
             {
@@ -347,6 +346,9 @@ const ListItem = (props: IProps) => {
 						<View className={`item-content-info-${detail.isRead ? `readtext` : `noreadtext`}`}>{detail.caseType || '--'}</View>
 					</View>
 				</View>
+      }
+      {
+        listCount - 1 !== index && <View className='item-segmentation'/>
       }
     </View>
   );

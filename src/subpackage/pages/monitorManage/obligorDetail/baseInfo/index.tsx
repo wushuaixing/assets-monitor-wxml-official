@@ -46,7 +46,9 @@ export default class BaseInfo extends Component<any, isState> {
         <View className='obligorDetail-baseInfo-line'/>
         <View className='obligorDetail-baseInfo-content'>
           <View className='obligorDetail-baseInfo-content-top'>
-            <View className='obligorDetail-baseInfo-content-top-image'>{!isEmpty(obligorDetail) && obligorDetail.obligorName && obligorDetail.obligorName.slice(0, 4)}</View>
+            <View className='obligorDetail-baseInfo-content-top-image'>
+              <Text className='obligorDetail-baseInfo-content-top-image-text'>{!isEmpty(obligorDetail) && obligorDetail.obligorName && obligorDetail.obligorName.slice(0, 4)}</Text>
+            </View>
             {
               obligorNature === 2 ? (
                 <View className='obligorDetail-baseInfo-content-top-info'>

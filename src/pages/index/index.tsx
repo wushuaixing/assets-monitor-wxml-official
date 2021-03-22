@@ -172,6 +172,16 @@ class Index extends Component <IProps, IState> {
     return current !== nextState.current || businessCount !== nextState.businessCount || navHeight !== nextState.navHeight || loading !== nextState.loading || JSON.stringify(starLevel) !== JSON.stringify(nextState.starLevel) || JSON.stringify(chooseTab) !== JSON.stringify(nextState.chooseTab);
   }
 
+  componentDidHide(){
+    this.setState({
+      current: 1,
+      chooseTab: initChooseTab,
+      dateType: '3',
+      startDate: null,
+      endDate: null,
+    })
+  }
+
   // 页面下拉的时候触发
   onPullDownRefresh() {
     const {dispatch} = this.props;

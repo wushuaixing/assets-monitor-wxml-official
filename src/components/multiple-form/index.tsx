@@ -49,23 +49,37 @@ export default class MultipleForm extends Component <IProps, IState>{
   }
 
   componentWillMount(): void {
+    const onHideEventId = this.$instance.router.onHide;
+    eventCenter.on(onHideEventId, this.onHide);
     const { conditions } = this.props;
     const { params} = this.state;
-    let newParms = {...params };
+    let newParms = {...params};
     conditions.forEach(item => {
       const field = item.field || [];
       const value = item.value || [];
-      if(item.type === 'time' && (value || []).length > 0){
-        newParms = {...params, [field[0]]: value[0] || '', [field[1]]: value[1] || ''};
+      if(item.type === 'time'){
+        if( (value || []).length > 0){
+          newParms = {...params, [field[0]]: value[0] || '', [field[1]]: value[1] || ''};
+        }
+        else if(item.chooseType === 'quickTimeTag' && (item.chooseTag || []).filter(it => it.active).length > 0){
+          let start : string | null = null;
+          let end : string | null = null;
+          (item.chooseTag || []).forEach(it => {
+            if(it.active){
+              start = it.value === '1' ? moment().format('YYYY-MM-DD') : (it.value === '2' ? moment().subtract(7,'d').format('YYYY-MM-DD') : null);
+              end = it.value === '3' ? null : moment().format('YYYY-MM-DD');
+            }
+          });
+          newParms = {...params, [field[0]]: start, [field[1]]: end};
+        }
       }
     });
+    // console.log(' WillMount params ===', newParms, JSON.stringify(newParms), conditions, JSON.stringify(conditions));
     this.setState({
       conditions,
       params: newParms,
       info: conditions[0],
     });
-    const onHideEventId = this.$instance.router.onHide;
-    eventCenter.on(onHideEventId, this.onHide);
   }
 
   componentWillUnmount(): void {
@@ -108,8 +122,17 @@ export default class MultipleForm extends Component <IProps, IState>{
     const { info } = this.state;
     let newParmas = {...params, [info.field[0]] : '', [info.field[1]]: ''};
     let newConditions: conditionsType[] = [];
+    let newChooseTag = [];
     conditions.forEach(item => {
-      newConditions.push({...item, value: Array.isArray(item.value) ? [] : ''})
+      if(item.type === 'time' && item.chooseType === 'quickTimeTag'){
+        (item.chooseTag || []).forEach(it => {
+          newChooseTag.push({...it, active: false})
+        });
+        newConditions.push({...item, value: Array.isArray(item.value) ? [] : '', chooseTag: newChooseTag})
+      }
+      else {
+        newConditions.push({...item, value: Array.isArray(item.value) ? [] : ''})
+      }
     });
     this.setState({
       conditions: newConditions,
@@ -122,6 +145,7 @@ export default class MultipleForm extends Component <IProps, IState>{
   // 确认按钮
   onConfirm = () => {
     const { conditions, params } = this.state;
+    // console.log('onConfirm conditions === ', conditions, JSON.stringify(conditions), params, JSON.stringify(params));
     const { onConfirmForm } = this.props;
     onConfirmForm(conditions, params);
   };
@@ -152,9 +176,18 @@ export default class MultipleForm extends Component <IProps, IState>{
   onClickDate = (date: {value: string}, type: string) => {
     const { info, conditions, params} = this.state;
     let newConditions: conditionsType[] = [];
+    let newChooseTag = [];
     conditions.forEach(item => {
-      if(info.name === item.name){
-        newConditions.push({...item, value: type === 'start' ? [date.value, item.value[1]] : [item.value[0], date.value]})
+      if(info.name === item.name && info.type === 'time'){
+        if(info.chooseType === 'quickTimeTag'){
+          info.chooseTag.forEach(it => {
+            newChooseTag.push({...it, active: false });
+          });
+          newConditions.push({...item, chooseTag: newChooseTag, value: type === 'start' ? [date.value, item.value[1]] : [item.value[0], date.value]})
+        }
+      else {
+          newConditions.push({...item, value: type === 'start' ? [date.value, item.value[1]] : [item.value[0], date.value]})
+        }
       }
       else {
         newConditions.push({...item })
@@ -175,28 +208,49 @@ export default class MultipleForm extends Component <IProps, IState>{
   };
 
   handleSwitchDate = (info) => {
-    const { conditions } = this.state;
+    const { conditions, params } = this.state;
+    let start : Date | null | string = null;
+    let end : Date | null | string = null;
+    let startName : string = '';
+    let endName : string = '';
     let newChooseTag: chooseItem[] = [];
     let newConditions: conditionsType[] = [];
     conditions.forEach(item => {
       if(item.type === 'time' && item.chooseType === 'quickTimeTag'){
-        item.chooseTag.forEach(item => {
-          newChooseTag.push({...item, active: info.name === item.name })
+        startName = item.field[0];
+        endName = item.field[1];
+        item.chooseTag.forEach(it => {
+          newChooseTag.push({...it, active: info.name === it.name })
         });
-        newConditions.push({...item, chooseTag: newChooseTag})
+        newConditions.push({...item, chooseTag: newChooseTag, value: [null, null]})
       }
       else {
         newConditions.push({...item })
       }
     });
+    if(info.value === '1'){
+      start = moment().format('YYYY-MM-DD');
+      end = moment().format('YYYY-MM-DD');
+    }
+    else if(info.value === '2'){
+      start = moment().subtract(7, 'd').format('YYYY-MM-DD');
+      end = moment().format('YYYY-MM-DD');
+    }
+    else {
+      start = null;
+      end = null;
+    }
+    let newParams = {...params, [startName]: start, [endName]: end};
+    // console.log('newParams === ', newParams, JSON.stringify(newParams));
     this.setState({
       conditions: newConditions,
+      params: {...newParams}
     });
   };
 
   render(){
     const { conditions, info, isStartTime, isEndTime } = this.state;
-    console.log('conditions === ', conditions, JSON.stringify(conditions));
+    // console.log('conditions === ', conditions, JSON.stringify(conditions));
     return (
       <View className='conditions'>
         <View className='conditions-line'/>
