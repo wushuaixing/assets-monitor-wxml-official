@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {View, Input, Text, RichText} from '@tarojs/components'
+import {View, Input, Text} from '@tarojs/components'
 import {AtButton} from 'taro-ui'
 import Taro from '@tarojs/taro';
 import {connect} from 'react-redux';
@@ -101,7 +101,7 @@ export default class PhoneLogin extends Component<IProps, isState> {
       curValue = arr.join('');
       return curValue
     }
-    return null
+    return curValue
   }
 
   onInput = (e) => {
