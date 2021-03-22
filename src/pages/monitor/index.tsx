@@ -440,6 +440,7 @@ export default class Monitor extends Component <IProps, IState>{
     });
     this.setState({
       isPropsMask: false,
+      page: 1,
       starId: 1,
       currentId: 1,
       params: {
@@ -491,9 +492,11 @@ export default class Monitor extends Component <IProps, IState>{
     const { currentId, assetsList, riskList, page } = this.state;
     const { dispatch } = this.props;
     if(currentId === 1){
-      Taro.showLoading({
-        title: '正在加载',
-      });
+      if(page === 1){
+        Taro.showLoading({
+          title: '正在加载',
+        });
+      }
       dispatch({
         type:'monitor/assetList',
         payload: {
@@ -502,7 +505,9 @@ export default class Monitor extends Component <IProps, IState>{
         }
       }).then(res => {
         const {code, data } = res;
-        Taro.hideLoading();
+        if(page === 1){
+          Taro.hideLoading();
+        }
         if(code === 200){
           this.setState({
             loading: false,
@@ -521,16 +526,20 @@ export default class Monitor extends Component <IProps, IState>{
         }
       }).catch(err => {
         console.log('page err === ', err);
-        Taro.hideLoading();
+        if(page === 1){
+          Taro.hideLoading();
+        }
         this.setState({
           loading: false,
         })
       });
     }
     else {
-      Taro.showLoading({
-        title: '正在加载',
-      });
+      if(page === 1){
+        Taro.showLoading({
+          title: '正在加载',
+        });
+      }
       dispatch({
         type:'monitor/riskList',
         payload: {
@@ -539,7 +548,9 @@ export default class Monitor extends Component <IProps, IState>{
         }
       }).then(res => {
         const {code, data } = res;
-        Taro.hideLoading();
+        if(page === 1){
+          Taro.hideLoading();
+        }
         if(code === 200){
           this.setState({
             loading: false,
@@ -557,7 +568,9 @@ export default class Monitor extends Component <IProps, IState>{
           })
         }
       }).catch(err => {
-        Taro.hideLoading();
+        if(page === 1){
+          Taro.hideLoading();
+        }
         this.setState({
           loading: false,
         })
@@ -699,17 +712,15 @@ export default class Monitor extends Component <IProps, IState>{
           >
             {
               !loading && <View className='monitor-tips'>
-	              <View className='monitor-tips-notice'>
-		              <Text className='iconfont icon-notice monitor-tips-notice-icon'/>
-		              <Text className='monitor-tips-notice-text'>
-			              为您找到
-			              <Text className='monitor-tips-notice-text-count'>{listCount}</Text>
-			              条
-                    {
-                      currentId === 1 ? '资产线索' : '风险信息'
-                    }
-		              </Text>
-	              </View>
+	              <Text className='iconfont icon-notice monitor-tips-icon'/>
+	              <Text className='monitor-tips-text'>
+		              为您找到
+		              <Text className='monitor-tips-text-count'>{listCount}</Text>
+		              条
+                  {
+                    currentId === 1 ? '资产线索' : '风险信息'
+                  }
+	              </Text>
               </View>
             }
             {
@@ -720,12 +731,13 @@ export default class Monitor extends Component <IProps, IState>{
                     {...item}
                     type={currentId === 1 ? 'assets' : 'risk'}
                     index={index}
+                    listCount={listCount}
                   /> : null
                 )
               })
             }
             {
-              hasNext ? <View className='monitor-scroll-more'>正在加载中...</View> : (!loading && <View className='monitor-scroll-done'>
+              hasNext ? <View className='monitor-scroll-more' >正在加载中...</View> : (!loading && <View className='monitor-scroll-done'>
 	              <View className='monitor-scroll-done-left' />
 	              <View className='monitor-scroll-done-text'>我是有底线的</View>
 	              <View className='monitor-scroll-done-right' />

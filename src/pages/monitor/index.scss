@@ -2,29 +2,24 @@
 .monitor{
   position: relative;
   &-tips{
-    background-color: white;
-    padding: 0 24px 24px 24px;
-    &-notice{
-      background-color: $warning-bg-color;
-      border-radius: 4px;
-      padding: 12px 24px;
-      display: flex;
-      align-items: center;
-      &-icon{
-        display: inline-block;
+    display: flex;
+    align-items: center;
+    color: $text-color;
+    font-size: 26px;
+    height: 26px;
+    line-height: 26px;
+    margin: 24px 0 24px 27px;
+    &-icon{
+      display: inline-block;
+      font-size: 26px;
+    }
+    &-text{
+      display: inline-block;
+      margin-left: 4px;
+      &-count{
+        margin: 0 6px;
         color: $warning-color;
-        font-size: 32px;
-      }
-      &-text{
-        display: inline-block;
-        color: $warning-color;
-        font-size: 28px;
-        line-height: 28px;
-        height: 28px;
-        margin-left: 4px;
-        &-count{
-          font-weight: bold;
-        }
+        font-weight: bold;
       }
     }
   }
